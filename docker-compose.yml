@@ -1,0 +1,92 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: wedding-mysql-standalone
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-12092003}
+      MYSQL_DATABASE: wedding_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-standalone-data:/var/lib/mysql
+    networks:
+      - wedding-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: wedding-redis-standalone
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-standalone-data:/data
+    networks:
+      - wedding-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  wedding-backend:
+    build: .
+    container_name: wedding-backend-standalone
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wedding_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-12092003}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@wedding.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - upload-data:/app/uploads/wedding-images
+    networks:
+      - wedding-network
+
+  wedding-frontend:
+    build:
+      context: ./wedding-frontend
+    container_name: wedding-frontend-standalone
+    environment:
+      NEXT_PUBLIC_API_URL: ${PUBLIC_URL:-http://localhost}
+    depends_on:
+      - wedding-backend
+    networks:
+      - wedding-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: wedding-nginx
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - wedding-frontend
+      - wedding-backend
+    networks:
+      - wedding-network
+
+volumes:
+  mysql-standalone-data:
+  redis-standalone-data:
+  upload-data:
+
+networks:
+  wedding-network:
+    driver: bridge

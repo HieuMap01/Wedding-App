@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+  --color-primary: #e11d48;
+  /* Rose 600 */
+  --color-primary-hover: #be123c;
+  /* Rose 700 */
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Base custom styles to keep it clean */
+.input-field {
+  @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors shadow-sm;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center px-6 py-3 bg-white text-slate-700 font-medium rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm;
+}
+
+.card {
+  @apply bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden;
+}
