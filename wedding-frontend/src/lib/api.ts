@@ -8,7 +8,7 @@ const getApiBase = () => {
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 };
 
-const API_BASE = getApiBase();
+export const API_BASE = getApiBase();
 
 interface ApiResponse<T> {
   success: boolean;

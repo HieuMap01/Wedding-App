@@ -53,17 +53,20 @@ export default function AdminDashboard() {
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div className="card p-6 border-l-4 border-l-sky-500">
-                    <p className="text-sm font-medium text-slate-500 mb-1">Tổng cặp đôi</p>
-                    <p className="text-4xl font-display font-bold text-slate-900">{stats?.totalCouples || 0}</p>
+                <div className="card p-6 bg-gradient-to-br from-white to-sky-50/30 border-l-4 border-l-sky-500 relative overflow-hidden group">
+                    <div className="absolute -right-2 -bottom-2 text-6xl opacity-5 transition-transform group-hover:scale-110 group-hover:opacity-10">👫</div>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Tổng cặp đôi</p>
+                    <p className="text-4xl font-display font-bold text-slate-900 group-hover:text-sky-600 transition-colors">{stats?.totalCouples || 0}</p>
                 </div>
-                <div className="card p-6 border-l-4 border-l-rose-500">
-                    <p className="text-sm font-medium text-slate-500 mb-1">Tổng người dùng</p>
-                    <p className="text-4xl font-display font-bold text-slate-900">{stats?.totalUsers || 0}</p>
+                <div className="card p-6 bg-gradient-to-br from-white to-rose-50/30 border-l-4 border-l-rose-500 relative overflow-hidden group">
+                    <div className="absolute -right-2 -bottom-2 text-6xl opacity-5 transition-transform group-hover:scale-110 group-hover:opacity-10">👤</div>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Tổng người dùng</p>
+                    <p className="text-4xl font-display font-bold text-slate-900 group-hover:text-rose-600 transition-colors">{stats?.totalUsers || 0}</p>
                 </div>
-                <div className="card p-6 border-l-4 border-l-emerald-500">
-                    <p className="text-sm font-medium text-slate-500 mb-1">Tổng thiệp cưới</p>
-                    <p className="text-4xl font-display font-bold text-slate-900">{weddings.length}</p>
+                <div className="card p-6 bg-gradient-to-br from-white to-emerald-50/30 border-l-4 border-l-emerald-500 relative overflow-hidden group">
+                    <div className="absolute -right-2 -bottom-2 text-6xl opacity-5 transition-transform group-hover:scale-110 group-hover:opacity-10">💌</div>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Tổng thiệp cưới</p>
+                    <p className="text-4xl font-display font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{weddings.length}</p>
                 </div>
             </div>
 
@@ -114,8 +117,8 @@ export default function AdminDashboard() {
                                             {new Date(w.createdAt).toLocaleDateString('vi-VN')}
                                         </td>
                                         <td className="p-4 text-right">
-                                            <Link href={`/admin/couples/${w.id}`} className="inline-flex items-center justify-center px-3 py-1.5 border border-slate-200 rounded-md text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 hover:text-sky-600 transition-colors">
-                                                Chi tiết
+                                            <Link href={`/admin/couples/${w.id}`} className="inline-flex items-center gap-2 px-3 py-1.5 border border-slate-200 rounded-md text-sm font-semibold text-slate-700 bg-white hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm">
+                                                <span>🔎</span> Chi tiết
                                             </Link>
                                         </td>
                                     </tr>

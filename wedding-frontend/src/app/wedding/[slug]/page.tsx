@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
-import { weddingApi, interactionApi, WeddingResponse } from '@/lib/api';
+import { weddingApi, interactionApi, WeddingResponse, API_BASE } from '@/lib/api';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
 import { getLunarDateString } from '@/lib/lunar';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 
 export default function GuestWeddingPage() {
     const params = useParams();
@@ -124,9 +124,9 @@ export default function GuestWeddingPage() {
 
                 <motion.div
                     className="relative z-10"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
+                    initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
                 >
                     <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: primaryColor }}>
                         {t.gettingMarried}
@@ -249,10 +249,10 @@ export default function GuestWeddingPage() {
                 <motion.section
                     className="py-20 px-6"
                     style={{ background: '#f5f0eb' }}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.8 }}
+                    initial={{ opacity: 0, scale: 0.98, y: 40 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 1, ease: 'easeOut' }}
                 >
                     <div className="max-w-5xl mx-auto text-center">
                         <p className="text-sm uppercase tracking-[0.2em] mb-4" style={{ color: primaryColor }}>{t.locationSub}</p>
@@ -352,10 +352,10 @@ export default function GuestWeddingPage() {
             <motion.section
                 className="py-20 px-6"
                 style={{ background: 'white' }}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.8 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 1 }}
             >
                 <div className="max-w-lg mx-auto text-center">
                     <p className="text-sm uppercase tracking-[0.2em] mb-4" style={{ color: primaryColor }}>{t.rsvpSub}</p>
