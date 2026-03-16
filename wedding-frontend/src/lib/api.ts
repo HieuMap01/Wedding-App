@@ -1,4 +1,14 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const getApiBase = () => {
+  if (typeof window !== 'undefined') {
+    // If running in browser and NOT localhost, use relative path (best for Nginx/ngrok)
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return '';
+    }
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+};
+
+const API_BASE = getApiBase();
 
 interface ApiResponse<T> {
   success: boolean;

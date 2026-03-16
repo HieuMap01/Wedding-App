@@ -48,6 +48,7 @@ services:
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@wedding.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:3000}
       ALLOWED_ORIGINS: http://localhost,http://localhost:3000,http://localhost:81,${PUBLIC_URL:-http://localhost}
     depends_on:
       mysql:

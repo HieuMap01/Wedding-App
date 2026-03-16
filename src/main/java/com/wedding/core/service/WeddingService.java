@@ -8,6 +8,7 @@ import com.wedding.core.entity.WeddingImage;
 import com.wedding.core.repository.WeddingImageRepository;
 import com.wedding.core.repository.WeddingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,9 @@ public class WeddingService {
     private final FileStorageService fileStorageService;
     private final WeddingCacheService weddingCacheService;
     private final QrCodeService qrCodeService;
+
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     // ---- Couple operations ----
 
@@ -226,10 +230,9 @@ public class WeddingService {
                     "You must publish your wedding before generating a QR code.");
         }
 
-        // Use an environment variable or a properties file for the frontend URL in
-        // production
-        String frontendUrl = "http://localhost:3000/wedding/" + wedding.getSlug();
-        return qrCodeService.generateQrCodeBase64(frontendUrl, 400, 400);
+        // Use the configured frontend URL
+        String url = frontendUrl + "/wedding/" + wedding.getSlug();
+        return qrCodeService.generateQrCodeBase64(url, 400, 400);
     }
 
     // ---- Public endpoint ----

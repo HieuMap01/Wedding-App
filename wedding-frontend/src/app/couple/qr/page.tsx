@@ -23,8 +23,9 @@ export default function QrCodePage() {
 
             setQrCodeBase64(qrRes.data);
 
-            // Set public url based on slug
-            const frontendUrl = window.location.origin + '/wedding/' + weddingRes.data.slug;
+            // Set public url based on slug and environment
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+            const frontendUrl = baseUrl + '/wedding/' + weddingRes.data.slug;
             setPublicUrl(frontendUrl);
         } catch (error: any) {
             console.error('Error fetching QR data:', error);

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from 'react';
 import { weddingApi, bankApi, WeddingResponse, Bank } from '@/lib/api';
+import MapPicker from '@/components/MapPicker';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
@@ -236,8 +237,8 @@ export default function EditWeddingPage() {
         }
     };
 
-    const update = (field: string, value: string) =>
-        setForm((prev) => ({ ...prev, [field]: value }));
+    const update = (field: string, value: string | number | null) =>
+        setForm((prev) => ({ ...prev, [field]: value?.toString() || '' }));
 
     if (loading) {
         return <div className="flex justify-center p-12 text-slate-400">Đang tải dữ liệu thiệp...</div>;
@@ -359,42 +360,79 @@ export default function EditWeddingPage() {
                             </div>
 
                             {venueType === 'common' ? (
-                                <div className="grid md:grid-cols-2 gap-6 animate-fade-in-up">
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Tên nhà hàng</label>
-                                        <input className="input-field" value={form.venueName} onChange={(e) => update('venueName', e.target.value)} placeholder="GEM Center" />
+                                <>
+                                    <div className="grid md:grid-cols-2 gap-6 animate-fade-in-up">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Tên nhà hàng</label>
+                                            <input className="input-field" value={form.venueName} onChange={(e) => update('venueName', e.target.value)} placeholder="GEM Center" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Địa chỉ chính xác</label>
+                                            <input className="input-field" value={form.venueAddress} onChange={(e) => update('venueAddress', e.target.value)} placeholder="8 Nguyễn Bỉnh Khiêm, Quận 1..." />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Địa chỉ chính xác</label>
-                                        <input className="input-field" value={form.venueAddress} onChange={(e) => update('venueAddress', e.target.value)} placeholder="8 Nguyễn Bỉnh Khiêm, Quận 1..." />
-                                    </div>
-                                </div>
+                                    <MapPicker 
+                                        label="Vị trí trên bản đồ"
+                                        address={form.venueAddress}
+                                        lat={form.venueLat}
+                                        lng={form.venueLng}
+                                        onLocationSelect={(lat, lng, addr) => {
+                                            update('venueLat', lat);
+                                            update('venueLng', lng);
+                                            if (addr) update('venueAddress', addr);
+                                        }}
+                                    />
+                                </>
                             ) : (
-                                <div className="space-y-6">
-                                    <div className="p-4 rounded-xl border border-sky-100 bg-sky-50/50">
-                                        <h4 className="font-semibold text-sky-800 mb-3 block text-sm">🤵 Nhà Trai</h4>
+                                <div className="space-y-8">
+                                    <div className="p-6 rounded-2xl border border-sky-100 bg-sky-50/50 space-y-6">
+                                        <h4 className="font-bold text-sky-800 flex items-center gap-2">🤵 Nhà Trai</h4>
                                         <div className="grid md:grid-cols-2 gap-4">
-                                            <input className="input-field text-sm" value={form.groomHouseName} onChange={(e) => update('groomHouseName', e.target.value)} placeholder="Tên địa điểm (Nhà Trai)" />
-                                            <input className="input-field text-sm" value={form.groomHouseAddress} onChange={(e) => update('groomHouseAddress', e.target.value)} placeholder="Địa chỉ Nhà Trai" />
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">Tên địa điểm</label>
+                                                <input className="input-field text-sm" value={form.groomHouseName} onChange={(e) => update('groomHouseName', e.target.value)} placeholder="Tên địa điểm (Nhà Trai)" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">Địa chỉ</label>
+                                                <input className="input-field text-sm" value={form.groomHouseAddress} onChange={(e) => update('groomHouseAddress', e.target.value)} placeholder="Địa chỉ Nhà Trai" />
+                                            </div>
                                         </div>
+                                        <MapPicker 
+                                            address={form.groomHouseAddress}
+                                            lat={form.groomHouseLat}
+                                            lng={form.groomHouseLng}
+                                            onLocationSelect={(lat, lng, addr) => {
+                                                update('groomHouseLat', lat);
+                                                update('groomHouseLng', lng);
+                                                if (addr) update('groomHouseAddress', addr);
+                                            }}
+                                        />
                                     </div>
-                                    <div className="p-4 rounded-xl border border-rose-100 bg-rose-50/50">
-                                        <h4 className="font-semibold text-rose-800 mb-3 block text-sm">👰 Nhà Gái</h4>
+                                    <div className="p-6 rounded-2xl border border-rose-100 bg-rose-50/50 space-y-6">
+                                        <h4 className="font-bold text-rose-800 flex items-center gap-2">👰 Nhà Gái</h4>
                                         <div className="grid md:grid-cols-2 gap-4">
-                                            <input className="input-field text-sm" value={form.brideHouseName} onChange={(e) => update('brideHouseName', e.target.value)} placeholder="Tên địa điểm (Nhà Gái)" />
-                                            <input className="input-field text-sm" value={form.brideHouseAddress} onChange={(e) => update('brideHouseAddress', e.target.value)} placeholder="Địa chỉ Nhà Gái" />
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">Tên địa điểm</label>
+                                                <input className="input-field text-sm" value={form.brideHouseName} onChange={(e) => update('brideHouseName', e.target.value)} placeholder="Tên địa điểm (Nhà Gái)" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">Địa chỉ</label>
+                                                <input className="input-field text-sm" value={form.brideHouseAddress} onChange={(e) => update('brideHouseAddress', e.target.value)} placeholder="Địa chỉ Nhà Gái" />
+                                            </div>
                                         </div>
+                                        <MapPicker 
+                                            address={form.brideHouseAddress}
+                                            lat={form.brideHouseLat}
+                                            lng={form.brideHouseLng}
+                                            onLocationSelect={(lat, lng, addr) => {
+                                                update('brideHouseLat', lat);
+                                                update('brideHouseLng', lng);
+                                                if (addr) update('brideHouseAddress', addr);
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             )}
-
-                            <div className="w-full h-[250px] bg-slate-100 rounded-lg overflow-hidden relative shadow-inner">
-                                {form.venueAddress ? (
-                                    <iframe width="100%" height="100%" frameBorder="0" style={{ border: 0 }} src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(form.venueAddress)}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} allowFullScreen />
-                                ) : (
-                                    <div className="flex items-center justify-center h-full text-slate-400 text-sm">Vui lòng nhập địa chỉ để xem bản đồ.</div>
-                                )}
-                            </div>
                         </div>
                     )}
                 </div>
