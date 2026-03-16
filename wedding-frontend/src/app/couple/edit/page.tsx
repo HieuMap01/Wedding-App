@@ -3,6 +3,8 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { weddingApi, bankApi, WeddingResponse, Bank } from '@/lib/api';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export default function EditWeddingPage() {
     const [wedding, setWedding] = useState<WeddingResponse | null>(null);
     const [isNew, setIsNew] = useState(false);
@@ -34,7 +36,6 @@ export default function EditWeddingPage() {
         
         if (!bankName || !accountNumber) return;
         
-        // Extract code if format is "CODE - NAME"
         const bankCode = bankName.includes(' - ') ? bankName.split(' - ')[0] : bankName;
         const bank = banks.find(b => b.code === bankCode || b.name === bankName);
         if (!bank) return;
@@ -151,22 +152,17 @@ export default function EditWeddingPage() {
                 weddingDate: form.weddingDate || null,
             };
 
-            let currentWeddingId: number | null = null;
-
             if (isNew) {
                 const res = await weddingApi.create(data);
                 setWedding(res.data);
-                currentWeddingId = res.data.id;
                 setIsNew(false);
-                setMessage('✅ Thiệp cưới đã được tạo thành công!');
+                setMessage('✅ Thiệp cưới đã được tạo thành công! Bạn có thể xem và xuất bản ngay bây giờ.');
             } else {
                 const res = await weddingApi.updateMine(data);
                 setWedding(res.data);
-                currentWeddingId = res.data.id;
-                setMessage('✅ Cập nhật thông tin thành công!');
+                setMessage('✅ Tuyệt vời! Mọi thay đổi của bạn đã được lưu lại thành công.');
             }
 
-            // Handle pending image uploads
             if (selectedFiles.length > 0) {
                 setUploadingImage(true);
                 const uploadPromises = selectedFiles.map(file => weddingApi.uploadImage(file));
@@ -175,8 +171,12 @@ export default function EditWeddingPage() {
                 await loadWedding();
                 setMessage(prev => prev + ' 📸 Đã tải các ảnh lên thành công!');
             }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
         } catch (err: unknown) {
             setMessage('❌ ' + (err instanceof Error ? err.message : 'Có lỗi xảy ra'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } finally {
             setSaving(false);
             setUploadingImage(false);
@@ -188,6 +188,7 @@ export default function EditWeddingPage() {
             const res = await weddingApi.publish();
             setWedding(res.data);
             setMessage('🎉 Tuyệt vời! Thiệp đã được xuất bản công khai. Giờ đây bạn có thể copy link để gửi cho bạn bè.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err: unknown) {
             setMessage('❌ ' + (err instanceof Error ? err.message : 'Có lỗi khi xuất bản'));
         }
@@ -198,10 +199,8 @@ export default function EditWeddingPage() {
         if (!files) return;
         
         if (isNew) {
-            // Keep in local state for creation
             setSelectedFiles(prev => [...prev, ...Array.from(files)]);
         } else {
-            // Upload immediately if already created
             handleImageUpload(e);
         }
     };
@@ -266,8 +265,8 @@ export default function EditWeddingPage() {
     };
 
     return (
-        <div className="max-w-4xl animate-fade-in-up pb-24">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+        <div className="max-w-4xl animate-fade-in-up pb-24 px-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4 pt-8">
                 <div>
                     <h1 className="font-display text-3xl font-bold text-slate-900 mb-1">
                         {isNew ? '✨ Khởi tạo thiệp cưới' : '✏️ Chỉnh sửa thiệp cưới'}
@@ -275,7 +274,7 @@ export default function EditWeddingPage() {
                     <p className="text-slate-500 text-sm">Điền đầy đủ thông tin để thiệp mời của bạn thật hoàn hảo.</p>
                 </div>
                 {!isNew && !wedding?.isPublished && (
-                    <button onClick={handlePublish} className="btn-primary">
+                    <button onClick={handlePublish} className="btn-secondary h-12 px-6 flex items-center justify-center gap-2 border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors rounded-xl">
                         🚀 Xuất bản ngay
                     </button>
                 )}
@@ -286,7 +285,14 @@ export default function EditWeddingPage() {
                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
                     : 'bg-rose-50 text-rose-700 border border-rose-100'
                     }`}>
-                    {message}
+                    <div className="flex justify-between items-center">
+                        <span>{message}</span>
+                        {!isNew && !wedding?.isPublished && message.includes('thành công') && (
+                            <button onClick={handlePublish} className="ml-4 px-3 py-1 bg-primary text-white rounded-lg text-xs font-bold shadow-sm">
+                                Xuất bản 🚀
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
 
@@ -316,7 +322,7 @@ export default function EditWeddingPage() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Đường dẫn chia sẻ (Tùy chọn)</label>
                                     <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
                                         <span className="px-4 py-3 text-slate-500 bg-slate-100 border-r border-slate-200 text-sm font-mono whitespace-nowrap">
-                                            wedding.com/wedding/
+                                            /wedding/
                                         </span>
                                         <input className="flex-1 px-4 py-3 bg-white text-slate-900 focus:outline-none" value={form.slug} onChange={(e) => update('slug', e.target.value)} placeholder="minh-va-lan" />
                                     </div>
@@ -556,7 +562,6 @@ export default function EditWeddingPage() {
                                 </label>
                             </div>
 
-                            {/* Pending selections (New Wedding flow) */}
                             {selectedFiles.length > 0 && (
                                 <div className="mb-8 p-4 bg-amber-50 rounded-xl border border-amber-100">
                                     <p className="text-xs font-bold text-amber-700 uppercase mb-3 px-1">Ảnh đang chờ được tải lên ({selectedFiles.length})</p>
@@ -576,7 +581,7 @@ export default function EditWeddingPage() {
                                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
                                     {wedding.images.map((img) => (
                                         <div key={img.id} className="relative group rounded-xl overflow-hidden border border-slate-200 bg-white">
-                                            <img src={`http://localhost:8080${img.imageUrl}`} className="w-full aspect-square object-cover" />
+                                            <img src={`${API_BASE}${img.imageUrl}`} className="w-full aspect-square object-cover" />
                                             <button 
                                                 onClick={() => handleDeleteImage(img.id)}
                                                 className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
@@ -595,11 +600,16 @@ export default function EditWeddingPage() {
             </form>
 
             {/* Action Bar */}
-            <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white/95 backdrop-blur shadow-xl border-t p-4 z-40">
+            <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white/95 backdrop-blur shadow-2xl border-t p-4 z-40">
                 <div className="max-w-4xl mx-auto flex gap-3">
                     <button form="wedding-form" type="submit" disabled={saving || uploadingImage} className="btn-primary flex-1 h-12 text-base shadow-lg shadow-primary/20">
                         {saving ? '⏳ Đang lưu...' : isNew ? '✨ Khởi tạo ngay' : '💾 Lưu mọi thay đổi'}
                     </button>
+                    {!isNew && !wedding?.isPublished && (
+                        <button onClick={handlePublish} className="btn-secondary h-12 px-6 flex items-center justify-center gap-2 border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors rounded-xl shadow-lg">
+                            🚀 Xuất bản
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

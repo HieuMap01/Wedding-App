@@ -5,6 +5,9 @@ import { weddingApi, interactionApi, WeddingResponse } from '@/lib/api';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
+import { getLunarDateString } from '@/lib/lunar';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export default function GuestWeddingPage() {
     const params = useParams();
@@ -94,6 +97,7 @@ export default function GuestWeddingPage() {
     const primaryColor = wedding.primaryColor || '#E91E63';
     const secondaryColor = wedding.secondaryColor || '#FF5722';
     const weddingDate = wedding.weddingDate ? new Date(wedding.weddingDate) : null;
+    const lunarDateStr = weddingDate ? getLunarDateString(weddingDate) : '';
 
     return (
         <div className="wedding-theme min-h-screen" style={{ '--color-primary': primaryColor, '--color-secondary': secondaryColor } as React.CSSProperties}>
@@ -136,20 +140,25 @@ export default function GuestWeddingPage() {
                     </h1>
 
                     {weddingDate && (
-                        <div className="flex items-center justify-center gap-6 text-sm mt-6" style={{ color: '#666' }}>
-                            <div className="text-center">
-                                <p className="text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getDate()}</p>
-                                <p className="text-xs uppercase tracking-wider">
-                                    {t.month} {weddingDate.getMonth() + 1}
-                                </p>
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="flex items-center justify-center gap-6 text-sm" style={{ color: '#666' }}>
+                                <div className="text-center">
+                                    <p className="text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getDate()}</p>
+                                    <p className="text-xs uppercase tracking-wider">
+                                        {t.month} {weddingDate.getMonth() + 1}
+                                    </p>
+                                </div>
+                                <div className="w-px h-12" style={{ background: primaryColor, opacity: 0.3 }} />
+                                <div className="text-center">
+                                    <p className="text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getFullYear()}</p>
+                                    <p className="text-xs uppercase tracking-wider">
+                                        {weddingDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="w-px h-12" style={{ background: primaryColor, opacity: 0.3 }} />
-                            <div className="text-center">
-                                <p className="text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getFullYear()}</p>
-                                <p className="text-xs uppercase tracking-wider">
-                                    {weddingDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                                </p>
-                            </div>
+                            <p className="text-sm italic font-medium opacity-80" style={{ color: primaryColor }}>
+                                {lunarDateStr}
+                            </p>
                         </div>
                     )}
 
@@ -179,7 +188,7 @@ export default function GuestWeddingPage() {
                     {/* Main Featured Image */}
                     <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 group flex items-center justify-center bg-gray-100">
                         <img
-                            src={`http://localhost:8080${wedding.images[currentImageIndex].imageUrl}`}
+                            src={`${API_BASE}${wedding.images[currentImageIndex].imageUrl}`}
                             alt="Wedding main gallery"
                             className="max-w-full max-h-[75vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105"
                         />
@@ -204,7 +213,7 @@ export default function GuestWeddingPage() {
                                     className={`relative flex-shrink-0 w-24 md:w-32 aspect-square rounded-xl overflow-hidden transition-all duration-300 snap-center bg-gray-100 ${currentImageIndex === idx ? 'ring-4 ring-offset-2 scale-110 shadow-lg z-10' : 'opacity-40 hover:opacity-100 scale-90'}`}
                                     style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                                 >
-                                    <img src={`http://localhost:8080${img.imageUrl}`} alt="thumb" className="w-full h-full object-contain" />
+                                    <img src={`${API_BASE}${img.imageUrl}`} alt="thumb" className="w-full h-full object-contain" />
                                 </button>
                             ))}
                         </div>
@@ -508,6 +517,7 @@ export default function GuestWeddingPage() {
                 <p style={{ fontFamily: 'var(--font-display)' }}>
                     {wedding.groomName} & {wedding.brideName}
                     {weddingDate && ` • ${weddingDate.toLocaleDateString('vi-VN')}`}
+                    {lunarDateStr && ` (${lunarDateStr})`}
                 </p>
                 <p className="mt-2 text-xs">{t.poweredBy}</p>
             </footer>

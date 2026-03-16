@@ -48,6 +48,7 @@ services:
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@wedding.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      ALLOWED_ORIGINS: http://localhost,http://localhost:3000,http://localhost:81,${PUBLIC_URL:-http://localhost}
     depends_on:
       mysql:
         condition: service_healthy
@@ -61,6 +62,8 @@ services:
   wedding-frontend:
     build:
       context: ./wedding-frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${PUBLIC_URL:-http://localhost}
     container_name: wedding-frontend-standalone
     environment:
       NEXT_PUBLIC_API_URL: ${PUBLIC_URL:-http://localhost}

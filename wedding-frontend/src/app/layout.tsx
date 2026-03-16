@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import BackToTop from "@/components/BackToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +29,10 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans bg-slate-50 text-slate-900 antialiased min-h-screen">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+            {children}
+            <BackToTop />
+        </AuthProvider>
       </body>
     </html>
   );

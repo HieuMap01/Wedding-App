@@ -50,8 +50,12 @@ docker-compose up -d --build
 
 1. Cài đặt ngrok và xác thực authtoken.
 2. Chạy lệnh: `ngrok http 81 --domain=YOUR_DOMAIN`
+ngrok http 81 --domain=rubye-doctoral-leatha.ngrok-free.dev
 3. Cập nhật `PUBLIC_URL` trong `.env`.
 4. Build lại frontend: `docker-compose up -d --build wedding-frontend`
+docker-compose up -d --build
+
+https://rubye-doctoral-leatha.ngrok-free.dev/
 
 ## 📝 License
 Dự án được phát triển bởi [Bùi Minh Hiếu](https://github.com/HieuMap01).
