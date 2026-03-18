@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
 import { getLunarDateString } from '@/lib/lunar';
+import HeartEffect from '@/components/HeartEffect';
 
 
 
@@ -77,8 +78,20 @@ export default function GuestWeddingPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center" style={{ background: '#faf8f5' }}>
-                <div className="text-xl text-gray-500">{t.loading}</div>
+            <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ background: '#faf8f5' }}>
+                <div className="text-xl text-gray-500 mb-8 flex items-center gap-2">
+                    <span className="animate-spin text-2xl">💍</span> {t.loading}
+                </div>
+                
+                {/* Debug info for troubleshooting iOS */}
+                <div className="mt-12 p-4 bg-slate-100 rounded-lg text-[10px] font-mono text-slate-400 max-w-xs break-all">
+                    <p className="font-bold mb-1 uppercase text-slate-500">System Debug Info:</p>
+                    <p>Slug: {slug}</p>
+                    <p>API_BASE: "{API_BASE}"</p>
+                    <p>Status: Loading...</p>
+                    {error && <p className="text-red-400 mt-2">Error: {error}</p>}
+                    <p className="mt-2 text-slate-300 italic">* Nếu bị kẹt quá lâu, hãy chụp ảnh màn hình này gửi cho mình.</p>
+                </div>
             </div>
         );
     }
@@ -101,6 +114,7 @@ export default function GuestWeddingPage() {
 
     return (
         <div className="wedding-theme min-h-screen" style={{ '--color-primary': primaryColor, '--color-secondary': secondaryColor } as React.CSSProperties}>
+            <HeartEffect />
             {/* Language Switcher */}
             <div className="fixed top-4 right-4 z-50">
                 <button

@@ -21,9 +21,18 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
+  // Determine base URL dynamically inside the request to be SSR-safe and browser-resilient
+  let baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      baseUrl = ''; // Use relative path in production/ngrok
+    }
+  }
+
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
   const headers: Record<string, string> = {
+    'ngrok-skip-browser-warning': 'true',
     ...((options.headers as Record<string, string>) || {}),
   };
 
@@ -35,27 +44,41 @@ async function request<T>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  // Add timeout to prevent indefinite hanging (especially on mobile/proxy)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-  if (res.status === 401) {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+  try {
+    const res = await fetch(`${baseUrl}${endpoint}`, {
+      ...options,
+      headers,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (res.status === 401) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
     }
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Something went wrong');
+    }
+
+    return data;
+  } catch (err: any) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Yêu cầu quá hạn (Timeout). Vui lòng kiểm tra kết nối mạng.');
+    }
+    throw err;
   }
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.message || 'Something went wrong');
-  }
-
-  return data;
 }
 
 export const api = {
