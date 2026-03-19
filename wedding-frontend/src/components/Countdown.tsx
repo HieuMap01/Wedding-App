@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 
 interface CountdownProps {
     targetDate: string;
+    primaryColor?: string;
 }
 
-export default function Countdown({ targetDate }: CountdownProps) {
+export default function Countdown({ targetDate, primaryColor = '#E91E63' }: CountdownProps) {
     const [timeLeft, setTimeLeft] = useState<{
         days: number;
         hours: number;
@@ -39,7 +40,7 @@ export default function Countdown({ targetDate }: CountdownProps) {
     if (!timeLeft) return null;
 
     return (
-        <div className="flex justify-center gap-4 md:gap-8 mt-10">
+        <div className="flex justify-center gap-3 md:gap-6 mt-8">
             {[
                 { label: 'Ngày', value: timeLeft.days },
                 { label: 'Giờ', value: timeLeft.hours },
@@ -47,12 +48,12 @@ export default function Countdown({ targetDate }: CountdownProps) {
                 { label: 'Giây', value: timeLeft.seconds },
             ].map((item, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-center mb-2 shadow-xl">
-                        <span className="text-2xl md:text-3xl font-display font-bold text-white drop-shadow-md">
+                    <div className="w-14 h-14 md:w-20 md:h-20 bg-white rounded-2xl flex items-center justify-center mb-2 shadow-xl border border-gray-100">
+                        <span className="text-xl md:text-3xl font-display font-bold" style={{ color: primaryColor }}>
                             {item.value.toString().padStart(2, '0')}
                         </span>
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-widest font-bold text-white/80 drop-shadow-sm">
+                    <span className="text-[10px] md:text-xs uppercase tracking-widest font-bold text-gray-500">
                         {item.label}
                     </span>
                 </div>

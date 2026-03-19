@@ -173,7 +173,7 @@ export default function GuestWeddingPage() {
                             </p>
                             
                             <div className="mt-8 scale-90 sm:scale-100">
-                                <Countdown targetDate={wedding.weddingDate} />
+                                <Countdown targetDate={wedding.weddingDate} primaryColor={primaryColor} />
                             </div>
                         </div>
                     )}

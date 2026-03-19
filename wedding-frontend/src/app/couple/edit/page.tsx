@@ -667,15 +667,15 @@ export default function EditWeddingPage() {
                     </h3>
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-1.5">Link nhạc (MP3 hoặc URL trực tiếp)</label>
+                            <label className="block text-sm font-bold text-slate-700 mb-1.5">Link nhạc (MP3, YouTube hoặc URL trực tiếp)</label>
                             <input 
                                 className="input-field" 
-                                placeholder="https://example.com/music.mp3"
+                                placeholder="https://www.youtube.com/watch?v=..."
                                 value={form.musicUrl} 
                                 onChange={(e) => update('musicUrl', e.target.value)} 
                             />
                             <p className="mt-2 text-[10px] text-slate-500 italic">
-                                * Dán đường dẫn trực tiếp đến file âm thanh (.mp3) để nhạc có thể tự động phát mượt mà nhất.
+                                * Hỗ trợ link YouTube hoặc link trực tiếp (.mp3). Nhạc sẽ phát ẩn khi khách xem thiệp.
                             </p>
                         </div>
                     </div>

@@ -11,28 +11,45 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
     const [showLabel, setShowLabel] = useState(true);
+    const [isYoutube, setIsYoutube] = useState(false);
+    const [youtubeId, setYoutubeId] = useState<string | null>(null);
 
     useEffect(() => {
-        // Attempt to auto-play (browsers often block this until first interaction)
-        const play = async () => {
-            try {
-                if (audioRef.current) {
-                    await audioRef.current.play();
-                    setIsPlaying(true);
-                }
-            } catch (err) {
-                console.log("Autoplay blocked. Waiting for user interaction.");
-            }
-        };
-        
-        play();
-        
-        const timer = setTimeout(() => setShowLabel(false), 5000);
+        const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+        const match = url?.match(ytRegex);
+        if (match) {
+            setIsYoutube(true);
+            setYoutubeId(match[1]);
+        } else {
+            setIsYoutube(false);
+            setYoutubeId(null);
+        }
+
+        const timer = setTimeout(() => setShowLabel(false), 8000);
         return () => clearTimeout(timer);
     }, [url]);
 
+    useEffect(() => {
+        if (!isYoutube && url) {
+            const play = async () => {
+                try {
+                    if (audioRef.current) {
+                        await audioRef.current.play();
+                        setIsPlaying(true);
+                    }
+                } catch (err) {
+                    console.log("Autoplay blocked or link invalid.");
+                }
+            };
+            play();
+        }
+    }, [isYoutube, url]);
+
     const togglePlay = () => {
-        if (audioRef.current) {
+        if (isYoutube) {
+            setIsPlaying(!isPlaying);
+            // Iframe postMessage or just toggle state (iframe handles limited autoplay)
+        } else if (audioRef.current) {
             if (isPlaying) {
                 audioRef.current.pause();
             } else {
@@ -46,7 +63,19 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
 
     return (
         <div className="fixed bottom-6 left-6 z-[100]">
-            <audio ref={audioRef} src={url} loop />
+            {isYoutube ? (
+                <div className="hidden">
+                    {/* Hidden YouTube player with autoplay and loop */}
+                    <iframe
+                        width="0"
+                        height="0"
+                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${isPlaying ? 1 : 0}&loop=1&playlist=${youtubeId}&mute=0`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    ></iframe>
+                </div>
+            ) : (
+                <audio ref={audioRef} src={url} loop />
+            )}
             
             <div className="relative group">
                 <AnimatePresence>
