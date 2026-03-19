@@ -1,12 +1,13 @@
 server:
   port: 8080
+  forward-headers-strategy: native
 
 spring:
   application:
     name: wedding-monolith
   datasource:
-    url: jdbc:mysql://localhost:3306/wedding_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
-    username: root
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/wedding_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:12092003}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
@@ -19,8 +20,9 @@ spring:
         format_sql: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
   mail:
     host: smtp.gmail.com
     port: 587
@@ -45,6 +47,11 @@ jwt:
 
 file:
   upload-dir: ./uploads/wedding-images
+
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME:}
+  api_key: ${CLOUDINARY_API_KEY:}
+  api_secret: ${CLOUDINARY_API_SECRET:}
 
 app:
   mail:

@@ -1,11 +1,17 @@
 const getApiBase = () => {
   if (typeof window !== 'undefined') {
-    // If running in browser and NOT localhost, use relative path (best for Nginx/ngrok)
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // In browser: use relative path if not on localhost/127.0.0.1
+    // This allows Nginx/ngrok to handle the routing automatically
+    const { hostname } = window.location;
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
       return '';
     }
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
   }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+  
+  // On Server (SSR): Use internal Docker network URL to avoid external round-trips via ngrok
+  // This is much faster and more reliable inside the container network.
+  return 'http://wedding-backend:8080';
 };
 
 export const API_BASE = getApiBase();
@@ -22,11 +28,12 @@ async function request<T>(
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   // Determine base URL dynamically inside the request to be SSR-safe and browser-resilient
-  let baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-  if (typeof window !== 'undefined') {
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      baseUrl = ''; // Use relative path in production/ngrok
-    }
+  let baseUrl = API_BASE;
+  
+  // Safety check: if for some reason API_BASE was initialized to '' but we are on server,
+  // we must use the internal backend URL.
+  if (typeof window === 'undefined' && !baseUrl) {
+    baseUrl = 'http://wedding-backend:8080';
   }
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;

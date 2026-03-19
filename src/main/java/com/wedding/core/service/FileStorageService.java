@@ -1,52 +1,47 @@
 package com.wedding.core.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.wedding.common.exception.AppException;
 import com.wedding.common.exception.ErrorCode;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class FileStorageService {
 
-    @Value("${file.upload-dir:./uploads/wedding-images}")
-    private String uploadDir;
+    private final Cloudinary cloudinary;
 
     public String storeFile(MultipartFile file) {
         try {
-            Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-            Files.createDirectories(uploadPath);
-
-            String originalFilename = file.getOriginalFilename();
-            String extension = "";
-            if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            }
-            String newFilename = UUID.randomUUID() + extension;
-
-            Path targetLocation = uploadPath.resolve(newFilename);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            return "/uploads/wedding-images/" + newFilename;
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+            return uploadResult.get("secure_url").toString();
         } catch (IOException e) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Could not store file: " + e.getMessage());
+            throw new AppException(ErrorCode.BAD_REQUEST, "Could not store file to Cloudinary: " + e.getMessage());
         }
     }
 
     public void deleteFile(String fileUrl) {
         try {
-            String filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-            Path filePath = Paths.get(uploadDir).toAbsolutePath().normalize().resolve(filename);
-            Files.deleteIfExists(filePath);
+            // Extract public ID from URL
+            // Example: https://res.cloudinary.com/demo/image/upload/v1234/public_id.jpg
+            String publicId = extractPublicId(fileUrl);
+            if (publicId != null) {
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            }
         } catch (IOException e) {
-            // Log but don't throw - file deletion failure shouldn't break the flow
+            // Log failure
         }
+    }
+
+    private String extractPublicId(String url) {
+        if (url == null || !url.contains("/")) return null;
+        String filename = url.substring(url.lastIndexOf("/") + 1);
+        return filename.split("\\.")[0];
     }
 }
