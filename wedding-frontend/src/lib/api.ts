@@ -1,12 +1,13 @@
 const getApiBase = () => {
   if (typeof window !== 'undefined') {
-    // In browser: use relative path if not on localhost/127.0.0.1
-    // This allows Nginx/ngrok to handle the routing automatically
     const { hostname } = window.location;
+    // On production (e.g. Vercel), we expect NEXT_PUBLIC_API_URL to be set to the Render URL
+    const publicApiUrl = process.env.NEXT_PUBLIC_API_URL;
+    
     if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      return '';
+      return publicApiUrl || '';
     }
-    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    return publicApiUrl || 'http://localhost:8080';
   }
   
   // On Server (SSR): Use internal Docker network URL to avoid external round-trips via ngrok
