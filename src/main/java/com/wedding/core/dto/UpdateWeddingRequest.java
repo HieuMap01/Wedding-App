@@ -33,4 +33,5 @@ public class UpdateWeddingRequest {
     private String brideBankName;
     private String brideBankAccountNumber;
     private String brideBankAccountHolder;
+    private String musicUrl;
 }

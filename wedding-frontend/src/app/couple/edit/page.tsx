@@ -83,6 +83,7 @@ export default function EditWeddingPage() {
         brideBankName: '',
         brideBankAccountNumber: '',
         brideBankAccountHolder: '',
+        musicUrl: '',
     });
 
     useEffect(() => {
@@ -119,6 +120,7 @@ export default function EditWeddingPage() {
                 brideBankName: res.data.brideBankName || '',
                 brideBankAccountNumber: res.data.brideBankAccountNumber || '',
                 brideBankAccountHolder: res.data.brideBankAccountHolder || '',
+                musicUrl: res.data.musicUrl || '',
             });
             if (res.data.groomHouseAddress || res.data.brideHouseAddress) {
                 setVenueType('separate');
@@ -656,6 +658,27 @@ export default function EditWeddingPage() {
                             )}
                         </div>
                     )}
+                </div>
+
+                {/* Music Section */}
+                <div className="card p-6 border-l-4 border-sky-500 bg-gradient-to-br from-white to-sky-50/20">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span>🎵</span> Nhạc nền thiệp cưới
+                    </h3>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-bold text-slate-700 mb-1.5">Link nhạc (MP3 hoặc URL trực tiếp)</label>
+                            <input 
+                                className="input-field" 
+                                placeholder="https://example.com/music.mp3"
+                                value={form.musicUrl} 
+                                onChange={(e) => update('musicUrl', e.target.value)} 
+                            />
+                            <p className="mt-2 text-[10px] text-slate-500 italic">
+                                * Dán đường dẫn trực tiếp đến file âm thanh (.mp3) để nhạc có thể tự động phát mượt mà nhất.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </form>
 

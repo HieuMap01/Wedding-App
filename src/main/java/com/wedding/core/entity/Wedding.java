@@ -104,6 +104,9 @@ public class Wedding {
     @Column(name = "bride_bank_account_holder")
     private String brideBankAccountHolder;
 
+    @Column(name = "music_url")
+    private String musicUrl;
+
     @Builder.Default
     @Column(name = "is_active")
     private Boolean isActive = true;

@@ -6,9 +6,8 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
 import { getLunarDateString } from '@/lib/lunar';
-import HeartEffect from '@/components/HeartEffect';
-
-
+import Countdown from '@/components/Countdown';
+import MusicPlayer from '@/components/MusicPlayer';
 
 export default function GuestWeddingPage() {
     const params = useParams();
@@ -114,7 +113,6 @@ export default function GuestWeddingPage() {
 
     return (
         <div className="wedding-theme min-h-screen" style={{ '--color-primary': primaryColor, '--color-secondary': secondaryColor } as React.CSSProperties}>
-            <HeartEffect />
             {/* Language Switcher */}
             <div className="fixed top-4 right-4 z-50">
                 <button
@@ -173,6 +171,10 @@ export default function GuestWeddingPage() {
                             <p className="text-sm italic font-medium opacity-80" style={{ color: primaryColor }}>
                                 {lunarDateStr}
                             </p>
+                            
+                            <div className="mt-8 scale-90 sm:scale-100">
+                                <Countdown targetDate={wedding.weddingDate} />
+                            </div>
                         </div>
                     )}
 
@@ -535,6 +537,8 @@ export default function GuestWeddingPage() {
                 </p>
                 <p className="mt-2 text-xs">{t.poweredBy}</p>
             </footer>
+
+            <MusicPlayer url={wedding.musicUrl || ''} />
         </div>
     );
 }

@@ -1,0 +1,128 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface MusicPlayerProps {
+    url: string;
+}
+
+export default function MusicPlayer({ url }: MusicPlayerProps) {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [showLabel, setShowLabel] = useState(true);
+
+    useEffect(() => {
+        // Attempt to auto-play (browsers often block this until first interaction)
+        const play = async () => {
+            try {
+                if (audioRef.current) {
+                    await audioRef.current.play();
+                    setIsPlaying(true);
+                }
+            } catch (err) {
+                console.log("Autoplay blocked. Waiting for user interaction.");
+            }
+        };
+        
+        play();
+        
+        const timer = setTimeout(() => setShowLabel(false), 5000);
+        return () => clearTimeout(timer);
+    }, [url]);
+
+    const togglePlay = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
+    if (!url) return null;
+
+    return (
+        <div className="fixed bottom-6 left-6 z-[100]">
+            <audio ref={audioRef} src={url} loop />
+            
+            <div className="relative group">
+                <AnimatePresence>
+                    {showLabel && (
+                        <motion.div 
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            className="absolute left-16 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-xl border border-rose-100 whitespace-nowrap pointer-events-none"
+                        >
+                            <span className="text-xs font-bold text-rose-600">Bật nhạc nền 🎵</span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <button
+                    onClick={togglePlay}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 ${
+                        isPlaying 
+                        ? 'bg-rose-500 text-white animate-pulse' 
+                        : 'bg-white text-rose-500 border-2 border-rose-100 scale-90 opacity-80'
+                    }`}
+                >
+                    <div className="relative w-6 h-6">
+                        {isPlaying ? (
+                            <motion.div 
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: 1.1 }}
+                                transition={{ repeat: Infinity, duration: 0.6, repeatType: 'reverse' }}
+                                className="flex items-center justify-center gap-0.5 h-full"
+                            >
+                                <span className="w-1 h-3 bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_infinite_alternate]"></span>
+                                <span className="w-1 h-4 bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_0.2s_infinite_alternate]"></span>
+                                <span className="w-1 h-2 bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_0.4s_infinite_alternate]"></span>
+                                <span className="w-1 h-3 bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_0.1s_infinite_alternate]"></span>
+                            </motion.div>
+                        ) : (
+                            <svg className="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        )}
+                    </div>
+                </button>
+                
+                {/* Floating music notes when playing */}
+                <AnimatePresence>
+                    {isPlaying && [...Array(3)].map((_, i) => (
+                        <motion.span
+                            key={i}
+                            initial={{ opacity: 0, y: 0, x: 0, scale: 0.5 }}
+                            animate={{ 
+                                opacity: [0, 1, 0], 
+                                y: -60 - (i * 20), 
+                                x: (i % 2 === 0 ? 20 : -20) + (Math.random() * 10),
+                                scale: [0.5, 1, 0.8]
+                            }}
+                            transition={{ 
+                                duration: 2, 
+                                repeat: Infinity, 
+                                delay: i * 0.6,
+                                ease: "easeOut" 
+                            }}
+                            className="absolute top-0 right-0 text-xl pointer-events-none"
+                        >
+                            {['🎵', '🎶', '🎼'][i]}
+                        </motion.span>
+                    ))}
+                </AnimatePresence>
+            </div>
+            
+            <style jsx>{`
+                @keyframes music-bar {
+                    0% { height: 20%; }
+                    100% { height: 100%; }
+                }
+            `}</style>
+        </div>
+    );
+}

@@ -44,6 +44,7 @@ public class WeddingResponse {
     private String brideBankAccountHolder;
     private Boolean isActive;
     private String publicUrl;
+    private String musicUrl;
     private List<WeddingImageResponse> images;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

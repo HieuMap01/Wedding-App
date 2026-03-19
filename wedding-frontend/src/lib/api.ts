@@ -205,6 +205,7 @@ export interface WeddingResponse {
   brideBankAccountNumber?: string;
   brideBankAccountHolder?: string;
   publicUrl: string;
+  musicUrl?: string;
   images: WeddingImageResponse[];
   createdAt: string;
   updatedAt: string;

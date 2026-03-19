@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import BackToTop from "@/components/BackToTop";
+import HeartEffect from "@/components/HeartEffect";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
         <AuthProvider>
             {children}
             <BackToTop />
+            <HeartEffect />
         </AuthProvider>
       </body>
     </html>

@@ -73,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicEndpoint(String path) {
-        if (path.startsWith("/api/interactions/mine/")) {
+        if (path.startsWith("/api/interactions/mine/") || path.startsWith("/api/interactions/admin/")) {
             return false;
         }
         return PUBLIC_ENDPOINTS.stream().anyMatch(path::startsWith);

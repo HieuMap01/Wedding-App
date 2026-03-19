@@ -141,6 +141,8 @@ public class WeddingService {
             wedding.setBrideBankAccountNumber(request.getBrideBankAccountNumber());
         if (request.getBrideBankAccountHolder() != null)
             wedding.setBrideBankAccountHolder(request.getBrideBankAccountHolder());
+        if (request.getMusicUrl() != null)
+            wedding.setMusicUrl(request.getMusicUrl());
 
         wedding = weddingRepository.save(wedding);
         // Invalidate cache
@@ -342,6 +344,7 @@ public class WeddingService {
                 .brideBankAccountHolder(wedding.getBrideBankAccountHolder())
                 .isActive(wedding.getIsActive())
                 .publicUrl(wedding.getIsPublished() ? "/wedding/" + wedding.getSlug() : null)
+                .musicUrl(wedding.getMusicUrl())
                 .images(imageResponses)
                 .createdAt(wedding.getCreatedAt())
                 .updatedAt(wedding.getUpdatedAt())
