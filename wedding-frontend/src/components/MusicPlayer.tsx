@@ -31,39 +31,50 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
 
     useEffect(() => {
         const handleFirstInteraction = () => {
-            if (isPlaying && !isYoutube && audioRef.current) {
+            if (audioRef.current) {
+                audioRef.current.muted = false;
                 audioRef.current.play().catch(() => {});
             }
+            setIsPlaying(true);
+            
+            // For Youtube, we refresh the iframe with mute=0 on first interaction
+            if (isYoutube && youtubeId) {
+                const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
+                if (iframe) {
+                    iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&loop=1&playlist=${youtubeId}&mute=0`;
+                }
+            }
+
             // Remove listeners after first interaction
             window.removeEventListener('click', handleFirstInteraction);
             window.removeEventListener('touchstart', handleFirstInteraction);
             window.removeEventListener('scroll', handleFirstInteraction);
+            window.removeEventListener('mousemove', handleFirstInteraction);
+            window.removeEventListener('keydown', handleFirstInteraction);
         };
 
         window.addEventListener('click', handleFirstInteraction);
         window.addEventListener('touchstart', handleFirstInteraction);
         window.addEventListener('scroll', handleFirstInteraction);
+        window.addEventListener('mousemove', handleFirstInteraction, { once: true });
+        window.addEventListener('keydown', handleFirstInteraction, { once: true });
 
-        if (!isYoutube && url) {
-            const play = async () => {
-                try {
-                    if (audioRef.current) {
-                        await audioRef.current.play();
-                        setIsPlaying(true);
-                    }
-                } catch (err) {
-                    console.log("Autoplay blocked. Waiting for interaction.");
-                }
-            };
-            play();
+        // Try Muted Autoplay on Load
+        if (!isYoutube && url && audioRef.current) {
+            audioRef.current.muted = true;
+            audioRef.current.play().catch(() => {
+                console.log("Muted autoplay blocked");
+            });
         }
 
         return () => {
             window.removeEventListener('click', handleFirstInteraction);
             window.removeEventListener('touchstart', handleFirstInteraction);
             window.removeEventListener('scroll', handleFirstInteraction);
+            window.removeEventListener('mousemove', handleFirstInteraction);
+            window.removeEventListener('keydown', handleFirstInteraction);
         };
-    }, [isYoutube, url, isPlaying]);
+    }, [isYoutube, url, youtubeId]);
 
     const togglePlay = () => {
         if (isYoutube) {
@@ -85,11 +96,12 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
         <div className="fixed bottom-6 left-6 z-[100]">
             {isYoutube ? (
                 <div className="hidden">
-                    {/* Hidden YouTube player with autoplay and loop */}
+                    {/* Hidden YouTube player with initial mute to bypass autoplay block */}
                     <iframe
+                        id="youtube-player"
                         width="0"
                         height="0"
-                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=${isPlaying ? 1 : 0}&loop=1&playlist=${youtubeId}&mute=0`}
+                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&loop=1&playlist=${youtubeId}&mute=1`}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     ></iframe>
                 </div>

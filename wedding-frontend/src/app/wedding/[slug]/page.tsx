@@ -136,9 +136,9 @@ export default function GuestWeddingPage() {
 
                 <motion.div
                     className="relative z-10"
-                    initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                    initial={{ opacity: 0, y: 40, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                    transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
                 >
                     <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: primaryColor }}>
                         {t.gettingMarried}
@@ -173,7 +173,16 @@ export default function GuestWeddingPage() {
                             </p>
                             
                             <div className="mt-8 scale-90 sm:scale-100">
-                                <Countdown targetDate={wedding.weddingDate} primaryColor={primaryColor} />
+                                <Countdown 
+                                    targetDate={wedding.weddingDate} 
+                                    primaryColor={primaryColor} 
+                                    labels={{
+                                        days: t.days,
+                                        hours: t.hours,
+                                        minutes: t.minutes,
+                                        seconds: t.seconds
+                                    }}
+                                />
                             </div>
                         </div>
                     )}
@@ -205,10 +214,10 @@ export default function GuestWeddingPage() {
                     {/* Main Featured Image with Reveal Effect */}
                     <motion.div 
                         className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group flex items-center justify-center bg-gray-100"
-                        initial={{ opacity: 0, scale: 0.9, rotateY: 5 }}
-                        whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.2, ease: "easeOut" }}
+                        initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ duration: 1, ease: "easeOut" }}
                     >
                         <img
                             src={getImageUrl(wedding.images[currentImageIndex].imageUrl)}
@@ -548,7 +557,7 @@ export default function GuestWeddingPage() {
                                             <span className="font-bold text-slate-700 uppercase">{wedding.groomBankAccountHolder}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* Bride Bank */}

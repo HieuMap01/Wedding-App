@@ -35,7 +35,11 @@ export const translations = {
         giftAccount: "Số tài khoản",
         giftHolder: "Chủ tài khoản",
         groomBankTitle: "🏦 Tài khoản Nhà Trai",
-        brideBankTitle: "🏦 Tài khoản Nhà Gái"
+        brideBankTitle: "🏦 Tài khoản Nhà Gái",
+        days: "Ngày",
+        hours: "Giờ",
+        minutes: "Phút",
+        seconds: "Giây"
     },
     en: {
         loading: "💍 Loading invitation...",
@@ -71,7 +75,11 @@ export const translations = {
         giftAccount: "Account Number",
         giftHolder: "Account Holder",
         groomBankTitle: "🏦 Groom's Family Bank",
-        brideBankTitle: "🏦 Bride's Family Bank"
+        brideBankTitle: "🏦 Bride's Family Bank",
+        days: "Days",
+        hours: "Hours",
+        minutes: "Mins",
+        seconds: "Secs"
     }
 };
 
