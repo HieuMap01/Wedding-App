@@ -58,6 +58,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of(
                 "https://*.vercel.app",
                 "https://*.onrender.com",
+                "https://*.ngrok-free.dev",
                 "http://localhost:[*]"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

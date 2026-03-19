@@ -8,7 +8,7 @@ interface MusicPlayerProps {
 }
 
 export default function MusicPlayer({ url }: MusicPlayerProps) {
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true); // Try to play by default
     const audioRef = useRef<HTMLAudioElement>(null);
     const [showLabel, setShowLabel] = useState(true);
     const [isYoutube, setIsYoutube] = useState(false);
@@ -30,6 +30,20 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
     }, [url]);
 
     useEffect(() => {
+        const handleFirstInteraction = () => {
+            if (isPlaying && !isYoutube && audioRef.current) {
+                audioRef.current.play().catch(() => {});
+            }
+            // Remove listeners after first interaction
+            window.removeEventListener('click', handleFirstInteraction);
+            window.removeEventListener('touchstart', handleFirstInteraction);
+            window.removeEventListener('scroll', handleFirstInteraction);
+        };
+
+        window.addEventListener('click', handleFirstInteraction);
+        window.addEventListener('touchstart', handleFirstInteraction);
+        window.addEventListener('scroll', handleFirstInteraction);
+
         if (!isYoutube && url) {
             const play = async () => {
                 try {
@@ -38,12 +52,18 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
                         setIsPlaying(true);
                     }
                 } catch (err) {
-                    console.log("Autoplay blocked or link invalid.");
+                    console.log("Autoplay blocked. Waiting for interaction.");
                 }
             };
             play();
         }
-    }, [isYoutube, url]);
+
+        return () => {
+            window.removeEventListener('click', handleFirstInteraction);
+            window.removeEventListener('touchstart', handleFirstInteraction);
+            window.removeEventListener('scroll', handleFirstInteraction);
+        };
+    }, [isYoutube, url, isPlaying]);
 
     const togglePlay = () => {
         if (isYoutube) {

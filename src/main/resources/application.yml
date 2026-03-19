@@ -42,8 +42,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure}
-  access-token-expiration: 86400000
-  refresh-token-expiration: 604800000
+  access-token-expiration: 86400000  # 1 day
+  refresh-token-expiration: 86400000 # 1 day
 
 file:
   upload-dir: ./uploads/wedding-images

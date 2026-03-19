@@ -71,8 +71,30 @@ async function request<T>(
     });
     clearTimeout(timeoutId);
 
-    if (res.status === 401) {
+    if (res.status === 401 && endpoint !== '/api/iam/auth/login' && endpoint !== '/api/iam/auth/refresh') {
       if (typeof window !== 'undefined') {
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (refreshToken) {
+          try {
+            // Attempt to refresh
+            const refreshRes = await fetch(`${baseUrl}/api/iam/auth/refresh`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refreshToken })
+            });
+            const refreshData = await refreshRes.json();
+            if (refreshRes.ok && refreshData.data.accessToken) {
+              localStorage.setItem('accessToken', refreshData.data.accessToken);
+              localStorage.setItem('refreshToken', refreshData.data.refreshToken);
+              // Retry the original request
+              return request(endpoint, options);
+            }
+          } catch (err) {
+            console.error("Token refresh failed", err);
+          }
+        }
+        
+        // If refresh failed or no token, logout
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');

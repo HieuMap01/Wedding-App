@@ -190,51 +190,70 @@ export default function GuestWeddingPage() {
 
             {/* Gallery Carousel */}
             {wedding.images && wedding.images.length > 0 && (
-                <motion.section
-                    className="py-20 px-6 max-w-6xl mx-auto overflow-hidden"
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <h2 className="text-3xl font-bold text-center mb-12" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
+                <section id="gallery" className="py-24 px-6 max-w-6xl mx-auto overflow-hidden">
+                    <motion.h2 
+                        className="text-4xl font-bold text-center mb-16" 
+                        style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
                         {t.galleryTitle}
-                    </h2>
+                    </motion.h2>
 
-                    {/* Main Featured Image */}
-                    <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 group flex items-center justify-center bg-gray-100">
+                    {/* Main Featured Image with Reveal Effect */}
+                    <motion.div 
+                        className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group flex items-center justify-center bg-gray-100"
+                        initial={{ opacity: 0, scale: 0.9, rotateY: 5 }}
+                        whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
+                    >
                         <img
                             src={getImageUrl(wedding.images[currentImageIndex].imageUrl)}
                             alt="Wedding main gallery"
-                            className="max-w-full max-h-[75vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105"
+                            className="max-w-full max-h-[80vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105"
                         />
                         {/* Controls */}
                         <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1)} className="bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
+                            <button onClick={() => setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1)} className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                             </button>
-                            <button onClick={() => setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length)} className="bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
+                            <button onClick={() => setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length)} className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    {/* Thumbnails row */}
+                    {/* Thumbnails row with Staggered reveal */}
                     {wedding.images.length > 1 && (
-                        <div className="flex gap-4 overflow-x-auto pb-4 px-4 snap-x justify-center scrollbar-hide">
+                        <motion.div 
+                            className="flex gap-4 overflow-x-auto pb-6 px-4 snap-x justify-center scrollbar-hide"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={{
+                                visible: { transition: { staggerChildren: 0.1 } }
+                            }}
+                        >
                             {wedding.images.map((img, idx) => (
-                                <button
+                                <motion.button
                                     key={img.id}
                                     onClick={() => setCurrentImageIndex(idx)}
+                                    variants={{
+                                        hidden: { opacity: 0, scale: 0.5, y: 20 },
+                                        visible: { opacity: 1, scale: 1, y: 0 }
+                                    }}
                                     className={`relative flex-shrink-0 w-24 md:w-32 aspect-square rounded-xl overflow-hidden transition-all duration-300 snap-center bg-gray-100 ${currentImageIndex === idx ? 'ring-4 ring-offset-2 scale-110 shadow-lg z-10' : 'opacity-40 hover:opacity-100 scale-90'}`}
                                     style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                                 >
                                     <img src={getImageUrl(img.imageUrl)} alt="thumb" className="w-full h-full object-contain" />
-                                </button>
+                                </motion.button>
                             ))}
-                        </div>
+                        </motion.div>
                     )}
-                </motion.section>
+                </section>
             )}
 
             {/* Love Story */}
@@ -277,7 +296,13 @@ export default function GuestWeddingPage() {
                         </h2>
 
                         {!wedding.groomHouseAddress && !wedding.brideHouseAddress ? (
-                            <div className="mb-12 max-w-4xl mx-auto">
+                            <motion.div 
+                                className="mb-12 max-w-4xl mx-auto"
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8 }}
+                            >
                                 {wedding.venueName && <p className="text-2xl font-semibold text-gray-800 mb-2">{wedding.venueName}</p>}
                                 {wedding.venueAddress && <p className="text-gray-600 mb-6">{wedding.venueAddress}</p>}
                                 {(wedding.venueAddress || wedding.venueName) && (
@@ -292,12 +317,27 @@ export default function GuestWeddingPage() {
                                         />
                                     </div>
                                 )}
-                            </div>
+                            </motion.div>
                         ) : (
-                            <div className="grid md:grid-cols-2 gap-10 text-left">
+                            <motion.div 
+                                className="grid md:grid-cols-2 gap-10 text-left"
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, margin: "-100px" }}
+                                variants={{
+                                    visible: { transition: { staggerChildren: 0.3 } }
+                                }}
+                            >
                                 {/* Groom House */}
                                 {wedding.groomHouseAddress && (
-                                    <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 relative overflow-hidden transform transition-transform hover:-translate-y-1 hover:shadow-xl">
+                                    <motion.div 
+                                        variants={{
+                                            hidden: { opacity: 0, x: -50 },
+                                            visible: { opacity: 1, x: 0 }
+                                        }}
+                                        transition={{ duration: 0.8, ease: "easeOut" }}
+                                        className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 relative overflow-hidden transform transition-transform hover:-translate-y-1 hover:shadow-xl"
+                                    >
                                         <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
                                         <div className="flex items-center gap-3 mb-4 mt-2">
                                             <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-2xl">🤵</div>
@@ -324,12 +364,19 @@ export default function GuestWeddingPage() {
                                                 allowFullScreen
                                             />
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 )}
 
                                 {/* Bride House */}
                                 {wedding.brideHouseAddress && (
-                                    <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 relative overflow-hidden transform transition-transform hover:-translate-y-1 hover:shadow-xl">
+                                    <motion.div 
+                                        variants={{
+                                            hidden: { opacity: 0, x: 50 },
+                                            visible: { opacity: 1, x: 0 }
+                                        }}
+                                        transition={{ duration: 0.8, ease: "easeOut" }}
+                                        className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 relative overflow-hidden transform transition-transform hover:-translate-y-1 hover:shadow-xl"
+                                    >
                                         <div className="absolute top-0 left-0 w-full h-2 bg-rose-400"></div>
                                         <div className="flex items-center gap-3 mb-4 mt-2">
                                             <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-2xl">👰</div>
@@ -356,9 +403,9 @@ export default function GuestWeddingPage() {
                                                 allowFullScreen
                                             />
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 )}
-                            </div>
+                            </motion.div>
                         )}
                     </div>
                 </motion.section>
@@ -453,10 +500,25 @@ export default function GuestWeddingPage() {
                         </h2>
                         <p className="text-gray-500 mb-16 text-base max-w-xl mx-auto">{t.giftDesc}</p>
 
-                        <div className="grid md:grid-cols-2 gap-10">
+                        <motion.div 
+                            className="grid md:grid-cols-2 gap-10"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true, margin: "-100px" }}
+                            variants={{
+                                visible: { transition: { staggerChildren: 0.3 } }
+                            }}
+                        >
                             {/* Groom Bank */}
                             {wedding.groomBankAccountNumber && (
-                                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center">
+                                <motion.div 
+                                    variants={{
+                                        hidden: { opacity: 0, scale: 0.9, y: 30 },
+                                        visible: { opacity: 1, scale: 1, y: 0 }
+                                    }}
+                                    transition={{ duration: 0.7 }}
+                                    className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center"
+                                >
                                     <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                                         {t.groomBankTitle}
                                     </h3>
@@ -491,7 +553,14 @@ export default function GuestWeddingPage() {
 
                             {/* Bride Bank */}
                             {wedding.brideBankAccountNumber && (
-                                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center">
+                                <motion.div 
+                                    variants={{
+                                        hidden: { opacity: 0, scale: 0.9, y: 30 },
+                                        visible: { opacity: 1, scale: 1, y: 0 }
+                                    }}
+                                    transition={{ duration: 0.7 }}
+                                    className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center"
+                                >
                                     <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                                         {t.brideBankTitle}
                                     </h3>
@@ -521,9 +590,9 @@ export default function GuestWeddingPage() {
                                             <span className="font-bold text-slate-700 uppercase">{wedding.brideBankAccountHolder}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
-                        </div>
+                        </motion.div>
                     </div>
                 </motion.section>
             )}
