@@ -30,49 +30,44 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
     }, [url]);
 
     useEffect(() => {
-        const handleFirstInteraction = () => {
+        const handleInteraction = () => {
             if (audioRef.current) {
                 audioRef.current.muted = false;
                 audioRef.current.play().catch(() => {});
             }
             setIsPlaying(true);
             
-            // For Youtube, we refresh the iframe with mute=0 on first interaction
+            // For Youtube, refresh with mute=0 if needed (though we'll start with 0 now)
             if (isYoutube && youtubeId) {
                 const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
-                if (iframe) {
-                    iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&loop=1&playlist=${youtubeId}&mute=0`;
+                if (iframe && iframe.src.includes('mute=1')) {
+                    iframe.src = iframe.src.replace('mute=1', 'mute=0');
                 }
             }
 
-            // Remove listeners after first interaction
-            window.removeEventListener('click', handleFirstInteraction);
-            window.removeEventListener('touchstart', handleFirstInteraction);
-            window.removeEventListener('scroll', handleFirstInteraction);
-            window.removeEventListener('mousemove', handleFirstInteraction);
-            window.removeEventListener('keydown', handleFirstInteraction);
+            // Clean up
+            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown'].forEach(event => {
+                window.removeEventListener(event, handleInteraction);
+            });
         };
 
-        window.addEventListener('click', handleFirstInteraction);
-        window.addEventListener('touchstart', handleFirstInteraction);
-        window.addEventListener('scroll', handleFirstInteraction);
-        window.addEventListener('mousemove', handleFirstInteraction, { once: true });
-        window.addEventListener('keydown', handleFirstInteraction, { once: true });
+        ['click', 'touchstart', 'scroll', 'mousedown', 'keydown'].forEach(event => {
+            window.addEventListener(event, handleInteraction, { once: true });
+        });
 
-        // Try Muted Autoplay on Load
+        // Try Autoplay (may fail)
         if (!isYoutube && url && audioRef.current) {
-            audioRef.current.muted = true;
-            audioRef.current.play().catch(() => {
-                console.log("Muted autoplay blocked");
+            audioRef.current.play().then(() => {
+                setIsPlaying(true);
+            }).catch(() => {
+                console.log("Autoplay blocked, waiting for interaction");
             });
         }
 
         return () => {
-            window.removeEventListener('click', handleFirstInteraction);
-            window.removeEventListener('touchstart', handleFirstInteraction);
-            window.removeEventListener('scroll', handleFirstInteraction);
-            window.removeEventListener('mousemove', handleFirstInteraction);
-            window.removeEventListener('keydown', handleFirstInteraction);
+            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown'].forEach(event => {
+                window.removeEventListener(event, handleInteraction);
+            });
         };
     }, [isYoutube, url, youtubeId]);
 
@@ -96,13 +91,13 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
         <div className="fixed bottom-6 left-6 z-[100]">
             {isYoutube ? (
                 <div className="hidden">
-                    {/* Hidden YouTube player with initial mute to bypass autoplay block */}
+                    {/* Hidden YouTube player with autoplay */}
                     <iframe
                         id="youtube-player"
                         width="0"
                         height="0"
-                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&loop=1&playlist=${youtubeId}&mute=1`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&loop=1&playlist=${youtubeId}&mute=0`}
+                        allow="accelerometer; autoplay; encrypted-media"
                     ></iframe>
                 </div>
             ) : (

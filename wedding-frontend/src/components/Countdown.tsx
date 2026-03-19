@@ -58,14 +58,13 @@ export default function Countdown({
                 { label: labels.seconds, value: timeLeft.seconds },
             ].map((item, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                    <div className="w-14 h-14 md:w-20 md:h-20 bg-white rounded-2xl flex items-center justify-center mb-2 shadow-[0_15px_35px_rgba(0,0,0,0.12)] border border-gray-100 backdrop-blur-md relative overflow-hidden">
-                        {/* Subtle background tint */}
-                        <div className="absolute inset-0 opacity-[0.03]" style={{ background: primaryColor }} />
-                        <span className="text-xl md:text-3xl font-display font-bold relative z-10" style={{ color: primaryColor }}>
+                    <div className="w-14 h-14 md:w-20 md:h-20 bg-gray-900/90 rounded-2xl flex items-center justify-center mb-2 shadow-2xl relative overflow-hidden border border-white/10 backdrop-blur-md">
+                        <span className="text-xl md:text-3xl font-display font-bold text-white relative z-10">
                             {item.value.toString().padStart(2, '0')}
                         </span>
+                        <div className="absolute inset-0 opacity-20 bg-gradient-to-tr from-white/20 to-transparent" />
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-widest font-black text-gray-700">
+                    <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-black" style={{ color: primaryColor }}>
                         {item.label}
                     </span>
                 </div>
