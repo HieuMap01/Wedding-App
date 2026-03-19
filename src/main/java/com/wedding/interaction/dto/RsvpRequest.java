@@ -6,13 +6,13 @@ import lombok.Data;
 
 @Data
 public class RsvpRequest {
-    @NotBlank(message = "Guest name is required")
+    @NotBlank(message = "Tên khách mời không được để trống")
     private String guestName;
 
     private String guestPhone;
 
     private String wishes;
 
-    @NotNull(message = "Attendance is required")
+    @NotNull(message = "Lựa chọn tham dự không được để trống")
     private String attendance; // "ATTENDING" or "NOT_ATTENDING"
 }

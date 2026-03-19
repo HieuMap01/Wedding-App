@@ -67,7 +67,7 @@ public class AuthService {
         }
 
         if (!user.getIsActive()) {
-            throw new AppException(ErrorCode.FORBIDDEN, "Account is deactivated");
+            throw new AppException(ErrorCode.FORBIDDEN, "Tài khoản của bạn đã bị vô hiệu hóa");
         }
 
         String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getEmail(), user.getRole().name());
@@ -84,7 +84,7 @@ public class AuthService {
 
     public AuthResponse refreshToken(String refreshToken) {
         if (!jwtUtil.isTokenValid(refreshToken)) {
-            throw new AppException(ErrorCode.INVALID_TOKEN, "Invalid or expired refresh token");
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn");
         }
 
         Long userId = jwtUtil.getUserId(refreshToken);

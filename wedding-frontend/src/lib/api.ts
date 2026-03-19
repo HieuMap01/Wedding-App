@@ -24,6 +24,12 @@ interface ApiResponse<T> {
   timestamp: string;
 }
 
+export const getImageUrl = (url: string) => {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `${API_BASE}${url}`;
+};
+
 async function request<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -54,7 +60,8 @@ async function request<T>(
 
   // Add timeout to prevent indefinite hanging (especially on mobile/proxy)
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  // Use a longer timeout for large file uploads (60 seconds)
+  const timeoutId = setTimeout(() => controller.abort(), 60000); 
 
   try {
     const res = await fetch(`${baseUrl}${endpoint}`, {
@@ -76,7 +83,7 @@ async function request<T>(
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || 'Something went wrong');
+      throw new Error(data.message || 'Đã xảy ra lỗi không xác định');
     }
 
     return data;

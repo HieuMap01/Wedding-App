@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 
 @Data
 public class CreateWeddingRequest {
-    @NotBlank(message = "Groom name is required")
+    @NotBlank(message = "Tên chú rể không được để trống")
     private String groomName;
 
-    @NotBlank(message = "Bride name is required")
+    @NotBlank(message = "Tên cô dâu không được để trống")
     private String brideName;
 
     private String loveStory;

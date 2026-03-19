@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR, "Internal server error: " + ex.getMessage()));
+                .body(ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR, "Lỗi hệ thống: " + ex.getMessage()));
     }
 
     private HttpStatus mapHttpStatus(ErrorCode errorCode) {

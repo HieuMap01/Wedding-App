@@ -189,10 +189,10 @@ public class WeddingService {
                 .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
 
         WeddingImage image = weddingImageRepository.findById(imageId)
-                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Image not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy hình ảnh"));
 
         if (!image.getWedding().getId().equals(wedding.getId())) {
-            throw new AppException(ErrorCode.FORBIDDEN, "Image does not belong to your wedding");
+            throw new AppException(ErrorCode.FORBIDDEN, "Hình ảnh này không thuộc thiệp cưới của bạn");
         }
 
         fileStorageService.deleteFile(image.getImageUrl());
@@ -207,7 +207,7 @@ public class WeddingService {
         for (ImageOrderRequest.ImageOrderItem item : request.getImageOrders()) {
             WeddingImage image = weddingImageRepository.findById(item.getImageId())
                     .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND,
-                            "Image not found: " + item.getImageId()));
+                            "Không tìm thấy hình ảnh với ID: " + item.getImageId()));
 
             if (!image.getWedding().getId().equals(wedding.getId())) {
                 throw new AppException(ErrorCode.FORBIDDEN, "Image does not belong to your wedding");
@@ -227,7 +227,7 @@ public class WeddingService {
 
         if (!wedding.getIsPublished()) {
             throw new AppException(ErrorCode.WEDDING_NOT_PUBLISHED,
-                    "You must publish your wedding before generating a QR code.");
+                    "Bạn phải xuất bản thiệp cưới trước khi tạo mã QR.");
         }
 
         // Use the configured frontend URL

@@ -3,7 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const adminNav = [
     { href: '/admin', label: 'Bảng điều khiển', icon: '📊' },
@@ -12,6 +12,7 @@ const adminNav = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, loading, logout, isAdmin } = useAuth();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
 
@@ -19,6 +20,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         if (!loading && !user) router.push('/login');
         if (!loading && user && !isAdmin) router.push('/couple');
     }, [loading, user, isAdmin, router]);
+
+    // Close mobile menu when Route changes
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
 
     if (loading || !user) {
         return (
@@ -29,10 +35,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     return (
-        <div className="min-h-screen flex bg-slate-50">
+        <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
+            {/* Mobile Header */}
+            <header className="md:hidden h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-50">
+                <Link href="/" className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-sky-500 text-white rounded-md flex justify-center items-center font-bold text-sm">A</div>
+                    <span className="font-display font-semibold text-white tracking-tight text-lg">Admin</span>
+                </Link>
+                <button 
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="p-2 text-slate-300 hover:text-white"
+                >
+                    {isMobileMenuOpen ? '✕' : '☰'}
+                </button>
+            </header>
+
+            {/* Overlay */}
+            {isMobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col text-slate-300">
-                <div className="h-16 flex items-center border-b border-slate-800 px-6">
+            <aside className={`w-64 bg-slate-900 border-r border-slate-800 flex flex-col text-slate-300 fixed md:sticky top-0 bottom-0 left-0 z-40 transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                <div className="h-16 hidden md:flex items-center border-b border-slate-800 px-6">
                     <Link href="/" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-sky-500 text-white rounded-md flex justify-center items-center font-bold text-sm">
                             A
@@ -43,7 +71,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </Link>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1 mt-16 md:mt-0">
                     {adminNav.map((item) => {
                         const active = pathname === item.href;
                         return (
@@ -78,8 +106,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </aside>
 
             {/* Main content */}
-            <main className="flex-1 overflow-auto">
-                <div className="p-8 max-w-6xl mx-auto">
+            <main className="flex-1 overflow-auto pt-16 md:pt-0">
+                <div className="p-4 md:p-8 max-w-6xl mx-auto">
                     {children}
                 </div>
             </main>

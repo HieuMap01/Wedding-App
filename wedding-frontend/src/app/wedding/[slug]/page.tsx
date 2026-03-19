@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
-import { weddingApi, interactionApi, WeddingResponse, API_BASE } from '@/lib/api';
+import { weddingApi, interactionApi, WeddingResponse, API_BASE, getImageUrl } from '@/lib/api';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
@@ -145,27 +145,27 @@ export default function GuestWeddingPage() {
                     <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: primaryColor }}>
                         {t.gettingMarried}
                     </p>
-                    <h1 className="text-5xl md:text-7xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
                         {wedding.groomName}
                     </h1>
-                    <div className="text-4xl my-3" style={{ color: primaryColor }}>&amp;</div>
-                    <h1 className="text-5xl md:text-7xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
+                    <div className="text-3xl my-2" style={{ color: primaryColor }}>&amp;</div>
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
                         {wedding.brideName}
                     </h1>
 
                     {weddingDate && (
                         <div className="flex flex-col items-center gap-2">
-                            <div className="flex items-center justify-center gap-6 text-sm" style={{ color: '#666' }}>
+                            <div className="flex items-center justify-center gap-4 sm:gap-8 text-sm" style={{ color: '#666' }}>
                                 <div className="text-center">
-                                    <p className="text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getDate()}</p>
-                                    <p className="text-xs uppercase tracking-wider">
+                                    <p className="text-2xl sm:text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getDate()}</p>
+                                    <p className="text-[10px] sm:text-xs uppercase tracking-wider">
                                         {t.month} {weddingDate.getMonth() + 1}
                                     </p>
                                 </div>
-                                <div className="w-px h-12" style={{ background: primaryColor, opacity: 0.3 }} />
+                                <div className="w-px h-10 sm:h-12" style={{ background: primaryColor, opacity: 0.3 }} />
                                 <div className="text-center">
-                                    <p className="text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getFullYear()}</p>
-                                    <p className="text-xs uppercase tracking-wider">
+                                    <p className="text-2xl sm:text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getFullYear()}</p>
+                                    <p className="text-[10px] sm:text-xs uppercase tracking-wider">
                                         {weddingDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 </div>
@@ -202,7 +202,7 @@ export default function GuestWeddingPage() {
                     {/* Main Featured Image */}
                     <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-8 group flex items-center justify-center bg-gray-100">
                         <img
-                            src={`${API_BASE}${wedding.images[currentImageIndex].imageUrl}`}
+                            src={getImageUrl(wedding.images[currentImageIndex].imageUrl)}
                             alt="Wedding main gallery"
                             className="max-w-full max-h-[75vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105"
                         />
@@ -227,7 +227,7 @@ export default function GuestWeddingPage() {
                                     className={`relative flex-shrink-0 w-24 md:w-32 aspect-square rounded-xl overflow-hidden transition-all duration-300 snap-center bg-gray-100 ${currentImageIndex === idx ? 'ring-4 ring-offset-2 scale-110 shadow-lg z-10' : 'opacity-40 hover:opacity-100 scale-90'}`}
                                     style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
                                 >
-                                    <img src={`${API_BASE}${img.imageUrl}`} alt="thumb" className="w-full h-full object-contain" />
+                                    <img src={getImageUrl(img.imageUrl)} alt="thumb" className="w-full h-full object-contain" />
                                 </button>
                             ))}
                         </div>
@@ -397,9 +397,9 @@ export default function GuestWeddingPage() {
                                 <label className="block text-sm font-medium text-gray-600 mb-1.5">{t.formWishes}</label>
                                 <textarea className="input-field min-h-[100px] resize-y" value={rsvpForm.wishes} onChange={(e) => setRsvpForm(f => ({ ...f, wishes: e.target.value }))} placeholder={t.formWishesPlaceholder} />
                             </div>
-                            <div>
+                             <div>
                                 <label className="block text-sm font-medium text-gray-600 mb-3">{t.formConfirm}</label>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4">
                                     <label className={`flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all text-center ${rsvpForm.attendance === 'ATTENDING' ? 'border-green-400 bg-green-50' : 'border-gray-200 hover:border-gray-300'
                                         }`}>
                                         <input type="radio" name="attendance" value="ATTENDING" checked={rsvpForm.attendance === 'ATTENDING'} onChange={(e) => setRsvpForm(f => ({ ...f, attendance: e.target.value }))} className="sr-only" />
