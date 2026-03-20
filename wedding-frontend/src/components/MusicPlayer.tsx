@@ -179,36 +179,34 @@ export default function MusicPlayer({ url, autoPlayTrigger }: MusicPlayerProps) 
                     </div>
                 </button>
                 
-                {/* Floating music notes when playing */}
-                <AnimatePresence>
-                    {isPlaying && [...Array(3)].map((_, i) => (
-                        <motion.span
-                            key={i}
-                            initial={{ opacity: 0, y: 0, x: 0, scale: 0.5 }}
-                            animate={{ 
-                                opacity: [0, 1, 0], 
-                                y: -60 - (i * 20), 
-                                x: (i % 2 === 0 ? 20 : -20) + (Math.random() * 10),
-                                scale: [0.5, 1, 0.8]
-                            }}
-                            transition={{ 
-                                duration: 2, 
-                                repeat: Infinity, 
-                                delay: i * 0.6,
-                                ease: "easeOut" 
-                            }}
-                            className="absolute top-0 right-0 text-xl pointer-events-none"
-                        >
-                            {['🎵', '🎶', '🎼'][i]}
-                        </motion.span>
-                    ))}
-                </AnimatePresence>
+                {/* Floating music notes - CSS animation (GPU accelerated) */}
+                {isPlaying && ['🎵', '🎶', '🎼'].map((note, i) => (
+                    <span
+                        key={i}
+                        className="absolute top-0 right-0 text-xl pointer-events-none music-note-float"
+                        style={{
+                            animationDelay: `${i * 0.6}s`,
+                            '--note-x': `${i % 2 === 0 ? 20 : -20}px`,
+                        } as React.CSSProperties}
+                    >
+                        {note}
+                    </span>
+                ))}
             </div>
             
             <style jsx>{`
                 @keyframes music-bar {
                     0% { height: 20%; }
                     100% { height: 100%; }
+                }
+                @keyframes noteFloat {
+                    0% { opacity: 0; transform: translateY(0) translateX(0) scale(0.5); }
+                    30% { opacity: 1; transform: translateY(-30px) translateX(var(--note-x)) scale(1); }
+                    100% { opacity: 0; transform: translateY(-80px) translateX(var(--note-x)) scale(0.8); }
+                }
+                .music-note-float {
+                    animation: noteFloat 2s ease-out infinite;
+                    will-change: transform, opacity;
                 }
             `}</style>
         </div>

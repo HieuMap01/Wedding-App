@@ -1,13 +1,52 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { WeddingResponse, getImageUrl, interactionApi } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
 import { getLunarDateString } from '@/lib/lunar';
+import Image from 'next/image';
 import Countdown from '@/components/Countdown';
 import MusicPlayer from '@/components/MusicPlayer';
 import WelcomeOverlay from '@/components/WelcomeOverlay';
+import HeartEffect from '@/components/HeartEffect';
+
+// Lazy Map component - only loads iframe when scrolled into view
+function LazyMap({ src, title, height = 'h-96' }: { src: string; title: string; height?: string }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '200px' }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div ref={ref} className={`${height} w-full rounded-2xl overflow-hidden bg-gray-100`}>
+            {isVisible ? (
+                <iframe title={title} width="100%" height="100%" style={{ border: 0 }} src={src} allowFullScreen loading="lazy" />
+            ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <svg className="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+            )}
+        </div>
+    );
+}
 
 interface TemplateProps {
     wedding: WeddingResponse;
@@ -172,7 +211,17 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                     <div className="relative group">
                         <motion.div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group flex items-center justify-center bg-gray-100 cursor-zoom-in" initial={{ opacity: 0, scale: 0.95, y: 30 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1, ease: "easeOut" }} onClick={() => setIsLightboxOpen(true)}>
                             <AnimatePresence mode="wait">
-                                <motion.img key={currentImageIndex} src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} alt="Wedding gallery" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.5 }} className="max-w-full max-h-[80vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105" />
+                                <motion.div key={currentImageIndex} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.5 }} className="relative w-full" style={{ maxHeight: '80vh' }}>
+                                    <Image 
+                                        src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
+                                        alt="Wedding gallery" 
+                                        width={1200}
+                                        height={800}
+                                        className="max-w-full max-h-[80vh] w-auto h-auto object-contain mx-auto transition-transform duration-1000 group-hover:scale-105" 
+                                        sizes="(max-width: 768px) 100vw, 896px"
+                                        priority={currentImageIndex === 0}
+                                    />
+                                </motion.div>
                             </AnimatePresence>
                             <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1); }} className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
@@ -189,7 +238,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                         <motion.div className="flex gap-4 overflow-x-auto pb-6 px-4 snap-x justify-center scrollbar-hide" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
                             {wedding.images.map((img, idx) => (
                                 <motion.button key={img.id} onClick={() => setCurrentImageIndex(idx)} variants={{ hidden: { opacity: 0, scale: 0.5, y: 20 }, visible: { opacity: 1, scale: 1, y: 0 } }} className={`relative flex-shrink-0 w-24 md:w-32 aspect-square rounded-xl overflow-hidden transition-all duration-300 snap-center bg-gray-100 ${currentImageIndex === idx ? 'ring-4 ring-offset-2 scale-110 shadow-lg z-10' : 'opacity-40 hover:opacity-100 scale-90'}`} style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}>
-                                    <img src={getImageUrl(img.imageUrl)} alt="thumb" className="w-full h-full object-contain" />
+                                    <Image src={getImageUrl(img.imageUrl)} alt="thumb" width={128} height={128} className="w-full h-full object-contain" sizes="128px" loading="lazy" />
                                 </motion.button>
                             ))}
                         </motion.div>
@@ -199,7 +248,9 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                         {isLightboxOpen && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4 md:p-10" onClick={() => setIsLightboxOpen(false)}>
                                 <button className="absolute top-6 right-6 text-white text-4xl hover:scale-110 transition-transform" onClick={() => setIsLightboxOpen(false)}>✕</button>
-                                <motion.img key={currentImageIndex} src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="max-w-full max-h-full object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
+                                <motion.div key={currentImageIndex} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
+                                    <Image src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} alt="Wedding gallery fullscreen" width={1600} height={1200} className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg" sizes="100vw" priority />
+                                </motion.div>
                                 <div className="absolute inset-x-0 bottom-10 flex justify-center gap-6">
                                     <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1); }} className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md">←</button>
                                     <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length); }} className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md">→</button>
@@ -236,9 +287,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                                 {wedding.venueName && <p className="text-2xl font-semibold text-gray-800 mb-2">{wedding.venueName}</p>}
                                 {wedding.venueAddress && <p className="text-gray-600 mb-6">{wedding.venueAddress}</p>}
                                 {(wedding.venueAddress || wedding.venueName) && (
-                                    <div className="rounded-2xl overflow-hidden shadow-xl h-96 border-4 border-white bg-white">
-                                        <iframe title="Venue Map" width="100%" height="100%" style={{ border: 0 }} src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent((wedding.venueAddress || '') + (wedding.venueName ? ', ' + wedding.venueName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} allowFullScreen />
-                                    </div>
+                                    <LazyMap title="Venue Map" src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent((wedding.venueAddress || '') + (wedding.venueName ? ', ' + wedding.venueName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} />
                                 )}
                             </motion.div>
                         ) : (
@@ -248,9 +297,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                                         <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
                                         <div className="flex items-center gap-3 mb-4 mt-2"><div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-2xl">🤵</div><div><h3 className="text-xl font-bold text-gray-800">{t.groomHouse}</h3>{wedding.groomHouseName && <p className="text-blue-600 font-medium text-sm">{wedding.groomHouseName}</p>}</div></div>
                                         <div className="flex gap-2 mb-6 items-start"><span className="text-gray-400 mt-1">📍</span><p className="text-gray-600 text-sm leading-relaxed">{wedding.groomHouseAddress}</p></div>
-                                        <div className="rounded-xl overflow-hidden shadow-inner h-64 w-full bg-gray-100">
-                                            <iframe title="Groom Map" width="100%" height="100%" style={{ border: 0 }} src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(wedding.groomHouseLat && wedding.groomHouseLng ? `${wedding.groomHouseLat},${wedding.groomHouseLng}` : (wedding.groomHouseAddress || '') + (wedding.groomHouseName ? ', ' + wedding.groomHouseName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} allowFullScreen />
-                                        </div>
+                                        <LazyMap title="Groom Map" height="h-64" src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(wedding.groomHouseLat && wedding.groomHouseLng ? `${wedding.groomHouseLat},${wedding.groomHouseLng}` : (wedding.groomHouseAddress || '') + (wedding.groomHouseName ? ', ' + wedding.groomHouseName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} />
                                     </motion.div>
                                 )}
                                 {wedding.brideHouseAddress && (
@@ -258,9 +305,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                                         <div className="absolute top-0 left-0 w-full h-2 bg-rose-400"></div>
                                         <div className="flex items-center gap-3 mb-4 mt-2"><div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-2xl">👰</div><div><h3 className="text-xl font-bold text-gray-800">{t.brideHouse}</h3>{wedding.brideHouseName && <p className="text-rose-600 font-medium text-sm">{wedding.brideHouseName}</p>}</div></div>
                                         <div className="flex gap-2 mb-6 items-start"><span className="text-gray-400 mt-1">📍</span><p className="text-gray-600 text-sm leading-relaxed">{wedding.brideHouseAddress}</p></div>
-                                        <div className="rounded-xl overflow-hidden shadow-inner h-64 w-full bg-gray-100">
-                                            <iframe title="Bride Map" width="100%" height="100%" style={{ border: 0 }} src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(wedding.brideHouseLat && wedding.brideHouseLng ? `${wedding.brideHouseLat},${wedding.brideHouseLng}` : (wedding.brideHouseAddress || '') + (wedding.brideHouseName ? ', ' + wedding.brideHouseName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} allowFullScreen />
-                                        </div>
+                                        <LazyMap title="Bride Map" height="h-64" src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(wedding.brideHouseLat && wedding.brideHouseLng ? `${wedding.brideHouseLat},${wedding.brideHouseLng}` : (wedding.brideHouseAddress || '') + (wedding.brideHouseName ? ', ' + wedding.brideHouseName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} />
                                     </motion.div>
                                 )}
                             </motion.div>
@@ -356,6 +401,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
             </motion.div>
 
             <MusicPlayer url={wedding.musicUrl || ''} autoPlayTrigger={startMusic} />
+            {!showWelcome && <HeartEffect />}
         </div>
     );
 }

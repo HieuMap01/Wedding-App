@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface WelcomeOverlayProps {
     groomName: string;
@@ -10,29 +10,15 @@ interface WelcomeOverlayProps {
     primaryColor: string;
 }
 
-interface Petal {
-    id: number;
-    x: number;
-    delay: number;
-    duration: number;
-    size: number;
-    rotation: number;
-}
-
 export default function WelcomeOverlay({ groomName, brideName, onOpen, primaryColor }: WelcomeOverlayProps) {
-    const [petals, setPetals] = useState<Petal[]>([]);
-
-    useEffect(() => {
-        const newPetals = Array.from({ length: 12 }).map((_, i) => ({
-            id: i,
-            x: Math.random() * 100,
-            delay: Math.random() * 5,
-            duration: 25 + Math.random() * 20,
-            size: 15 + Math.random() * 20,
-            rotation: Math.random() * 360,
-        }));
-        setPetals(newPetals);
-    }, []);
+    // Generate petals with deterministic values (no useState/useEffect needed)
+    const petals = Array.from({ length: 10 }).map((_, i) => ({
+        id: i,
+        x: (i * 9.1 + 3) % 100,  // Spread evenly
+        delay: (i * 0.7) % 5,
+        duration: 18 + (i * 3) % 15,
+        size: 14 + (i * 2.5) % 16,
+    }));
 
     return (
         <motion.div
@@ -41,31 +27,24 @@ export default function WelcomeOverlay({ groomName, brideName, onOpen, primaryCo
             transition={{ duration: 1.5, ease: [0.19, 1, 0.22, 1] }}
             className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#f7f3f0]"
         >
-            {/* Falling Petals Background */}
+            {/* Falling Petals - Pure CSS animations (GPU accelerated, no React re-renders) */}
             <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
                 {petals.map((petal) => (
-                    <motion.div
+                    <div
                         key={petal.id}
-                        initial={{ y: -50, x: `${petal.x}%`, opacity: 0, rotate: petal.rotation }}
-                        animate={{ 
-                            y: '110vh', 
-                            x: [`${petal.x}%`, `${petal.x + 5}%`, `${petal.x - 3}%`, `${petal.x}%`],
-                            opacity: [0, 0.5, 0.4, 0],
-                            rotate: petal.rotation + 360
+                        className="absolute petal-fall"
+                        style={{
+                            left: `${petal.x}%`,
+                            width: petal.size,
+                            height: petal.size,
+                            animationDuration: `${petal.duration}s`,
+                            animationDelay: `${petal.delay}s`,
                         }}
-                        transition={{ 
-                            duration: petal.duration, 
-                            repeat: Infinity, 
-                            delay: petal.delay,
-                            ease: "linear"
-                        }}
-                        className="absolute"
-                        style={{ width: petal.size, height: petal.size }}
                     >
                         <svg viewBox="0 0 24 24" fill="#fbcfe8" className="w-full h-full opacity-40 drop-shadow-sm">
                             <path d="M12,2C12,2 10,4.5 10,7C10,12 15,14 15,18C15,21 12,22 12,22C12,22 9,21 9,18C9,14 14,12 14,7C14,4.5 12,2 12,2Z" />
                         </svg>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
@@ -76,10 +55,15 @@ export default function WelcomeOverlay({ groomName, brideName, onOpen, primaryCo
                 transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                 className="relative w-full h-full sm:h-auto sm:w-[94vw] max-w-[1100px] aspect-none sm:aspect-[2/1] bg-white sm:shadow-[0_60px_100px_rgba(0,0,0,0.08)] overflow-hidden flex items-center justify-center p-6 sm:p-16"
             >
-                {/* User Floral Background Image */}
-                <div 
-                    className="absolute inset-0 bg-cover bg-center sm:bg-center" 
-                    style={{ backgroundImage: 'url("/images/welcome-bg.png")' }}
+                {/* User Floral Background Image - optimized with next/image */}
+                <Image 
+                    src="/images/welcome-bg.png"
+                    alt="Welcome background"
+                    fill
+                    className="object-cover sm:object-center"
+                    priority
+                    sizes="(max-width: 640px) 100vw, 94vw"
+                    quality={80}
                 />
                 
                 {/* Content Box */}
@@ -141,8 +125,34 @@ export default function WelcomeOverlay({ groomName, brideName, onOpen, primaryCo
                     </motion.div>
                 </div>
             </motion.div>
+
+            {/* CSS Animations for petals - runs on GPU, zero JS overhead */}
+            <style jsx>{`
+                @keyframes petalFall {
+                    0% {
+                        transform: translateY(-50px) rotate(0deg) translateX(0);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.5;
+                    }
+                    50% {
+                        opacity: 0.4;
+                        transform: translateY(50vh) rotate(180deg) translateX(20px);
+                    }
+                    90% {
+                        opacity: 0.1;
+                    }
+                    100% {
+                        transform: translateY(110vh) rotate(360deg) translateX(-15px);
+                        opacity: 0;
+                    }
+                }
+                .petal-fall {
+                    animation: petalFall linear infinite;
+                    will-change: transform, opacity;
+                }
+            `}</style>
         </motion.div>
     );
 }
-
-
