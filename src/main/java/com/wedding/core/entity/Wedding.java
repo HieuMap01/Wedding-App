@@ -107,6 +107,10 @@ public class Wedding {
     @Column(name = "music_url")
     private String musicUrl;
 
+    @Column(name = "template_code", length = 50)
+    @Builder.Default
+    private String templateCode = "template1";
+
     @Builder.Default
     @Column(name = "is_active")
     private Boolean isActive = true;

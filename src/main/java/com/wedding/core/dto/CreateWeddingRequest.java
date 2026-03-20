@@ -31,4 +31,5 @@ public class CreateWeddingRequest {
     private BigDecimal brideHouseLat;
     private BigDecimal brideHouseLng;
     private String slug; // optional, auto-generated if empty
+    private String templateCode;
 }

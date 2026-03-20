@@ -45,6 +45,7 @@ public class WeddingResponse {
     private Boolean isActive;
     private String publicUrl;
     private String musicUrl;
+    private String templateCode;
     private List<WeddingImageResponse> images;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

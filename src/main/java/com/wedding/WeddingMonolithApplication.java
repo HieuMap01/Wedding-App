@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @EnableScheduling
 @EnableFeignClients
+@org.springframework.scheduling.annotation.EnableAsync
 public class WeddingMonolithApplication {
     public static void main(String[] args) {
         SpringApplication.run(WeddingMonolithApplication.class, args);

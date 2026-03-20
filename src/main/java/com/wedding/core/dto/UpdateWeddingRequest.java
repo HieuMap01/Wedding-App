@@ -34,4 +34,5 @@ public class UpdateWeddingRequest {
     private String brideBankAccountNumber;
     private String brideBankAccountHolder;
     private String musicUrl;
+    private String templateCode;
 }

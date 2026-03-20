@@ -8,8 +8,14 @@ import com.wedding.interaction.entity.Rsvp;
 import com.wedding.interaction.repository.PageVisitRepository;
 import com.wedding.interaction.repository.RsvpRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wedding.core.service.WeddingService;
+import com.wedding.iam.service.AuthService;
+import com.wedding.core.dto.WeddingResponse;
+import com.wedding.iam.dto.UserResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,11 +31,12 @@ public class InteractionService {
     private final RsvpRepository rsvpRepository;
     private final PageVisitRepository pageVisitRepository;
     private final EmailService emailService;
-    private final com.wedding.interaction.client.IamClient iamClient;
-    private final com.wedding.interaction.client.CoreClient coreClient;
+    private final AuthService authService;
+    private final WeddingService weddingService;
 
     // ---- Public endpoints (Guest) ----
 
+    @Async
     @Transactional
     public void recordVisit(Long weddingId, String ipAddress, String userAgent, String referer) {
         PageVisit visit = PageVisit.builder()
@@ -62,23 +69,14 @@ public class InteractionService {
 
         rsvp = rsvpRepository.save(rsvp);
 
-        // Notify couple asynchronously
+        // Notify couple asynchronously (Best effort)
         try {
-            com.wedding.common.dto.ApiResponse<java.util.Map<String, Object>> coreResponse = coreClient
-                    .getWeddingById(weddingId);
-            if (coreResponse.isSuccess() && coreResponse.getData() != null) {
-                Integer coupleUserIdObj = (Integer) coreResponse.getData().get("coupleUserId");
-                if (coupleUserIdObj != null) {
-                    Long coupleUserId = coupleUserIdObj.longValue();
-                    com.wedding.common.dto.ApiResponse<java.util.Map<String, Object>> iamResponse = iamClient
-                            .getUserInfo(coupleUserId);
-                    if (iamResponse.isSuccess() && iamResponse.getData() != null) {
-                        String coupleEmail = (String) iamResponse.getData().get("email");
-                        if (coupleEmail != null) {
-                            emailService.sendRsvpNotification(coupleEmail, request.getGuestName(), attendance.name(),
-                                    request.getWishes());
-                        }
-                    }
+            WeddingResponse wedding = weddingService.getWeddingById(weddingId);
+            if (wedding != null && wedding.getCoupleUserId() != null) {
+                UserResponse couple = authService.getUserById(wedding.getCoupleUserId());
+                if (couple != null && couple.getEmail() != null) {
+                    emailService.sendRsvpNotification(couple.getEmail(), request.getGuestName(), attendance.name(),
+                            request.getWishes());
                 }
             }
         } catch (Exception e) {

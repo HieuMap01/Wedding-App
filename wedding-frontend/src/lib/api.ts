@@ -228,6 +228,7 @@ export interface WeddingResponse {
   brideBankAccountHolder?: string;
   publicUrl: string;
   musicUrl?: string;
+  templateCode: string;
   images: WeddingImageResponse[];
   createdAt: string;
   updatedAt: string;

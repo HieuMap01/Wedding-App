@@ -16,7 +16,7 @@ public class WeddingCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     private static final String CACHE_PREFIX = "wedding:slug:";
-    private static final long CACHE_TTL_MINUTES = 10;
+    private static final long CACHE_TTL_MINUTES = 1440; // Cache for 24 hours since it changes rarely
 
     /**
      * Get cached wedding by slug

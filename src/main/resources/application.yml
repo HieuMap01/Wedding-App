@@ -42,11 +42,11 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure}
-  access-token-expiration: 86400000  # 1 day
-  refresh-token-expiration: 86400000 # 1 day
+  access-token-expiration: 3600000  # 1 hour
+  refresh-token-expiration: 604800000 # 7 days
 
-file:
-  upload-dir: ./uploads/wedding-images
+# file:
+#   upload-dir: ./uploads/wedding-images
 
 cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME:}

@@ -64,6 +64,7 @@ public class WeddingService {
                 .brideHouseLng(request.getBrideHouseLng())
                 .isPublished(false)
                 .isActive(true)
+                .templateCode(request.getTemplateCode() != null ? request.getTemplateCode() : "template1")
                 .build();
 
         wedding = weddingRepository.save(wedding);
@@ -143,6 +144,8 @@ public class WeddingService {
             wedding.setBrideBankAccountHolder(request.getBrideBankAccountHolder());
         if (request.getMusicUrl() != null)
             wedding.setMusicUrl(request.getMusicUrl());
+        if (request.getTemplateCode() != null)
+            wedding.setTemplateCode(request.getTemplateCode());
 
         wedding = weddingRepository.save(wedding);
         // Invalidate cache
@@ -345,6 +348,7 @@ public class WeddingService {
                 .isActive(wedding.getIsActive())
                 .publicUrl(wedding.getIsPublished() ? "/wedding/" + wedding.getSlug() : null)
                 .musicUrl(wedding.getMusicUrl())
+                .templateCode(wedding.getTemplateCode())
                 .images(imageResponses)
                 .createdAt(wedding.getCreatedAt())
                 .updatedAt(wedding.getUpdatedAt())
