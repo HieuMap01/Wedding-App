@@ -108,11 +108,11 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                     <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: primaryColor }}>
                         {t.gettingMarried}
                     </p>
-                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
+                    <h1 className="text-5xl sm:text-7xl md:text-8xl mb-4 font-normal" style={{ fontFamily: 'var(--font-dancing), cursive', color: '#1a2a4a' }}>
                         {wedding.groomName}
                     </h1>
                     <div className="text-3xl my-2" style={{ color: primaryColor }}>&amp;</div>
-                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
+                    <h1 className="text-5xl sm:text-7xl md:text-8xl mb-8 font-normal" style={{ fontFamily: 'var(--font-dancing), cursive', color: '#1a2a4a' }}>
                         {wedding.brideName}
                     </h1>
 
