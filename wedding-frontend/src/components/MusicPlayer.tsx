@@ -82,8 +82,16 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
 
     const togglePlay = () => {
         if (isYoutube) {
+            const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
+            if (iframe && iframe.contentWindow) {
+                const command = isPlaying ? 'pauseVideo' : 'playVideo';
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: command,
+                    args: []
+                }), '*');
+            }
             setIsPlaying(!isPlaying);
-            // Iframe postMessage or just toggle state (iframe handles limited autoplay)
         } else if (audioRef.current) {
             if (isPlaying) {
                 audioRef.current.pause();
@@ -105,7 +113,7 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
                         id="youtube-player"
                         width="0"
                         height="0"
-                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&loop=1&playlist=${youtubeId}&mute=0`}
+                        src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=1&loop=1&playlist=${youtubeId}&mute=0`}
                         allow="accelerometer; autoplay; encrypted-media"
                     ></iframe>
                 </div>
