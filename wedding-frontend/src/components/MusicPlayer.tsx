@@ -44,8 +44,18 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
             
             if (isYoutube && youtubeId) {
                 const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
-                if (iframe && iframe.src.includes('mute=1')) {
-                    iframe.src = iframe.src.replace('mute=1', 'mute=0');
+                if (iframe && iframe.contentWindow) {
+                    // Send unmute and play commands
+                    iframe.contentWindow.postMessage(JSON.stringify({
+                        event: 'command',
+                        func: 'unMute',
+                        args: []
+                    }), '*');
+                    iframe.contentWindow.postMessage(JSON.stringify({
+                        event: 'command',
+                        func: 'playVideo',
+                        args: []
+                    }), '*');
                 }
                 setIsPlaying(true);
                 setShowLabel(false);
