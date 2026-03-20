@@ -77,85 +77,83 @@ export default function WelcomeOverlay({ groomName, brideName, onOpen, primaryCo
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full h-full sm:w-[90vw] sm:h-[80vh] max-w-[1000px] max-h-[700px] bg-white sm:rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.1)] overflow-hidden flex items-center justify-center p-4 sm:p-20"
+                className="relative w-full h-full sm:h-auto sm:w-[90vw] max-w-[1200px] aspect-none sm:aspect-[1.6/1] md:aspect-[1.8/1] lg:aspect-[2/1] bg-white sm:rounded-[30px] shadow-[0_50px_120px_rgba(0,0,0,0.15)] overflow-hidden flex items-center justify-center p-6 sm:p-12 lg:p-20"
             >
-                {/* User Floral Background Image - Set as a background of the container to ensure it covers perfectly */}
+                {/* User Floral Background Image - Using bg-cover with careful positioning */}
                 <div 
-                    className="absolute inset-0 bg-cover bg-center sm:scale-100 scale-110" 
+                    className="absolute inset-0 bg-cover bg-center sm:bg-top lg:bg-center" 
                     style={{ backgroundImage: 'url("/images/welcome-bg.png")' }}
                 />
                 
-                {/* Elegant Overlay for Better Text Contrast */}
+                {/* Layered Gradient to Soften Background if needed */}
                 <div className="absolute inset-0 bg-white/5 pointer-events-none" />
 
-                {/* Content Box - Absolute positioning to stay centered within the "safe area" of the background */}
-                <div className="relative z-20 flex flex-col items-center justify-center text-center space-y-6 sm:space-y-12 max-w-[80%]">
+                {/* Content Box */}
+                <div className="relative z-20 flex flex-col items-center justify-center text-center space-y-8 sm:space-y-10 lg:space-y-14 w-full max-w-[85%] lg:max-w-[70%]">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1, duration: 1.2 }}
-                        className="space-y-2 sm:space-y-4"
+                        className="flex flex-col items-center gap-3 sm:gap-4"
                     >
-                        <span className="text-[10px] sm:text-xs uppercase tracking-[0.8em] text-[#8a7a5f] font-semibold opacity-60">
+                        <span className="text-[10px] sm:text-xs lg:text-sm uppercase tracking-[0.8em] text-[#8a7a5f] font-semibold opacity-70">
                             Wedding Invitation
                         </span>
-                        
-                        <div className="h-px w-16 bg-[#c19a6b]/30 mx-auto" />
+                        <div className="h-px w-12 lg:w-20 bg-gradient-to-r from-transparent via-[#c19a6b]/50 to-transparent" />
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1.5, duration: 2 }}
-                        className="space-y-4 sm:space-y-8"
+                        className="space-y-6 sm:space-y-8 lg:space-y-10"
                     >
-                        <h1 className="text-4xl sm:text-6xl md:text-7xl text-[#2d2d2d] leading-[1.1] font-playfair tracking-tight" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                        <h1 className="text-5xl sm:text-7xl lg:text-8xl text-[#2d2d2d] leading-[1.2] font-script" style={{ fontFamily: 'var(--font-great-vibes), cursive' }}>
                             {groomName}
                         </h1>
-                        <div className="flex items-center justify-center gap-4 sm:gap-8">
-                            <div className="h-[1px] w-8 sm:w-16 bg-gradient-to-r from-transparent to-[#c19a6b]/40" />
-                            <span className="text-2xl sm:text-4xl text-[#c19a6b] font-serif italic font-light">&amp;</span>
-                            <div className="h-[1px] w-8 sm:w-16 bg-gradient-to-l from-transparent to-[#c19a6b]/40" />
+                        <div className="flex items-center justify-center gap-6 lg:gap-12">
+                            <div className="h-[1px] flex-1 max-w-[100px] bg-gradient-to-r from-transparent to-[#c19a6b]/40" />
+                            <span className="text-2xl sm:text-3xl lg:text-4xl text-[#c19a6b] font-serif italic font-light">&amp;</span>
+                            <div className="h-[1px] flex-1 max-w-[100px] bg-gradient-to-l from-transparent to-[#c19a6b]/40" />
                         </div>
-                        <h1 className="text-4xl sm:text-6xl md:text-7xl text-[#2d2d2d] leading-[1.1] font-playfair tracking-tight" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                        <h1 className="text-5xl sm:text-7xl lg:text-8xl text-[#2d2d2d] leading-[1.2] font-script" style={{ fontFamily: 'var(--font-great-vibes), cursive' }}>
                             {brideName}
                         </h1>
                     </motion.div>
 
-                    {/* CSS-Native Wax Seal Button - Perfectly transparent, gold, and elegant */}
+                    {/* CSS-Native Wax Seal Button */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 2.2, duration: 1 }}
-                        className="pt-8 sm:pt-16"
+                        className="pt-4 lg:pt-8"
                     >
                         <button
                             onClick={onOpen}
                             className="group relative flex flex-col items-center gap-6"
                         >
-                            {/* The Gold Seal */}
-                            <div className="relative w-20 h-20 sm:w-24 sm:h-24">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#d4af37] via-[#f9f295] to-[#b8860b] rounded-full shadow-[0_10px_20px_rgba(184,134,11,0.3),inset_0_2px_4px_rgba(255,255,255,0.4)] transition-transform duration-500 group-hover:scale-110 group-active:scale-95" />
-                                <div className="absolute inset-[3px] rounded-full border border-[#b8860b]/30 pointer-events-none" />
+                            <div className="relative w-20 h-20 sm:w-24 lg:w-28 lg:h-28">
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#d4af37] via-[#f9f295] to-[#b8860b] rounded-full shadow-[0_15px_30px_rgba(184,134,11,0.4),inset_0_2px_5px_rgba(255,255,255,0.5)] transition-transform duration-500 group-hover:scale-110 group-active:scale-95" />
+                                <div className="absolute inset-[4px] rounded-full border border-[#b8860b]/30 pointer-events-none" />
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <svg viewBox="0 0 24 24" className="w-8 h-8 sm:w-10 sm:h-10 text-[#5c4033] opacity-60 group-hover:scale-110 transition-transform duration-500" fill="currentColor">
+                                    <svg viewBox="0 0 24 24" className="w-8 h-8 lg:w-12 lg:h-12 text-[#5c4033] opacity-60 group-hover:scale-110 transition-transform duration-500" fill="currentColor">
                                         <path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,18H4V8l8,5l8-5V18z M12,11L4,6h16L12,11z" />
                                     </svg>
                                 </div>
-                                {/* Pulsing Effect */}
-                                <div className="absolute inset-0 bg-[#d4af37] rounded-full animate-ping opacity-20 pointer-events-none group-hover:opacity-40" />
+                                <div className="absolute inset-0 bg-[#d4af37] rounded-full animate-ping opacity-10 pointer-events-none group-hover:opacity-30" />
                             </div>
 
-                            <span className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-[#8a7a5f] font-bold opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-                                Mở Thiệp Cưới
-                            </span>
+                            <div className="overflow-hidden h-6 w-max">
+                                <span className="text-[10px] sm:text-xs lg:text-sm uppercase tracking-[0.5em] text-[#8a7a5f] font-bold block transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                                    Mở Thiệp Cưới
+                                </span>
+                            </div>
                         </button>
                     </motion.div>
                 </div>
 
-                {/* Corner Accents */}
-                <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-[#c19a6b]/10 m-8 sm:m-12 rounded-tl-3xl pointer-events-none" />
-                <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-[#c19a6b]/10 m-8 sm:m-12 rounded-br-3xl pointer-events-none" />
+                {/* Decorative Frame Lines */}
+                <div className="absolute inset-6 lg:inset-10 border border-[#c19a6b]/10 rounded-[20px] pointer-events-none" />
             </motion.div>
 
             {/* Background Music Hint */}
