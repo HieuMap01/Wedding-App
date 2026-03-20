@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -172,5 +174,31 @@ public class AuthService {
                 .isActive(user.getIsActive())
                 .createdAt(user.getCreatedAt())
                 .build();
+    }
+
+    public void processForgotPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "Không tìm thấy người dùng với email này"));
+
+        String token = UUID.randomUUID().toString();
+        user.setResetPasswordToken(token);
+        user.setResetPasswordExpiresAt(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        emailService.sendResetPasswordEmail(user.getEmail(), token);
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        User user = userRepository.findByResetPasswordToken(token)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_TOKEN, "Mã khôi phục không hợp lệ"));
+
+        if (user.getResetPasswordExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.TOKEN_EXPIRED, "Mã khôi phục đã hết hạn");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setResetPasswordToken(null);
+        user.setResetPasswordExpiresAt(null);
+        userRepository.save(user);
     }
 }

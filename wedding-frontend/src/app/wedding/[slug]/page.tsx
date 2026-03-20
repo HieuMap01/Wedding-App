@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { weddingApi, interactionApi, WeddingResponse, API_BASE, getImageUrl } from '@/lib/api';
 import { useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
 import { getLunarDateString } from '@/lib/lunar';
 import Countdown from '@/components/Countdown';
@@ -27,6 +27,7 @@ export default function GuestWeddingPage() {
     const [rsvpSent, setRsvpSent] = useState(false);
     const [rsvpSending, setRsvpSending] = useState(false);
     const [rsvpMessage, setRsvpMessage] = useState('');
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [locale, setLocale] = useState<Locale>('vi');
@@ -212,28 +213,44 @@ export default function GuestWeddingPage() {
                     </motion.h2>
 
                     {/* Main Featured Image with Reveal Effect */}
-                    <motion.div 
-                        className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group flex items-center justify-center bg-gray-100"
-                        initial={{ opacity: 0, scale: 0.95, y: 30 }}
-                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                    >
-                        <img
-                            src={getImageUrl(wedding.images[currentImageIndex].imageUrl)}
-                            alt="Wedding main gallery"
-                            className="max-w-full max-h-[80vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105"
-                        />
-                        {/* Controls */}
-                        <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1)} className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                            </button>
-                            <button onClick={() => setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length)} className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                            </button>
-                        </div>
-                    </motion.div>
+                    <div className="relative group">
+                        <motion.div 
+                            className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group flex items-center justify-center bg-gray-100 cursor-zoom-in"
+                            initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            onClick={() => setIsLightboxOpen(true)}
+                        >
+                            <AnimatePresence mode="wait">
+                                <motion.img
+                                    key={currentImageIndex}
+                                    src={getImageUrl(wedding.images[currentImageIndex].imageUrl)}
+                                    alt="Wedding main gallery"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="max-w-full max-h-[80vh] w-auto h-auto object-contain transition-transform duration-1000 group-hover:scale-105"
+                                />
+                            </AnimatePresence>
+                            {/* Controls */}
+                            <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1); }} 
+                                    className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length); }} 
+                                    className="bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg backdrop-blur-sm transition-all transform hover:scale-110"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
 
                     {/* Thumbnails row with Staggered reveal */}
                     {wedding.images.length > 1 && (
@@ -262,6 +279,50 @@ export default function GuestWeddingPage() {
                             ))}
                         </motion.div>
                     )}
+
+                    {/* Lightbox Overlay */}
+                    <AnimatePresence>
+                        {isLightboxOpen && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4 md:p-10"
+                                onClick={() => setIsLightboxOpen(false)}
+                            >
+                                <button 
+                                    className="absolute top-6 right-6 text-white text-4xl hover:scale-110 transition-transform"
+                                    onClick={() => setIsLightboxOpen(false)}
+                                >
+                                    ✕
+                                </button>
+                                <motion.img
+                                    key={currentImageIndex}
+                                    src={getImageUrl(wedding.images[currentImageIndex].imageUrl)}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                    className="max-w-full max-h-full object-contain rounded-lg"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                                {/* Lightbox Navigation */}
+                                <div className="absolute inset-x-0 bottom-10 flex justify-center gap-6">
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1); }}
+                                        className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md"
+                                    >
+                                        ←
+                                    </button>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length); }}
+                                        className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md"
+                                    >
+                                        →
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </section>
             )}
 

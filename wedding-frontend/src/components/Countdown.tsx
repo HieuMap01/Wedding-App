@@ -50,7 +50,7 @@ export default function Countdown({
     if (!timeLeft) return null;
 
     return (
-        <div className="flex justify-center gap-3 md:gap-6 mt-8">
+        <div className="flex justify-center gap-3 md:gap-4 mt-12">
             {[
                 { label: labels.days, value: timeLeft.days },
                 { label: labels.hours, value: timeLeft.hours },
@@ -58,13 +58,12 @@ export default function Countdown({
                 { label: labels.seconds, value: timeLeft.seconds },
             ].map((item, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                    <div className="w-14 h-14 md:w-20 md:h-20 bg-gray-900/90 rounded-2xl flex items-center justify-center mb-2 shadow-2xl relative overflow-hidden border border-white/10 backdrop-blur-md">
-                        <span className="text-xl md:text-3xl font-display font-bold text-white relative z-10">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl flex items-center justify-center mb-3 shadow-sm border border-slate-100">
+                        <span className="text-2xl md:text-3xl font-bold" style={{ color: primaryColor, fontFamily: 'serif' }}>
                             {item.value.toString().padStart(2, '0')}
                         </span>
-                        <div className="absolute inset-0 opacity-20 bg-gradient-to-tr from-white/20 to-transparent" />
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-black" style={{ color: primaryColor }}>
+                    <span className="text-[10px] md:text-xs uppercase tracking-widest font-bold text-slate-500">
                         {item.label}
                     </span>
                 </div>

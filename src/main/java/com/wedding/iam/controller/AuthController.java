@@ -48,4 +48,16 @@ public class AuthController {
         }
         return ResponseEntity.ok(ApiResponse.ok("Logged out successfully", null));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.processForgotPassword(request.getEmail());
+        return ResponseEntity.ok(ApiResponse.ok("Nếu email tồn tại, một liên kết khôi phục sẽ được gửi", null));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok(ApiResponse.ok("Đặt lại mật khẩu thành công", null));
+    }
 }

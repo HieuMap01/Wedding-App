@@ -31,41 +31,50 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
 
     useEffect(() => {
         const handleInteraction = () => {
+            console.log("User interaction detected, attempting to unlock audio...");
             if (audioRef.current) {
                 audioRef.current.muted = false;
-                audioRef.current.play().catch(() => {});
+                audioRef.current.play().then(() => {
+                    setIsPlaying(true);
+                    setShowLabel(false);
+                }).catch(err => {
+                    console.error("Play failed after interaction:", err);
+                });
             }
-            setIsPlaying(true);
             
-            // For Youtube, refresh with mute=0 if needed (though we'll start with 0 now)
             if (isYoutube && youtubeId) {
                 const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
                 if (iframe && iframe.src.includes('mute=1')) {
                     iframe.src = iframe.src.replace('mute=1', 'mute=0');
                 }
+                setIsPlaying(true);
+                setShowLabel(false);
             }
 
             // Clean up
-            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown'].forEach(event => {
+            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown', 'wheel'].forEach(event => {
                 window.removeEventListener(event, handleInteraction);
             });
         };
 
-        ['click', 'touchstart', 'scroll', 'mousedown', 'keydown'].forEach(event => {
+        ['click', 'touchstart', 'scroll', 'mousedown', 'keydown', 'wheel'].forEach(event => {
             window.addEventListener(event, handleInteraction, { once: true });
         });
 
         // Try Autoplay (may fail)
         if (!isYoutube && url && audioRef.current) {
             audioRef.current.play().then(() => {
+                console.log("Autoplay successful");
                 setIsPlaying(true);
+                setShowLabel(false);
             }).catch(() => {
                 console.log("Autoplay blocked, waiting for interaction");
+                setIsPlaying(false);
             });
         }
 
         return () => {
-            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown'].forEach(event => {
+            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown', 'wheel'].forEach(event => {
                 window.removeEventListener(event, handleInteraction);
             });
         };

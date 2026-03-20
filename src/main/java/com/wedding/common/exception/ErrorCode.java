@@ -17,6 +17,7 @@ public enum ErrorCode {
     USER_ALREADY_EXISTS("IAM_002", "Email này đã được sử dụng"),
     INVALID_CREDENTIALS("IAM_003", "Email hoặc mật khẩu không chính xác"),
     INVALID_TOKEN("IAM_004", "Phiên đăng nhập không hợp lệ hoặc đã hết hạn"),
+    TOKEN_EXPIRED("IAM_005", "Mã xác thực đã hết hạn"),
 
     // Wedding Core Errors (Prefix: WED_)
     WEDDING_NOT_FOUND("WED_001", "Không tìm thấy thông tin đám cưới"),

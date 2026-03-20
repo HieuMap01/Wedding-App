@@ -62,9 +62,9 @@ export default function LoginPage() {
                                 required
                             />
                         </div>
-                        <div className="space-y-2">
                             <div className="flex justify-between items-center">
                                 <label className="block text-sm font-medium text-slate-700">Mật khẩu</label>
+                                <Link href="/forgot-password" virtual-link="true" className="text-xs font-semibold text-primary hover:text-primary-hover">Quên mật khẩu?</Link>
                             </div>
                             <input
                                 type="password"
@@ -74,7 +74,6 @@ export default function LoginPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
-                        </div>
 
                         <button type="submit" className="btn-primary w-full mt-2" disabled={loading}>
                             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}

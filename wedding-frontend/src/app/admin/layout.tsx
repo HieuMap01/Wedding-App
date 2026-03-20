@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 const adminNav = [
     { href: '/admin', label: 'Bảng điều khiển', icon: '📊' },
     { href: '/admin/couples', label: 'Danh sách cặp đôi', icon: '👫' },
+    { href: '/admin/interactions', label: 'Lời chúc & RSVP', icon: '💌' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

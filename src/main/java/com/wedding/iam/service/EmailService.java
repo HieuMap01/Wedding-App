@@ -37,4 +37,27 @@ public class EmailService {
             log.error("Failed to send welcome email to {}: {}", to, e.getMessage());
         }
     }
+
+    @Async
+    public void sendResetPasswordEmail(String to, String token) {
+        try {
+            String resetUrl = "http://localhost:3000/reset-password?token=" + token; // Should be dynamic in prod
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject("Lấy lại mật khẩu - Wedding SaaS");
+            message.setText("Xin chào,\n\n" +
+                    "Bạn đã yêu cầu lấy lại mật khẩu cho tài khoản Wedding SaaS.\n" +
+                    "Vui lòng nhấn vào đường dẫn dưới đây để đặt lại mật khẩu của bạn:\n\n" +
+                    resetUrl + "\n\n" +
+                    "Đường dẫn này sẽ hết hạn sau 1 giờ.\n" +
+                    "Nếu bạn không yêu cầu điều này, vui lòng bỏ qua email này.\n\n" +
+                    "Trân trọng,\nĐội ngũ Wedding SaaS");
+
+            emailSender.send(message);
+            log.info("Reset password email sent to: {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send reset password email to {}: {}", to, e.getMessage());
+        }
+    }
 }
