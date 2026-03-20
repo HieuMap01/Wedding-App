@@ -62,7 +62,7 @@ export default function CoupleLayout({ children }: { children: React.ReactNode }
             )}
 
             {/* Sidebar */}
-            <aside className={`w-64 bg-white border-r border-slate-200 flex flex-col fixed md:sticky top-0 bottom-0 left-0 z-40 transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+            <aside className={`w-64 bg-white border-r border-slate-200 flex flex-col fixed top-0 bottom-0 left-0 z-40 transition-transform duration-300 h-screen ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                 <div className="h-16 hidden md:flex items-center border-b border-slate-100 px-6">
                     <Link href="/" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-primary text-white rounded-md flex justify-center items-center font-bold text-sm">
@@ -109,7 +109,7 @@ export default function CoupleLayout({ children }: { children: React.ReactNode }
             </aside>
 
             {/* Main content */}
-            <main className="flex-1 overflow-auto pt-16 md:pt-0">
+            <main className="flex-1 md:ml-64 overflow-auto pt-16 md:pt-0">
                 <div className="p-4 md:p-8 max-w-6xl mx-auto">
                     {children}
                 </div>

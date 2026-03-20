@@ -21,6 +21,7 @@ export default function EditWeddingPage() {
     const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
     const [timelineSaving, setTimelineSaving] = useState<number | 'new' | null>(null);
     const [timelineError, setTimelineError] = useState<string>('');
+    const [timelinePreviews, setTimelinePreviews] = useState<Record<number | 'new', string>>({} as Record<number | 'new', string>);
 
     useEffect(() => {
         const fetchBanks = async () => {
@@ -638,9 +639,16 @@ export default function EditWeddingPage() {
                                             
                                             <div className="grid md:grid-cols-[150px_1fr] gap-6" id={`event-form-${event.id}`}>
                                                 <div className="space-y-3">
-                                                    <div className="aspect-square rounded-xl overflow-hidden bg-rose-50 border border-rose-100 flex items-center justify-center relative">
-                                                        {event.imageUrl ? (
-                                                            <img src={getImageUrl(event.imageUrl)} alt={event.title} className="w-full h-full object-cover" />
+                                                    <div 
+                                                        className="aspect-square rounded-xl overflow-hidden bg-rose-50 border border-rose-100 flex items-center justify-center relative cursor-pointer group/img"
+                                                        onClick={() => (document.querySelector(`#event-form-${event.id} input[name="file"]`) as HTMLInputElement)?.click()}
+                                                    >
+                                                        {timelinePreviews[event.id] || event.imageUrl ? (
+                                                            <img 
+                                                                src={timelinePreviews[event.id] || getImageUrl(event.imageUrl)} 
+                                                                alt={event.title} 
+                                                                className="w-full h-full object-cover transition-transform group-hover/img:scale-105" 
+                                                            />
                                                         ) : (
                                                             <span className="text-2xl text-rose-200">📸</span>
                                                         )}
@@ -648,7 +656,13 @@ export default function EditWeddingPage() {
                                                             name="file" 
                                                             type="file" 
                                                             accept="image/*" 
-                                                            className="absolute inset-0 opacity-0 cursor-pointer" 
+                                                            className="hidden"
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) {
+                                                                    setTimelinePreviews(prev => ({ ...prev, [event.id]: URL.createObjectURL(file) }));
+                                                                }
+                                                            }}
                                                         />
                                                     </div>
                                                     <p className="text-[10px] text-slate-400 text-center italic">Bấm vào ảnh để đổi</p>
@@ -723,17 +737,38 @@ export default function EditWeddingPage() {
                                 <h4 className="font-bold text-rose-800 flex items-center gap-2 mb-6">✨ Thêm kỷ niệm mới</h4>
                                 <div className="grid md:grid-cols-[200px_1fr] gap-8">
                                     <div className="space-y-4">
-                                        <div className="aspect-square rounded-2xl border-2 border-dashed border-rose-200 bg-white flex flex-col items-center justify-center p-4 text-center group hover:border-rose-400 transition-all relative overflow-hidden">
-                                            <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">➕</span>
-                                            <p className="text-[10px] font-bold text-rose-400 uppercase">Ảnh kỷ niệm</p>
-                                            <input name="file" type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" id="new-event-file" />
+                                        <div 
+                                            className="aspect-square rounded-2xl border-2 border-dashed border-rose-200 bg-white flex flex-col items-center justify-center p-4 text-center group hover:border-rose-400 transition-all relative overflow-hidden cursor-pointer"
+                                            onClick={() => document.getElementById('new-event-file')?.click()}
+                                        >
+                                            {timelinePreviews['new'] ? (
+                                                <img src={timelinePreviews['new']} alt="Preview" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <>
+                                                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">➕</span>
+                                                    <p className="text-[10px] font-bold text-rose-400 uppercase">Ảnh kỷ niệm</p>
+                                                </>
+                                            )}
+                                            <input 
+                                                name="file" 
+                                                type="file" 
+                                                accept="image/*" 
+                                                className="hidden" 
+                                                id="new-event-file"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        setTimelinePreviews(prev => ({ ...prev, new: URL.createObjectURL(file) }));
+                                                    }
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                     <div className="space-y-4">
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Tiêu đề mốc *</label>
-                                                <input name="title" className="input-field text-sm" placeholder="Ví dụ: Lần đầu đi chơi..." id="new-event-title" required />
+                                                <input name="title" className="input-field text-sm" placeholder="Ví dụ: Lần đầu đi chơi..." id="new-event-title" />
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Mốc thời gian</label>
@@ -767,6 +802,11 @@ export default function EditWeddingPage() {
                                                             (document.getElementById('new-event-date') as HTMLInputElement).value = '';
                                                             (document.getElementById('new-event-desc') as HTMLTextAreaElement).value = '';
                                                             (document.getElementById('new-event-file') as HTMLInputElement).value = '';
+                                                            setTimelinePreviews(prev => {
+                                                                const next = { ...prev };
+                                                                delete (next as any).new;
+                                                                return next;
+                                                            });
                                                         })
                                                         .catch(err => {
                                                             setTimelineError(err.message);

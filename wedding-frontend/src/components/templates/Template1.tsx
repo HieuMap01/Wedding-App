@@ -129,77 +129,135 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                 className={showWelcome ? 'h-screen overflow-hidden' : ''}
             >
                 {/* Hero */}
-                <section className="min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
-                    {/* ... (rest of the hero section) */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-10" style={{ background: primaryColor }} />
-                    <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full opacity-10" style={{ background: secondaryColor }} />
-                    <div className="absolute top-1/4 left-1/4 w-4 h-4 rounded-full opacity-30" style={{ background: primaryColor }} />
-                    <div className="absolute top-1/3 right-1/3 w-3 h-3 rounded-full opacity-20" style={{ background: secondaryColor }} />
-                </div>
+                <section className="py-20 md:py-32 flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-10" style={{ background: primaryColor }} />
+                        <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full opacity-10" style={{ background: secondaryColor }} />
+                        <div className="absolute top-1/4 left-1/4 w-4 h-4 rounded-full opacity-30" style={{ background: primaryColor }} />
+                        <div className="absolute top-1/3 right-1/3 w-3 h-3 rounded-full opacity-20" style={{ background: secondaryColor }} />
+                    </div>
 
-                <motion.div
-                    className="relative z-10"
-                    initial={{ opacity: 0, y: 40, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
-                >
-                    <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: primaryColor }}>
-                        {t.gettingMarried}
-                    </p>
-                    <h1 className="text-5xl sm:text-7xl md:text-8xl mb-4 font-normal" style={{ fontFamily: 'var(--font-dancing), cursive', color: '#1a2a4a' }}>
-                        {wedding.groomName}
-                    </h1>
-                    <div className="text-3xl my-2" style={{ color: primaryColor }}>&amp;</div>
-                    <h1 className="text-5xl sm:text-7xl md:text-8xl mb-8 font-normal" style={{ fontFamily: 'var(--font-dancing), cursive', color: '#1a2a4a' }}>
-                        {wedding.brideName}
-                    </h1>
+                    <motion.div
+                        className="relative z-10"
+                        initial={{ opacity: 0, y: 40, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
+                    >
+                        <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: primaryColor }}>
+                            {t.gettingMarried}
+                        </p>
+                        <h1 className="text-5xl sm:text-7xl md:text-8xl mb-4 font-normal" style={{ fontFamily: 'var(--font-dancing), cursive', color: '#1a2a4a' }}>
+                            {wedding.groomName}
+                        </h1>
+                        <div className="text-3xl my-2" style={{ color: primaryColor }}>&amp;</div>
+                        <h1 className="text-5xl sm:text-7xl md:text-8xl mb-8 font-normal" style={{ fontFamily: 'var(--font-dancing), cursive', color: '#1a2a4a' }}>
+                            {wedding.brideName}
+                        </h1>
 
-                    {weddingDate && (
-                        <div className="flex flex-col items-center gap-2">
-                            <div className="flex items-center justify-center gap-4 sm:gap-8 text-sm" style={{ color: '#666' }}>
-                                <div className="text-center">
-                                    <p className="text-2xl sm:text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getDate()}</p>
-                                    <p className="text-[10px] sm:text-xs uppercase tracking-wider">
-                                        {t.month} {weddingDate.getMonth() + 1}
-                                    </p>
+                        {weddingDate && (
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="flex items-center justify-center gap-4 sm:gap-8 text-sm" style={{ color: '#666' }}>
+                                    <div className="text-center">
+                                        <p className="text-2xl sm:text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getDate()}</p>
+                                        <p className="text-[10px] sm:text-xs uppercase tracking-wider">
+                                            {t.month} {weddingDate.getMonth() + 1}
+                                        </p>
+                                    </div>
+                                    <div className="w-px h-10 sm:h-12" style={{ background: primaryColor, opacity: 0.3 }} />
+                                    <div className="text-center">
+                                        <p className="text-2xl sm:text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getFullYear()}</p>
+                                        <p className="text-[10px] sm:text-xs uppercase tracking-wider">
+                                            {weddingDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="w-px h-10 sm:h-12" style={{ background: primaryColor, opacity: 0.3 }} />
-                                <div className="text-center">
-                                    <p className="text-2xl sm:text-3xl font-bold" style={{ color: primaryColor }}>{weddingDate.getFullYear()}</p>
-                                    <p className="text-[10px] sm:text-xs uppercase tracking-wider">
-                                        {weddingDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                                    </p>
+                                <p className="text-sm italic font-medium opacity-80" style={{ color: primaryColor }}>
+                                    {lunarDateStr}
+                                </p>
+                                
+                                <div className="mt-8 scale-90 sm:scale-100">
+                                    <Countdown 
+                                        targetDate={wedding.weddingDate} 
+                                        primaryColor={primaryColor} 
+                                        labels={{
+                                            days: t.days,
+                                            hours: t.hours,
+                                            minutes: t.minutes,
+                                            seconds: t.seconds
+                                        }}
+                                    />
                                 </div>
                             </div>
-                            <p className="text-sm italic font-medium opacity-80" style={{ color: primaryColor }}>
-                                {lunarDateStr}
-                            </p>
-                            
-                            <div className="mt-8 scale-90 sm:scale-100">
-                                <Countdown 
-                                    targetDate={wedding.weddingDate} 
-                                    primaryColor={primaryColor} 
-                                    labels={{
-                                        days: t.days,
-                                        hours: t.hours,
-                                        minutes: t.minutes,
-                                        seconds: t.seconds
-                                    }}
-                                />
+                        )}
+
+                        <div className="mt-6">
+                            {/* Removed bounce arrow to bring Timeline closer */}
+                        </div>
+                    </motion.div>
+                </section>
+
+                {/* Love Story Timeline */}
+                {wedding.loveStoryEvents && wedding.loveStoryEvents.length > 0 && (
+                    <section id="timeline" className="pb-24 pt-10 px-6 bg-white overflow-hidden">
+                        <div className="max-w-5xl mx-auto">
+                            <motion.h2 className="text-4xl font-bold text-center mb-20" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+                                💕 Our Love Journey
+                            </motion.h2>
+
+                            <div className="relative">
+                                {/* Central Line */}
+                                <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 hidden md:block" style={{ background: `${primaryColor}22` }} />
+                                
+                                <div className="space-y-12 md:space-y-0">
+                                    {wedding.loveStoryEvents.map((event, idx) => (
+                                        <div key={event.id} className="relative md:min-h-[300px] flex items-center">
+                                            {/* Dot on Line */}
+                                            <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 hidden md:block" style={{ background: primaryColor, boxShadow: `0 0 0 8px ${primaryColor}22` }} />
+                                            
+                                            <div className={`w-full grid md:grid-cols-2 gap-8 md:gap-20 items-center ${idx % 2 !== 0 ? 'md:order-last' : ''}`}>
+                                                <motion.div 
+                                                    className={`${idx % 2 !== 0 ? 'md:col-start-2' : ''}`}
+                                                    initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                                                    whileInView={{ opacity: 1, x: 0 }}
+                                                    viewport={{ once: true, margin: "-100px" }}
+                                                    transition={{ duration: 0.8, delay: 0.2 }}
+                                                >
+                                                    {event.imageUrl && (
+                                                        <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-xl shadow-rose-100 group">
+                                                            <Image
+                                                                src={getImageUrl(event.imageUrl)}
+                                                                alt={event.title}
+                                                                width={600}
+                                                                height={450}
+                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </motion.div>
+
+                                                <motion.div 
+                                                    className={`space-y-3 ${idx % 2 !== 0 ? 'md:text-right' : 'md:text-left'}`}
+                                                    initial={{ opacity: 0, x: idx % 2 === 0 ? 50 : -50 }}
+                                                    whileInView={{ opacity: 1, x: 0 }}
+                                                    viewport={{ once: true, margin: "-100px" }}
+                                                    transition={{ duration: 0.8, delay: 0.4 }}
+                                                >
+                                                    <div className="inline-block px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-2" style={{ background: `${primaryColor}15`, color: primaryColor }}>
+                                                        {event.eventDate}
+                                                    </div>
+                                                    <h3 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'var(--font-dancing)', fontSize: '2rem' }}>{event.title}</h3>
+                                                    <div className="text-gray-600 leading-relaxed whitespace-pre-line italic">
+                                                        {event.description}
+                                                    </div>
+                                                </motion.div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    )}
-
-                    <div className="mt-10">
-                        <a href="#story" className="inline-block animate-bounce" style={{ color: primaryColor }}>
-                            <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                            </svg>
-                        </a>
                     </div>
-                </motion.div>
-            </section>
+                </section>
+            )}
 
             {/* Gallery Carousel */}
             {wedding.images && wedding.images.length > 0 && (
@@ -216,7 +274,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                                         src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
                                         alt="Wedding gallery" 
                                         fill
-                                        className="object-contain transition-transform duration-1000 group-hover:scale-105" 
+                                        className="object-contain transition-transform duration-1000 group-hover:scale-110" 
                                         sizes="(max-width: 768px) 100vw, 896px"
                                         priority={currentImageIndex === 0}
                                     />
@@ -260,9 +318,6 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                 </section>
             )}
 
-            {/* Content sections (Story, Map, RSVP, Bank, Footer) similar to page.tsx content */}
-            {/* ... abbreviated for brevity, but I will include all sections ... */}
-            
             {/* Love Story */}
             {wedding.loveStory && (
                 <motion.section id="story" className="py-20 px-6" style={{ background: 'white' }} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.8 }}>
@@ -272,69 +327,6 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                         <div className="text-gray-600 leading-relaxed whitespace-pre-line text-lg">{wedding.loveStory}</div>
                     </div>
                 </motion.section>
-            )}
-
-            {/* Love Story Timeline */}
-            {wedding.loveStoryEvents && wedding.loveStoryEvents.length > 0 && (
-                <section className="py-24 px-6 bg-white overflow-hidden">
-                    <div className="max-w-5xl mx-auto">
-                        <motion.h2 className="text-4xl font-bold text-center mb-20" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-                            💕 Our Love Journey
-                        </motion.h2>
-
-                        <div className="relative">
-                            {/* Central Line */}
-                            <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 hidden md:block" style={{ background: `${primaryColor}22` }} />
-                            
-                            <div className="space-y-12 md:space-y-0">
-                                {wedding.loveStoryEvents.map((event, idx) => (
-                                    <div key={event.id} className="relative md:min-h-[300px] flex items-center">
-                                        {/* Dot on Line */}
-                                        <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 hidden md:block" style={{ background: primaryColor, boxShadow: `0 0 0 8px ${primaryColor}22` }} />
-                                        
-                                        <div className={`w-full grid md:grid-cols-2 gap-8 md:gap-20 items-center ${idx % 2 !== 0 ? 'md:direction-rtl' : ''}`}>
-                                            <motion.div 
-                                                className={`${idx % 2 !== 0 ? 'md:col-start-2' : ''}`}
-                                                initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                                                whileInView={{ opacity: 1, x: 0 }}
-                                                viewport={{ once: true, margin: "-100px" }}
-                                                transition={{ duration: 0.8, delay: 0.2 }}
-                                            >
-                                                {event.imageUrl && (
-                                                    <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-xl shadow-rose-100 group">
-                                                        <Image
-                                                            src={getImageUrl(event.imageUrl)}
-                                                            alt={event.title}
-                                                            width={600}
-                                                            height={450}
-                                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                        />
-                                                    </div>
-                                                )}
-                                            </motion.div>
-
-                                            <motion.div 
-                                                className={`space-y-3 ${idx % 2 !== 0 ? 'md:order-1 md:text-right' : 'md:text-left'}`}
-                                                initial={{ opacity: 0, x: idx % 2 === 0 ? 50 : -50 }}
-                                                whileInView={{ opacity: 1, x: 0 }}
-                                                viewport={{ once: true, margin: "-100px" }}
-                                                transition={{ duration: 0.8, delay: 0.4 }}
-                                            >
-                                                <div className="inline-block px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-2" style={{ background: `${primaryColor}15`, color: primaryColor }}>
-                                                    {event.eventDate}
-                                                </div>
-                                                <h3 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'var(--font-dancing)', fontSize: '2rem' }}>{event.title}</h3>
-                                                <div className="text-gray-600 leading-relaxed whitespace-pre-line italic">
-                                                    {event.description}
-                                                </div>
-                                            </motion.div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </section>
             )}
 
             {/* Venue & Map */}
