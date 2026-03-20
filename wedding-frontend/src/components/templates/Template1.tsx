@@ -209,15 +209,14 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                     </motion.h2>
 
                     <div className="relative group">
-                        <motion.div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group flex items-center justify-center bg-gray-100 cursor-zoom-in" initial={{ opacity: 0, scale: 0.95, y: 30 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1, ease: "easeOut" }} onClick={() => setIsLightboxOpen(true)}>
+                        <motion.div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl mb-12 group bg-gray-100 cursor-zoom-in aspect-[4/3]" initial={{ opacity: 0, scale: 0.95, y: 30 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 1, ease: "easeOut" }} onClick={() => setIsLightboxOpen(true)}>
                             <AnimatePresence mode="wait">
-                                <motion.div key={currentImageIndex} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.5 }} className="relative w-full" style={{ maxHeight: '80vh' }}>
+                                <motion.div key={currentImageIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }} className="absolute inset-0 flex items-center justify-center">
                                     <Image 
                                         src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
                                         alt="Wedding gallery" 
-                                        width={1200}
-                                        height={800}
-                                        className="max-w-full max-h-[80vh] w-auto h-auto object-contain mx-auto transition-transform duration-1000 group-hover:scale-105" 
+                                        fill
+                                        className="object-contain transition-transform duration-1000 group-hover:scale-105" 
                                         sizes="(max-width: 768px) 100vw, 896px"
                                         priority={currentImageIndex === 0}
                                     />
