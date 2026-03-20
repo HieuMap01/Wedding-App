@@ -201,7 +201,7 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                     <section id="timeline" className="pb-24 pt-10 px-6 bg-white overflow-hidden">
                         <div className="max-w-5xl mx-auto">
                             <motion.h2 className="text-4xl font-bold text-center mb-20" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-                                💕 Our Love Journey
+                                {t.timelineTitle}
                             </motion.h2>
 
                             <div className="relative">
