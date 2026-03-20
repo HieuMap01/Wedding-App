@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Great_Vibes } from "next/font/google";
+import { Inter, Playfair_Display, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import BackToTop from "@/components/BackToTop";
@@ -17,10 +17,9 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-const greatVibes = Great_Vibes({
-  weight: "400",
+const dancingScript = Dancing_Script({
   subsets: ["latin"],
-  variable: "--font-great-vibes",
+  variable: "--font-dancing",
   display: 'swap',
 });
 
@@ -35,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className={`${inter.variable} ${playfair.variable} ${greatVibes.variable}`}>
+    <html lang="vi" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable}`}>
       <body className="font-sans bg-slate-50 text-slate-900 antialiased min-h-screen">
         <AuthProvider>
             {children}
