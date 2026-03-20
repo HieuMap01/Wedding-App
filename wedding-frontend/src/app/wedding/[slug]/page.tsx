@@ -38,7 +38,7 @@ export default function GuestWeddingPage() {
         if (!wedding?.images || wedding.images.length <= 1) return;
         const interval = setInterval(() => {
             setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length);
-        }, 3000);
+        }, 5000);
         return () => clearInterval(interval);
     }, [wedding]);
 
