@@ -200,57 +200,6 @@ export default function EditWeddingPage() {
         }
     };
 
-    const handleAddTimeline = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const file = formData.get('file') as File;
-        const title = formData.get('title') as string;
-        const eventDate = formData.get('eventDate') as string;
-        const description = formData.get('description') as string;
-
-        if (!title) {
-            setTimelineError('Vui lòng nhập tiêu đề mốc thời gian');
-            return;
-        }
-
-        setTimelineSaving('new');
-        setTimelineError('');
-        try {
-            await weddingApi.addTimelineEvent({ file: file.size > 0 ? file : undefined, title, eventDate, description });
-            await loadWedding();
-            (e.target as HTMLFormElement).reset();
-        } catch (err: any) {
-            setTimelineError(err.message || 'Không thể thêm mốc thời gian');
-        } finally {
-            setTimelineSaving(null);
-        }
-    };
-
-    const handleUpdateTimeline = async (eventId: number, e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const file = formData.get('file') as File;
-        const title = formData.get('title') as string;
-        const eventDate = formData.get('eventDate') as string;
-        const description = formData.get('description') as string;
-
-        setTimelineSaving(eventId);
-        setTimelineError('');
-        try {
-            await weddingApi.updateTimelineEvent(eventId, { 
-                file: file.size > 0 ? file : undefined, 
-                title, 
-                eventDate, 
-                description 
-            });
-            await loadWedding();
-        } catch (err: any) {
-            setTimelineError(err.message || 'Không thể cập nhật mốc thời gian');
-        } finally {
-            setTimelineSaving(null);
-        }
-    };
-
     const handleDeleteTimeline = async (eventId: number) => {
         if (!confirm('Bạn có chắc chắn muốn xóa mốc thời gian này?')) return;
         
@@ -687,7 +636,7 @@ export default function EditWeddingPage() {
                                                 </button>
                                             </div>
                                             
-                                            <form onSubmit={(e) => handleUpdateTimeline(event.id, e)} className="grid md:grid-cols-[150px_1fr] gap-6">
+                                            <div className="grid md:grid-cols-[150px_1fr] gap-6" id={`event-form-${event.id}`}>
                                                 <div className="space-y-3">
                                                     <div className="aspect-square rounded-xl overflow-hidden bg-rose-50 border border-rose-100 flex items-center justify-center relative">
                                                         {event.imageUrl ? (
@@ -721,7 +670,35 @@ export default function EditWeddingPage() {
                                                     </div>
                                                     <div className="flex justify-end pt-2">
                                                         <button 
-                                                            type="submit"
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                const div = document.getElementById(`event-form-${event.id}`);
+                                                                if (!div) return;
+                                                                const fileInput = div.querySelector('input[name="file"]') as HTMLInputElement;
+                                                                const titleInput = div.querySelector('input[name="title"]') as HTMLInputElement;
+                                                                const dateInput = div.querySelector('input[name="eventDate"]') as HTMLInputElement;
+                                                                const descInput = div.querySelector('textarea[name="description"]') as HTMLTextAreaElement;
+                                                                
+                                                                if (!titleInput.value) {
+                                                                    setTimelineError('Vui lòng nhập tiêu đề');
+                                                                    return;
+                                                                }
+
+                                                                setTimelineSaving(event.id);
+                                                                setTimelineError('');
+                                                                weddingApi.updateTimelineEvent(event.id, {
+                                                                    file: fileInput.files?.[0],
+                                                                    title: titleInput.value,
+                                                                    eventDate: dateInput.value,
+                                                                    description: descInput.value
+                                                                }).then(() => {
+                                                                    loadWedding();
+                                                                }).catch(err => {
+                                                                    setTimelineError(err.message);
+                                                                }).finally(() => {
+                                                                    setTimelineSaving(null);
+                                                                });
+                                                            }}
                                                             disabled={timelineSaving === event.id}
                                                             className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
                                                         >
@@ -729,7 +706,7 @@ export default function EditWeddingPage() {
                                                         </button>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
@@ -742,34 +719,62 @@ export default function EditWeddingPage() {
                             </div>
 
                             {/* Add New Event Form */}
-                            <div className="p-6 rounded-2xl border-2 border-dashed border-rose-200 bg-rose-50/30">
+                            <div className="p-6 rounded-2xl border-2 border-dashed border-rose-200 bg-rose-50/30" id="new-timeline-form">
                                 <h4 className="font-bold text-rose-800 flex items-center gap-2 mb-6">✨ Thêm kỷ niệm mới</h4>
-                                <form onSubmit={handleAddTimeline} className="grid md:grid-cols-[200px_1fr] gap-8">
+                                <div className="grid md:grid-cols-[200px_1fr] gap-8">
                                     <div className="space-y-4">
                                         <div className="aspect-square rounded-2xl border-2 border-dashed border-rose-200 bg-white flex flex-col items-center justify-center p-4 text-center group hover:border-rose-400 transition-all relative overflow-hidden">
                                             <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">➕</span>
                                             <p className="text-[10px] font-bold text-rose-400 uppercase">Ảnh kỷ niệm</p>
-                                            <input name="file" type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
+                                            <input name="file" type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" id="new-event-file" />
                                         </div>
                                     </div>
                                     <div className="space-y-4">
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Tiêu đề mốc *</label>
-                                                <input name="title" className="input-field text-sm" placeholder="Ví dụ: Lần đầu đi chơi..." required />
+                                                <input name="title" className="input-field text-sm" placeholder="Ví dụ: Lần đầu đi chơi..." id="new-event-title" required />
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Mốc thời gian</label>
-                                                <input name="eventDate" className="input-field text-sm" placeholder="Ví dụ: Tháng 5, 2019" />
+                                                <input name="eventDate" className="input-field text-sm" placeholder="Ví dụ: Tháng 5, 2019" id="new-event-date" />
                                             </div>
                                         </div>
                                         <div>
                                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Nội dung</label>
-                                            <textarea name="description" className="input-field text-sm min-h-[100px]" placeholder="Kể về khoảnh khắc này..." />
+                                            <textarea name="description" className="input-field text-sm min-h-[100px]" placeholder="Kể về khoảnh khắc này..." id="new-event-desc" />
                                         </div>
                                         <div className="flex justify-end">
                                             <button 
-                                                type="submit" 
+                                                type="button" 
+                                                onClick={() => {
+                                                    const title = (document.getElementById('new-event-title') as HTMLInputElement).value;
+                                                    const date = (document.getElementById('new-event-date') as HTMLInputElement).value;
+                                                    const decs = (document.getElementById('new-event-desc') as HTMLTextAreaElement).value;
+                                                    const file = (document.getElementById('new-event-file') as HTMLInputElement).files?.[0];
+
+                                                    if (!title) {
+                                                        setTimelineError('Vui lòng nhập tiêu đề mốc thời gian');
+                                                        return;
+                                                    }
+
+                                                    setTimelineSaving('new');
+                                                    setTimelineError('');
+                                                    weddingApi.addTimelineEvent({ file, title, eventDate: date, description: decs })
+                                                        .then(() => {
+                                                            loadWedding();
+                                                            (document.getElementById('new-event-title') as HTMLInputElement).value = '';
+                                                            (document.getElementById('new-event-date') as HTMLInputElement).value = '';
+                                                            (document.getElementById('new-event-desc') as HTMLTextAreaElement).value = '';
+                                                            (document.getElementById('new-event-file') as HTMLInputElement).value = '';
+                                                        })
+                                                        .catch(err => {
+                                                            setTimelineError(err.message);
+                                                        })
+                                                        .finally(() => {
+                                                            setTimelineSaving(null);
+                                                        });
+                                                }}
                                                 disabled={timelineSaving === 'new'}
                                                 className="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold shadow-lg shadow-rose-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
                                             >
@@ -777,7 +782,7 @@ export default function EditWeddingPage() {
                                             </button>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     )}

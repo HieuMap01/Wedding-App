@@ -265,7 +265,7 @@ export const weddingApi = {
     const formData = new FormData();
     if (data.file) formData.append('file', data.file);
     formData.append('title', data.title);
-    if (data.eventDate) formData.append('event_date', data.eventDate);
+    if (data.eventDate) formData.append('eventDate', data.eventDate);
     if (data.description) formData.append('description', data.description);
     return api.post<LoveStoryEventResponse>('/api/weddings/mine/timeline', formData);
   },
