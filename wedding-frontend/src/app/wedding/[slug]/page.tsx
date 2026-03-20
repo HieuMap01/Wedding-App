@@ -1,14 +1,9 @@
 'use client';
 
-import { useEffect, useState, FormEvent } from 'react';
-import { weddingApi, interactionApi, WeddingResponse, API_BASE, getImageUrl } from '@/lib/api';
+import { useEffect, useState } from 'react';
+import { weddingApi, interactionApi, WeddingResponse } from '@/lib/api';
 import { useParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Locale, useTranslation } from '@/lib/i18n';
-import { getLunarDateString } from '@/lib/lunar';
-import Countdown from '@/components/Countdown';
-import MusicPlayer from '@/components/MusicPlayer';
-
 import Template1 from '@/components/templates/Template1';
 
 export default function GuestWeddingPage() {

@@ -5,14 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface MusicPlayerProps {
     url: string;
+    autoPlayTrigger?: boolean;
 }
 
-export default function MusicPlayer({ url }: MusicPlayerProps) {
-    const [isPlaying, setIsPlaying] = useState(true); // Try to play by default
+export default function MusicPlayer({ url, autoPlayTrigger }: MusicPlayerProps) {
+    const [isPlaying, setIsPlaying] = useState(false); // Changed to false initially
     const audioRef = useRef<HTMLAudioElement>(null);
     const [showLabel, setShowLabel] = useState(true);
     const [isYoutube, setIsYoutube] = useState(false);
     const [youtubeId, setYoutubeId] = useState<string | null>(null);
+
+    // Watch for the trigger from parent
+    useEffect(() => {
+        if (autoPlayTrigger) {
+            handleInteraction();
+        }
+    }, [autoPlayTrigger]);
 
     useEffect(() => {
         const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
@@ -29,62 +37,59 @@ export default function MusicPlayer({ url }: MusicPlayerProps) {
         return () => clearTimeout(timer);
     }, [url]);
 
-    useEffect(() => {
-        const handleInteraction = () => {
-            console.log("User interaction detected, attempting to unlock audio...");
-            if (audioRef.current) {
-                audioRef.current.muted = false;
-                audioRef.current.play().then(() => {
-                    setIsPlaying(true);
-                    setShowLabel(false);
-                }).catch(err => {
-                    console.error("Play failed after interaction:", err);
-                });
-            }
-            
-            if (isYoutube && youtubeId) {
-                const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
-                if (iframe && iframe.contentWindow) {
-                    // Send unmute and play commands
-                    iframe.contentWindow.postMessage(JSON.stringify({
-                        event: 'command',
-                        func: 'unMute',
-                        args: []
-                    }), '*');
-                    iframe.contentWindow.postMessage(JSON.stringify({
-                        event: 'command',
-                        func: 'playVideo',
-                        args: []
-                    }), '*');
-                }
+    const handleInteraction = () => {
+        console.log("Interaction triggered, attempting to play...");
+        
+        if (audioRef.current && !isYoutube) {
+            audioRef.current.play().then(() => {
                 setIsPlaying(true);
                 setShowLabel(false);
-            }
-
-            // Clean up
-            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown', 'wheel'].forEach(event => {
-                window.removeEventListener(event, handleInteraction);
+            }).catch(err => {
+                console.error("Play failed after interaction:", err);
             });
-        };
+        }
+        
+        if (isYoutube && youtubeId) {
+            const iframe = document.getElementById('youtube-player') as HTMLIFrameElement;
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: 'playVideo',
+                    args: []
+                }), '*');
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: 'unMute',
+                    args: []
+                }), '*');
+            }
+            setIsPlaying(true);
+            setShowLabel(false);
+        }
 
-        ['click', 'touchstart', 'scroll', 'mousedown', 'keydown', 'wheel'].forEach(event => {
+        // Clean up listeners
+        ['click', 'touchstart', 'mousedown', 'keydown'].forEach(event => {
+            window.removeEventListener(event, handleInteraction);
+        });
+    };
+
+    useEffect(() => {
+        ['click', 'touchstart', 'mousedown', 'keydown'].forEach(event => {
             window.addEventListener(event, handleInteraction, { once: true });
         });
 
-        // Try Autoplay (may fail)
+        // Try Autoplay - only for non-youtube (browsers allow it if muted or if user interaction quota is met)
         if (!isYoutube && url && audioRef.current) {
             audioRef.current.play().then(() => {
-                console.log("Autoplay successful");
                 setIsPlaying(true);
                 setShowLabel(false);
             }).catch(() => {
-                console.log("Autoplay blocked, waiting for interaction");
                 setIsPlaying(false);
             });
         }
 
         return () => {
-            ['click', 'touchstart', 'scroll', 'mousedown', 'keydown', 'wheel'].forEach(event => {
+            ['click', 'touchstart', 'mousedown', 'keydown'].forEach(event => {
                 window.removeEventListener(event, handleInteraction);
             });
         };

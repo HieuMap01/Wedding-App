@@ -321,18 +321,21 @@ export default function EditWeddingPage() {
                                     <input className="input-field" value={form.groomName} onChange={(e) => update('groomName', e.target.value)} required placeholder="Nguyễn Văn A" />
                                 </div>
                             </div>
-                            {isNew && (
-                                <div className="mt-6">
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Đường dẫn chia sẻ (Tùy chọn)</label>
-                                    <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
-                                        <span className="px-4 py-3 text-slate-500 bg-slate-100 border-r border-slate-200 text-sm font-mono whitespace-nowrap">
-                                            /wedding/
-                                        </span>
-                                        <input className="flex-1 px-4 py-3 bg-white text-slate-900 focus:outline-none" value={form.slug} onChange={(e) => update('slug', e.target.value)} placeholder="minh-va-lan" />
-                                    </div>
-                                    <p className="text-xs text-slate-400 mt-2">Bỏ trống hệ thống sẽ tự động tạo URL ngẫu nhiên.</p>
+                            <div className="mt-6">
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Đường dẫn chia sẻ (Slug)</label>
+                                <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                    <span className="px-4 py-3 text-slate-500 bg-slate-100 border-r border-slate-200 text-sm font-mono whitespace-nowrap">
+                                        /wedding/
+                                    </span>
+                                    <input className="flex-1 px-4 py-3 bg-white text-slate-900 focus:outline-none" value={form.slug} onChange={(e) => update('slug', e.target.value)} placeholder="minh-va-lan" />
                                 </div>
-                            )}
+                                <p className="text-xs text-slate-400 mt-2">Bỏ trống hệ thống sẽ tự động tạo URL ngẫu nhiên.</p>
+                                {!isNew && (
+                                    <p className="text-xs text-amber-600 mt-2 font-medium italic">
+                                        ⚠️ Lưu ý: Khi đổi đường dẫn, các link cũ bạn đã gửi sẽ không còn truy cập được nữa.
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

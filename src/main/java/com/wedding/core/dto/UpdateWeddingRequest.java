@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class UpdateWeddingRequest {
+    private String slug;
     private String groomName;
     private String brideName;
     private String loveStory;

@@ -7,6 +7,7 @@ import { Locale, useTranslation } from '@/lib/i18n';
 import { getLunarDateString } from '@/lib/lunar';
 import Countdown from '@/components/Countdown';
 import MusicPlayer from '@/components/MusicPlayer';
+import WelcomeOverlay from '@/components/WelcomeOverlay';
 
 interface TemplateProps {
     wedding: WeddingResponse;
@@ -15,6 +16,8 @@ interface TemplateProps {
 
 export default function Template1({ wedding, locale }: TemplateProps) {
     const t = useTranslation(locale);
+    const [showWelcome, setShowWelcome] = useState(true);
+    const [startMusic, setStartMusic] = useState(false);
     const [rsvpForm, setRsvpForm] = useState({
         guestName: '',
         guestPhone: '',
@@ -66,8 +69,29 @@ export default function Template1({ wedding, locale }: TemplateProps) {
 
     return (
         <div className="wedding-theme min-h-screen" style={{ '--color-primary': primaryColor, '--color-secondary': secondaryColor } as React.CSSProperties}>
-            {/* Hero */}
-            <section className="min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+            <AnimatePresence>
+                {showWelcome && (
+                    <WelcomeOverlay 
+                        groomName={wedding.groomName} 
+                        brideName={wedding.brideName} 
+                        primaryColor={primaryColor}
+                        onOpen={() => {
+                            setShowWelcome(false);
+                            setStartMusic(true);
+                        }}
+                    />
+                )}
+            </AnimatePresence>
+
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showWelcome ? 0 : 1 }}
+                transition={{ duration: 0.8 }}
+                className={showWelcome ? 'h-screen overflow-hidden' : ''}
+            >
+                {/* Hero */}
+                <section className="min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+                    {/* ... (rest of the hero section) */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-10" style={{ background: primaryColor }} />
                     <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full opacity-10" style={{ background: secondaryColor }} />
@@ -329,7 +353,9 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                 <p className="mt-2 text-xs">{t.poweredBy}</p>
             </footer>
 
-            <MusicPlayer url={wedding.musicUrl || ''} />
+            </motion.div>
+
+            <MusicPlayer url={wedding.musicUrl || ''} autoPlayTrigger={startMusic} />
         </div>
     );
 }

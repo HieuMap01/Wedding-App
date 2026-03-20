@@ -147,6 +147,22 @@ public class WeddingService {
         if (request.getTemplateCode() != null)
             wedding.setTemplateCode(request.getTemplateCode());
 
+        // Handle slug update
+        if (request.getSlug() != null && !request.getSlug().isBlank() && !request.getSlug().equals(wedding.getSlug())) {
+            String oldSlug = wedding.getSlug();
+            String newSlug = slugify(request.getSlug());
+            
+            // Check uniqueness if slug changed after normalization
+            if (!newSlug.equals(oldSlug)) {
+                if (weddingRepository.existsBySlug(newSlug)) {
+                    newSlug = newSlug + "-" + System.currentTimeMillis();
+                }
+                wedding.setSlug(newSlug);
+                // Evict old cache
+                weddingCacheService.evictCache(oldSlug);
+            }
+        }
+
         wedding = weddingRepository.save(wedding);
         // Invalidate cache
         weddingCacheService.evictCache(wedding.getSlug());
