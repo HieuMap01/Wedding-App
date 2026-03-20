@@ -196,6 +196,16 @@ export interface WeddingImageResponse {
   createdAt: string;
 }
 
+export interface LoveStoryEventResponse {
+  id: number;
+  title: string;
+  eventDate: string;
+  description: string;
+  imageUrl: string;
+  displayOrder: number;
+  createdAt: string;
+}
+
 export interface WeddingResponse {
   id: number;
   coupleUserId: number;
@@ -230,6 +240,7 @@ export interface WeddingResponse {
   musicUrl?: string;
   templateCode: string;
   images: WeddingImageResponse[];
+  loveStoryEvents: LoveStoryEventResponse[];
   createdAt: string;
   updatedAt: string;
 }
@@ -248,6 +259,25 @@ export const weddingApi = {
   deleteImage: (imageId: number) => api.delete<void>(`/api/weddings/mine/images/${imageId}`),
   getPublic: (slug: string) => api.get<WeddingResponse>(`/api/weddings/public/${slug}`),
   getQrCode: () => api.get<string>(`/api/weddings/mine/qr`),
+  
+  // Timeline
+  addTimelineEvent: (data: { file?: File; title: string; eventDate?: string; description?: string }) => {
+    const formData = new FormData();
+    if (data.file) formData.append('file', data.file);
+    formData.append('title', data.title);
+    if (data.eventDate) formData.append('event_date', data.eventDate);
+    if (data.description) formData.append('description', data.description);
+    return api.post<LoveStoryEventResponse>('/api/weddings/mine/timeline', formData);
+  },
+  updateTimelineEvent: (eventId: number, data: { file?: File; title?: string; eventDate?: string; description?: string }) => {
+    const formData = new FormData();
+    if (data.file) formData.append('file', data.file);
+    if (data.title) formData.append('title', data.title);
+    if (data.eventDate) formData.append('eventDate', data.eventDate); // Note: server uses @RequestParam names
+    if (data.description) formData.append('description', data.description);
+    return api.put<LoveStoryEventResponse>(`/api/weddings/mine/timeline/${eventId}`, formData);
+  },
+  deleteTimelineEvent: (eventId: number) => api.delete<void>(`/api/weddings/mine/timeline/${eventId}`),
 };
 
 // ===== Bank API (VietQR) =====

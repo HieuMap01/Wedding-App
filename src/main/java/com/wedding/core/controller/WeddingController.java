@@ -85,6 +85,40 @@ public class WeddingController {
         return ResponseEntity.ok(ApiResponse.ok("QR Code generated successfully", qrCodeBase64));
     }
 
+    // ---- Timeline endpoints ----
+
+    @PostMapping("/mine/timeline")
+    public ResponseEntity<ApiResponse<LoveStoryEventResponse>> addTimelineEvent(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam(value = "eventDate", required = false) String eventDate,
+            @RequestParam(value = "description", required = false) String description) {
+        LoveStoryEventResponse response = weddingService.addTimelineEvent(userId, file, title, eventDate, description);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok("Mốc thời gian đã được thêm", response));
+    }
+
+    @PutMapping("/mine/timeline/{eventId}")
+    public ResponseEntity<ApiResponse<LoveStoryEventResponse>> updateTimelineEvent(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long eventId,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "eventDate", required = false) String eventDate,
+            @RequestParam(value = "description", required = false) String description) {
+        LoveStoryEventResponse response = weddingService.updateTimelineEvent(userId, eventId, file, title, eventDate, description);
+        return ResponseEntity.ok(ApiResponse.ok("Mốc thời gian đã được cập nhật", response));
+    }
+
+    @DeleteMapping("/mine/timeline/{eventId}")
+    public ResponseEntity<ApiResponse<Void>> deleteTimelineEvent(
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long eventId) {
+        weddingService.deleteTimelineEvent(userId, eventId);
+        return ResponseEntity.ok(ApiResponse.ok("Mốc thời gian đã được xóa", null));
+    }
+
     // ---- Public endpoint ----
 
     @GetMapping("/public/{slug}")

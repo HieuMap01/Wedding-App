@@ -120,6 +120,11 @@ public class Wedding {
     @Builder.Default
     private List<WeddingImage> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "wedding", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("displayOrder ASC")
+    @Builder.Default
+    private List<LoveStoryEvent> loveStoryEvents = new ArrayList<>();
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

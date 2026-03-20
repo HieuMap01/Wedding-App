@@ -3,8 +3,10 @@ package com.wedding.core.service;
 import com.wedding.common.exception.AppException;
 import com.wedding.common.exception.ErrorCode;
 import com.wedding.core.dto.*;
+import com.wedding.core.entity.LoveStoryEvent;
 import com.wedding.core.entity.Wedding;
 import com.wedding.core.entity.WeddingImage;
+import com.wedding.core.repository.LoveStoryEventRepository;
 import com.wedding.core.repository.WeddingImageRepository;
 import com.wedding.core.repository.WeddingRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class WeddingService {
 
     private final WeddingRepository weddingRepository;
     private final WeddingImageRepository weddingImageRepository;
+    private final LoveStoryEventRepository loveStoryEventRepository;
     private final FileStorageService fileStorageService;
     private final WeddingCacheService weddingCacheService;
     private final QrCodeService qrCodeService;
@@ -327,9 +330,91 @@ public class WeddingService {
         return slug;
     }
 
+    // ---- Timeline operations ----
+
+    @Transactional
+    public LoveStoryEventResponse addTimelineEvent(Long coupleUserId, MultipartFile file, String title, String eventDate, String description) {
+        Wedding wedding = weddingRepository.findByCoupleUserId(coupleUserId)
+                .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
+
+        String imageUrl = null;
+        if (file != null && !file.isEmpty()) {
+            imageUrl = fileStorageService.storeFile(file);
+        }
+
+        int maxOrder = wedding.getLoveStoryEvents().stream()
+                .mapToInt(LoveStoryEvent::getDisplayOrder)
+                .max()
+                .orElse(0);
+
+        LoveStoryEvent event = LoveStoryEvent.builder()
+                .wedding(wedding)
+                .title(title)
+                .eventDate(eventDate)
+                .description(description)
+                .imageUrl(imageUrl)
+                .displayOrder(maxOrder + 1)
+                .build();
+
+        event = loveStoryEventRepository.save(event);
+        weddingCacheService.evictCache(wedding.getSlug());
+        return toEventResponse(event);
+    }
+
+    @Transactional
+    public LoveStoryEventResponse updateTimelineEvent(Long coupleUserId, Long eventId, MultipartFile file, String title, String eventDate, String description) {
+        Wedding wedding = weddingRepository.findByCoupleUserId(coupleUserId)
+                .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
+
+        LoveStoryEvent event = loveStoryEventRepository.findById(eventId)
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy mốc thời gian"));
+
+        if (!event.getWedding().getId().equals(wedding.getId())) {
+            throw new AppException(ErrorCode.FORBIDDEN, "Mốc thời gian này không thuộc thiệp cưới của bạn");
+        }
+
+        if (title != null) event.setTitle(title);
+        if (eventDate != null) event.setEventDate(eventDate);
+        if (description != null) event.setDescription(description);
+
+        if (file != null && !file.isEmpty()) {
+            if (event.getImageUrl() != null) {
+                fileStorageService.deleteFile(event.getImageUrl());
+            }
+            event.setImageUrl(fileStorageService.storeFile(file));
+        }
+
+        event = loveStoryEventRepository.save(event);
+        weddingCacheService.evictCache(wedding.getSlug());
+        return toEventResponse(event);
+    }
+
+    @Transactional
+    public void deleteTimelineEvent(Long coupleUserId, Long eventId) {
+        Wedding wedding = weddingRepository.findByCoupleUserId(coupleUserId)
+                .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
+
+        LoveStoryEvent event = loveStoryEventRepository.findById(eventId)
+                .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy mốc thời gian"));
+
+        if (!event.getWedding().getId().equals(wedding.getId())) {
+            throw new AppException(ErrorCode.FORBIDDEN, "Mốc thời gian này không thuộc thiệp cưới của bạn");
+        }
+
+        if (event.getImageUrl() != null) {
+            fileStorageService.deleteFile(event.getImageUrl());
+        }
+        loveStoryEventRepository.delete(event);
+        weddingCacheService.evictCache(wedding.getSlug());
+    }
+
     private WeddingResponse toWeddingResponse(Wedding wedding) {
         List<WeddingImageResponse> imageResponses = wedding.getImages().stream()
                 .map(this::toImageResponse)
+                .collect(Collectors.toList());
+
+        List<LoveStoryEventResponse> eventResponses = wedding.getLoveStoryEvents().stream()
+                .map(this::toEventResponse)
                 .collect(Collectors.toList());
 
         return WeddingResponse.builder()
@@ -366,6 +451,7 @@ public class WeddingService {
                 .musicUrl(wedding.getMusicUrl())
                 .templateCode(wedding.getTemplateCode())
                 .images(imageResponses)
+                .loveStoryEvents(eventResponses)
                 .createdAt(wedding.getCreatedAt())
                 .updatedAt(wedding.getUpdatedAt())
                 .build();
@@ -375,6 +461,7 @@ public class WeddingService {
         return WeddingImageResponse.builder()
                 .id(image.getId())
                 .imageUrl(image.getImageUrl())
+
                 .caption(image.getCaption())
                 .displayOrder(image.getDisplayOrder())
                 .createdAt(image.getCreatedAt())
@@ -389,5 +476,16 @@ public class WeddingService {
         wedding = weddingRepository.save(wedding);
         weddingCacheService.evictCache(wedding.getSlug());
         return toWeddingResponse(wedding);
+    }
+    private LoveStoryEventResponse toEventResponse(LoveStoryEvent event) {
+        return LoveStoryEventResponse.builder()
+                .id(event.getId())
+                .title(event.getTitle())
+                .eventDate(event.getEventDate())
+                .description(event.getDescription())
+                .imageUrl(event.getImageUrl())
+                .displayOrder(event.getDisplayOrder())
+                .createdAt(event.getCreatedAt())
+                .build();
     }
 }

@@ -19,6 +19,8 @@ export default function EditWeddingPage() {
     const [lookupLoading, setLookupLoading] = useState<'groom' | 'bride' | null>(null);
     const [lookupError, setLookupError] = useState<{ type: 'groom' | 'bride', message: string } | null>(null);
     const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+    const [timelineSaving, setTimelineSaving] = useState<number | 'new' | null>(null);
+    const [timelineError, setTimelineError] = useState<string>('');
 
     useEffect(() => {
         const fetchBanks = async () => {
@@ -195,6 +197,71 @@ export default function EditWeddingPage() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err: unknown) {
             setMessage('❌ ' + (err instanceof Error ? err.message : 'Có lỗi khi xuất bản'));
+        }
+    };
+
+    const handleAddTimeline = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const file = formData.get('file') as File;
+        const title = formData.get('title') as string;
+        const eventDate = formData.get('eventDate') as string;
+        const description = formData.get('description') as string;
+
+        if (!title) {
+            setTimelineError('Vui lòng nhập tiêu đề mốc thời gian');
+            return;
+        }
+
+        setTimelineSaving('new');
+        setTimelineError('');
+        try {
+            await weddingApi.addTimelineEvent({ file: file.size > 0 ? file : undefined, title, eventDate, description });
+            await loadWedding();
+            (e.target as HTMLFormElement).reset();
+        } catch (err: any) {
+            setTimelineError(err.message || 'Không thể thêm mốc thời gian');
+        } finally {
+            setTimelineSaving(null);
+        }
+    };
+
+    const handleUpdateTimeline = async (eventId: number, e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const file = formData.get('file') as File;
+        const title = formData.get('title') as string;
+        const eventDate = formData.get('eventDate') as string;
+        const description = formData.get('description') as string;
+
+        setTimelineSaving(eventId);
+        setTimelineError('');
+        try {
+            await weddingApi.updateTimelineEvent(eventId, { 
+                file: file.size > 0 ? file : undefined, 
+                title, 
+                eventDate, 
+                description 
+            });
+            await loadWedding();
+        } catch (err: any) {
+            setTimelineError(err.message || 'Không thể cập nhật mốc thời gian');
+        } finally {
+            setTimelineSaving(null);
+        }
+    };
+
+    const handleDeleteTimeline = async (eventId: number) => {
+        if (!confirm('Bạn có chắc chắn muốn xóa mốc thời gian này?')) return;
+        
+        setTimelineSaving(eventId);
+        try {
+            await weddingApi.deleteTimelineEvent(eventId);
+            await loadWedding();
+        } catch (err: any) {
+            alert(err.message || 'Không thể xóa mốc thời gian');
+        } finally {
+            setTimelineSaving(null);
         }
     };
 
@@ -583,6 +650,134 @@ export default function EditWeddingPage() {
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Màu phụ</label>
                                     <input type="color" value={form.secondaryColor} onChange={(e) => update('secondaryColor', e.target.value)} className="w-full h-10 cursor-pointer rounded-lg border-2 border-slate-100 p-0.5" />
                                 </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Love Story Timeline */}
+                <div className="card overflow-hidden">
+                    <SectionHeader 
+                        id="timeline" 
+                        icon="💕" 
+                        title="Love Story Timeline" 
+                        description="Kể lại những cột mốc quan trọng nhất trong hành trình yêu của hai bạn."
+                    />
+                    {expandedSections.includes('timeline') && (
+                        <div className="p-6 md:p-8 animate-fade-in-down">
+                            {timelineError && (
+                                <div className="mb-4 p-3 rounded-lg bg-rose-50 text-rose-600 text-xs border border-rose-100">
+                                    {timelineError}
+                                </div>
+                            )}
+
+                            {/* Existing Events */}
+                            <div className="space-y-8 mb-10">
+                                {wedding?.loveStoryEvents && wedding.loveStoryEvents.length > 0 ? (
+                                    wedding.loveStoryEvents.map((event) => (
+                                        <div key={event.id} className="p-5 rounded-2xl border border-rose-100 bg-white shadow-sm relative group overflow-hidden">
+                                            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button 
+                                                    type="button"
+                                                    onClick={() => handleDeleteTimeline(event.id)}
+                                                    className="p-1.5 text-rose-400 hover:text-rose-600 transition-colors"
+                                                    disabled={timelineSaving === event.id}
+                                                >
+                                                    {timelineSaving === event.id ? '...' : '🗑️'}
+                                                </button>
+                                            </div>
+                                            
+                                            <form onSubmit={(e) => handleUpdateTimeline(event.id, e)} className="grid md:grid-cols-[150px_1fr] gap-6">
+                                                <div className="space-y-3">
+                                                    <div className="aspect-square rounded-xl overflow-hidden bg-rose-50 border border-rose-100 flex items-center justify-center relative">
+                                                        {event.imageUrl ? (
+                                                            <img src={getImageUrl(event.imageUrl)} alt={event.title} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <span className="text-2xl text-rose-200">📸</span>
+                                                        )}
+                                                        <input 
+                                                            name="file" 
+                                                            type="file" 
+                                                            accept="image/*" 
+                                                            className="absolute inset-0 opacity-0 cursor-pointer" 
+                                                        />
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-400 text-center italic">Bấm vào ảnh để đổi</p>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Tiêu đề</label>
+                                                            <input name="title" className="input-field text-sm" defaultValue={event.title} placeholder="Ví dụ: Lần đầu gặp gỡ" required />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Ngày/Thời gian</label>
+                                                            <input name="eventDate" className="input-field text-sm" defaultValue={event.eventDate} placeholder="Ví dụ: 14/02/2020" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nội dung chi tiết</label>
+                                                        <textarea name="description" className="input-field text-sm min-h-[80px]" defaultValue={event.description} placeholder="Mô tả ngắn gọn về kỷ niệm này..." />
+                                                    </div>
+                                                    <div className="flex justify-end pt-2">
+                                                        <button 
+                                                            type="submit"
+                                                            disabled={timelineSaving === event.id}
+                                                            className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-semibold shadow-sm transition-all disabled:opacity-50"
+                                                        >
+                                                            {timelineSaving === event.id ? 'Đang lưu...' : 'Lưu thay đổi'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                                        <span className="text-4xl mb-3 block">📸</span>
+                                        <p className="text-slate-500 font-medium">Chưa có mốc thời gian nào.</p>
+                                        <p className="text-slate-400 text-xs mt-1">Hãy thêm những kỷ niệm đẹp của hai bạn ở phía dưới.</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Add New Event Form */}
+                            <div className="p-6 rounded-2xl border-2 border-dashed border-rose-200 bg-rose-50/30">
+                                <h4 className="font-bold text-rose-800 flex items-center gap-2 mb-6">✨ Thêm kỷ niệm mới</h4>
+                                <form onSubmit={handleAddTimeline} className="grid md:grid-cols-[200px_1fr] gap-8">
+                                    <div className="space-y-4">
+                                        <div className="aspect-square rounded-2xl border-2 border-dashed border-rose-200 bg-white flex flex-col items-center justify-center p-4 text-center group hover:border-rose-400 transition-all relative overflow-hidden">
+                                            <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">➕</span>
+                                            <p className="text-[10px] font-bold text-rose-400 uppercase">Ảnh kỷ niệm</p>
+                                            <input name="file" type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Tiêu đề mốc *</label>
+                                                <input name="title" className="input-field text-sm" placeholder="Ví dụ: Lần đầu đi chơi..." required />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Mốc thời gian</label>
+                                                <input name="eventDate" className="input-field text-sm" placeholder="Ví dụ: Tháng 5, 2019" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 px-1">Nội dung</label>
+                                            <textarea name="description" className="input-field text-sm min-h-[100px]" placeholder="Kể về khoảnh khắc này..." />
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <button 
+                                                type="submit" 
+                                                disabled={timelineSaving === 'new'}
+                                                className="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold shadow-lg shadow-rose-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
+                                            >
+                                                {timelineSaving === 'new' ? 'Đang thêm...' : '🚀 Thêm vào Timeline'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     )}

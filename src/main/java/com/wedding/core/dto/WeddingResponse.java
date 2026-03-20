@@ -47,6 +47,7 @@ public class WeddingResponse {
     private String musicUrl;
     private String templateCode;
     private List<WeddingImageResponse> images;
+    private List<LoveStoryEventResponse> loveStoryEvents;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

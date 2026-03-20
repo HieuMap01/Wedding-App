@@ -274,6 +274,69 @@ export default function Template1({ wedding, locale }: TemplateProps) {
                 </motion.section>
             )}
 
+            {/* Love Story Timeline */}
+            {wedding.loveStoryEvents && wedding.loveStoryEvents.length > 0 && (
+                <section className="py-24 px-6 bg-white overflow-hidden">
+                    <div className="max-w-5xl mx-auto">
+                        <motion.h2 className="text-4xl font-bold text-center mb-20" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+                            💕 Our Love Journey
+                        </motion.h2>
+
+                        <div className="relative">
+                            {/* Central Line */}
+                            <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 hidden md:block" style={{ background: `${primaryColor}22` }} />
+                            
+                            <div className="space-y-12 md:space-y-0">
+                                {wedding.loveStoryEvents.map((event, idx) => (
+                                    <div key={event.id} className="relative md:min-h-[300px] flex items-center">
+                                        {/* Dot on Line */}
+                                        <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full z-10 hidden md:block" style={{ background: primaryColor, boxShadow: `0 0 0 8px ${primaryColor}22` }} />
+                                        
+                                        <div className={`w-full grid md:grid-cols-2 gap-8 md:gap-20 items-center ${idx % 2 !== 0 ? 'md:direction-rtl' : ''}`}>
+                                            <motion.div 
+                                                className={`${idx % 2 !== 0 ? 'md:col-start-2' : ''}`}
+                                                initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                                                whileInView={{ opacity: 1, x: 0 }}
+                                                viewport={{ once: true, margin: "-100px" }}
+                                                transition={{ duration: 0.8, delay: 0.2 }}
+                                            >
+                                                {event.imageUrl && (
+                                                    <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-xl shadow-rose-100 group">
+                                                        <Image
+                                                            src={getImageUrl(event.imageUrl)}
+                                                            alt={event.title}
+                                                            width={600}
+                                                            height={450}
+                                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </motion.div>
+
+                                            <motion.div 
+                                                className={`space-y-3 ${idx % 2 !== 0 ? 'md:order-1 md:text-right' : 'md:text-left'}`}
+                                                initial={{ opacity: 0, x: idx % 2 === 0 ? 50 : -50 }}
+                                                whileInView={{ opacity: 1, x: 0 }}
+                                                viewport={{ once: true, margin: "-100px" }}
+                                                transition={{ duration: 0.8, delay: 0.4 }}
+                                            >
+                                                <div className="inline-block px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-2" style={{ background: `${primaryColor}15`, color: primaryColor }}>
+                                                    {event.eventDate}
+                                                </div>
+                                                <h3 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'var(--font-dancing)', fontSize: '2rem' }}>{event.title}</h3>
+                                                <div className="text-gray-600 leading-relaxed whitespace-pre-line italic">
+                                                    {event.description}
+                                                </div>
+                                            </motion.div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Venue & Map */}
             {(wedding.venueName || wedding.venueAddress || wedding.groomHouseAddress || wedding.brideHouseAddress) && (
                 <motion.section className="py-20 px-6" style={{ background: '#f5f0eb' }} initial={{ opacity: 0, scale: 0.98, y: 40 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1, ease: 'easeOut' }}>
