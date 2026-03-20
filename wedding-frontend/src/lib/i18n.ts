@@ -39,7 +39,8 @@ export const translations = {
         days: "Ngày",
         hours: "Giờ",
         minutes: "Phút",
-        seconds: "Giây"
+        seconds: "Giây",
+        viewMap: "Xem bản đồ"
     },
     en: {
         loading: "💍 Loading invitation...",
@@ -79,7 +80,8 @@ export const translations = {
         days: "Days",
         hours: "Hours",
         minutes: "Mins",
-        seconds: "Secs"
+        seconds: "Secs",
+        viewMap: "View Map"
     }
 };
 

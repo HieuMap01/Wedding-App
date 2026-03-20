@@ -58,7 +58,7 @@ export default function HeartEffect() {
         let lastSpawn = 0;
         const throttleAdd = (e: any) => {
             const now = Date.now();
-            if (now - lastSpawn > 400) { // Throttle significantly (400ms) for scroll performance
+            if (now - lastSpawn > 1000) { // Throttle heavily (1s) for scroll performance
                 handleInteraction(e);
                 lastSpawn = now;
             }
