@@ -46,9 +46,6 @@ export default function GuestWeddingPage() {
         loadWedding();
     }, [slug]);
 
-    const [showGroomMap, setShowGroomMap] = useState(false);
-    const [showBrideMap, setShowBrideMap] = useState(false);
-    const [showVenueMap, setShowVenueMap] = useState(false);
 
     const loadWedding = async () => {
         try {
@@ -380,27 +377,15 @@ export default function GuestWeddingPage() {
                                 {wedding.venueName && <p className="text-2xl font-semibold text-gray-800 mb-2">{wedding.venueName}</p>}
                                 {wedding.venueAddress && <p className="text-gray-600 mb-6">{wedding.venueAddress}</p>}
                                 {(wedding.venueAddress || wedding.venueName) && (
-                                    <div className="rounded-2xl overflow-hidden shadow-xl h-96 border-4 border-white bg-white relative flex items-center justify-center">
-                                        {!showVenueMap ? (
-                                            <div className="flex flex-col items-center">
-                                                <div className="text-4xl mb-4">📍</div>
-                                                <button 
-                                                    onClick={() => setShowVenueMap(true)}
-                                                    className="px-6 py-2 bg-slate-900 text-white rounded-full text-sm font-bold shadow-lg hover:bg-sky-600 transition-all"
-                                                >
-                                                    {t.viewMap}
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <iframe
-                                                title="Venue Map"
-                                                width="100%"
-                                                height="100%"
-                                                style={{ border: 0 }}
-                                                src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent((wedding.venueAddress || '') + (wedding.venueName ? ', ' + wedding.venueName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`}
-                                                allowFullScreen
-                                            />
-                                        )}
+                                    <div className="rounded-2xl overflow-hidden shadow-xl h-96 border-4 border-white bg-white">
+                                        <iframe
+                                            title="Venue Map"
+                                            width="100%"
+                                            height="100%"
+                                            style={{ border: 0 }}
+                                            src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent((wedding.venueAddress || '') + (wedding.venueName ? ', ' + wedding.venueName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`}
+                                            allowFullScreen
+                                        />
                                     </div>
                                 )}
                             </motion.div>
@@ -436,28 +421,19 @@ export default function GuestWeddingPage() {
                                             <span className="text-gray-400 mt-1">📍</span>
                                             <p className="text-gray-600 text-sm leading-relaxed">{wedding.groomHouseAddress}</p>
                                         </div>
-                                        <div className="rounded-xl overflow-hidden shadow-inner h-64 w-full bg-slate-50 relative flex items-center justify-center border border-slate-100">
-                                            {!showGroomMap ? (
-                                                <button 
-                                                    onClick={() => setShowGroomMap(true)}
-                                                    className="px-4 py-1.5 bg-white border border-slate-200 text-slate-800 rounded-full text-xs font-bold shadow-sm hover:border-sky-300 transition-all"
-                                                >
-                                                    {t.viewMap}
-                                                </button>
-                                            ) : (
-                                                <iframe
-                                                    title="Groom Map"
-                                                    width="100%"
-                                                    height="100%"
-                                                    style={{ border: 0 }}
-                                                    src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(
-                                                        wedding.groomHouseLat && wedding.groomHouseLng
-                                                            ? `${wedding.groomHouseLat},${wedding.groomHouseLng}`
-                                                            : (wedding.groomHouseAddress || '') + (wedding.groomHouseName ? ', ' + wedding.groomHouseName : '')
-                                                    )}&ie=UTF8&t=&z=15&iwloc=B&output=embed`}
-                                                    allowFullScreen
-                                                />
-                                            )}
+                                        <div className="rounded-xl overflow-hidden shadow-inner h-64 w-full bg-gray-100">
+                                            <iframe
+                                                title="Groom Map"
+                                                width="100%"
+                                                height="100%"
+                                                style={{ border: 0 }}
+                                                src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(
+                                                    wedding.groomHouseLat && wedding.groomHouseLng
+                                                        ? `${wedding.groomHouseLat},${wedding.groomHouseLng}`
+                                                        : (wedding.groomHouseAddress || '') + (wedding.groomHouseName ? ', ' + wedding.groomHouseName : '')
+                                                )}&ie=UTF8&t=&z=15&iwloc=B&output=embed`}
+                                                allowFullScreen
+                                            />
                                         </div>
                                     </motion.div>
                                 )}
@@ -484,28 +460,19 @@ export default function GuestWeddingPage() {
                                             <span className="text-gray-400 mt-1">📍</span>
                                             <p className="text-gray-600 text-sm leading-relaxed">{wedding.brideHouseAddress}</p>
                                         </div>
-                                        <div className="rounded-xl overflow-hidden shadow-inner h-64 w-full bg-slate-50 relative flex items-center justify-center border border-slate-100">
-                                            {!showBrideMap ? (
-                                                <button 
-                                                    onClick={() => setShowBrideMap(true)}
-                                                    className="px-4 py-1.5 bg-white border border-slate-200 text-slate-800 rounded-full text-xs font-bold shadow-sm hover:border-rose-300 transition-all"
-                                                >
-                                                    {t.viewMap}
-                                                </button>
-                                            ) : (
-                                                <iframe
-                                                    title="Bride Map"
-                                                    width="100%"
-                                                    height="100%"
-                                                    style={{ border: 0 }}
-                                                    src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(
-                                                        wedding.brideHouseLat && wedding.brideHouseLng
-                                                            ? `${wedding.brideHouseLat},${wedding.brideHouseLng}`
-                                                            : (wedding.brideHouseAddress || '') + (wedding.brideHouseName ? ', ' + wedding.brideHouseName : '')
-                                                    )}&ie=UTF8&t=&z=15&iwloc=B&output=embed`}
-                                                    allowFullScreen
-                                                />
-                                            )}
+                                        <div className="rounded-xl overflow-hidden shadow-inner h-64 w-full bg-gray-100">
+                                            <iframe
+                                                title="Bride Map"
+                                                width="100%"
+                                                height="100%"
+                                                style={{ border: 0 }}
+                                                src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent(
+                                                    wedding.brideHouseLat && wedding.brideHouseLng
+                                                        ? `${wedding.brideHouseLat},${wedding.brideHouseLng}`
+                                                        : (wedding.brideHouseAddress || '') + (wedding.brideHouseName ? ', ' + wedding.brideHouseName : '')
+                                                )}&ie=UTF8&t=&z=15&iwloc=B&output=embed`}
+                                                allowFullScreen
+                                            />
                                         </div>
                                     </motion.div>
                                 )}
