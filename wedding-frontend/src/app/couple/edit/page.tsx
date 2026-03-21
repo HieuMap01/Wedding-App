@@ -98,6 +98,8 @@ export default function EditWeddingPage() {
         bridePosition: 'Út Nữ',
         groomQrCodeUrl: '',
         brideQrCodeUrl: '',
+        groomHouseNote: '',
+        brideHouseNote: '',
     });
 
     useEffect(() => {
@@ -146,6 +148,8 @@ export default function EditWeddingPage() {
                 bridePosition: res.data.bridePosition || 'Út Nữ',
                 groomQrCodeUrl: res.data.groomQrCodeUrl || '',
                 brideQrCodeUrl: res.data.brideQrCodeUrl || '',
+                groomHouseNote: res.data.groomHouseNote || '',
+                brideHouseNote: res.data.brideHouseNote || '',
             });
             if (res.data.groomHouseAddress || res.data.brideHouseAddress) {
                 setVenueType('separate');
@@ -457,6 +461,12 @@ export default function EditWeddingPage() {
                                                 <input className="input-field text-sm font-bold text-primary" value={form.groomPosition} onChange={(e) => update('groomPosition', e.target.value)} placeholder="Vị trí (Ví dụ: Trưởng Nam)" />
                                                 <input className="input-field text-sm" value={form.groomFatherName} onChange={(e) => update('groomFatherName', e.target.value)} placeholder="Tên Cha chú rể (Ví dụ: Ông Nguyễn Văn A)" />
                                                 <input className="input-field text-sm" value={form.groomMotherName} onChange={(e) => update('groomMotherName', e.target.value)} placeholder="Tên Mẹ chú rể (Ví dụ: Bà Lê Thị B)" />
+                                                <textarea 
+                                                    className="input-field text-sm min-h-[100px] py-2" 
+                                                    value={form.groomHouseNote} 
+                                                    onChange={(e) => update('groomHouseNote', e.target.value)} 
+                                                    placeholder="Thông tin bổ sung nhà trai (Ví dụ: Lễ gia tiên được tổ chức tại...)"
+                                                />
                                             </div>
                                         </div>
 

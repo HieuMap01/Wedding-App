@@ -69,6 +69,15 @@ export default function Template2({ wedding, locale }: TemplateProps) {
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+    // Helper to generate VietQR URL
+    const getVietQrUrl = (bankName: string | undefined, accountNumber: string | undefined, holder: string | undefined) => {
+        if (!bankName || !accountNumber) return null;
+        const bankId = bankName.includes(' - ') ? bankName.split(' - ')[0] : bankName;
+        // Clean account number of common formatting characters
+        const cleanAccountNumber = accountNumber.replace(/[\s.·•-]/g, '');
+        return `https://img.vietqr.io/image/${bankId}-${cleanAccountNumber}-compact.jpg?amount=0&addInfo=Chuc%20mung%20hanh%20phuc&accountName=${encodeURIComponent(holder || '')}`;
+    };
+
     const primaryColor = '#8b0000'; // Deep Red
     const secondaryColor = '#d4af37'; // Gold
     const weddingDate = wedding.weddingDate ? new Date(wedding.weddingDate) : null;
@@ -127,88 +136,108 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 className={showWelcome ? 'h-screen overflow-hidden' : ''}
             >
                 {/* Traditional Hero Header */}
-                <header className="py-20 bg-[#fdfaf5] relative overflow-hidden flex flex-col items-center border-b-[6px] border-[#8b0000]">
-                    {/* Background Dragons - Improved visibility and positioning */}
-                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] flex justify-between px-4 md:px-20 overflow-hidden">
-                        <div className="relative w-64 h-full">
-                            <Image src="/images/traditional-bg.png" alt="Dragon Left" fill className="object-contain object-left scale-150 transform -translate-x-12" />
-                        </div>
-                        <div className="relative w-64 h-full">
-                            <Image src="/images/traditional-bg.png" alt="Dragon Right" fill className="object-contain object-right scale-150 transform translate-x-12" />
+                <header className="relative bg-[#fdfaf5] overflow-hidden border-b-[6px] border-[#8b0000]">
+                    {/* Top Decorative Bar with repeating dragons */}
+                    <div className="h-16 md:h-24 bg-[#8b0000] relative overflow-hidden flex items-center">
+                        <div className="absolute inset-0 opacity-40 flex justify-center items-center gap-12 pointer-events-none">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="relative w-32 h-full flex-shrink-0">
+                                    <Image src="/images/traditional-bg.png" alt="" fill className="object-contain" />
+                                </div>
+                            ))}
                         </div>
                     </div>
-                    
-                    {/* Subtle Silk Texture Pattern */}
-                    <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#8b0000 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1 }}
-                        className="relative z-10 flex flex-col items-center"
-                    >
-                        {/* Circular Photos with traditional "Hy" in middle */}
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20 mb-12">
-                            <div className="relative">
-                                <div className="w-48 h-48 md:w-64 md:h-64 rounded-full border-8 border-white shadow-xl overflow-hidden relative z-10 transition-transform duration-700 hover:scale-105">
-                                    <Image 
-                                        src={wedding.groomImageUrl ? getImageUrl(wedding.groomImageUrl) : "/images/placeholder-groom.jpg"} 
-                                        alt="Groom" 
-                                        fill 
-                                        className="object-cover" 
-                                    />
-                                </div>
-                                <div className="absolute -bottom-4 inset-x-0 text-center z-20">
-                                    <span className="bg-[#8b0000] text-[#f3e5ab] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md whitespace-nowrap">
-                                        {wedding.groomPosition || 'Trưởng Nam'}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="relative flex items-center justify-center">
-                                <div className="w-20 h-20 rounded-full bg-[#f3e5ab] border-4 border-[#8b0000] flex items-center justify-center text-[#8b0000] text-3xl font-bold shadow-inner">
-                                    囍
-                                </div>
-                            </div>
-
-                            <div className="relative">
-                                <div className="w-48 h-48 md:w-64 md:h-64 rounded-full border-8 border-white shadow-xl overflow-hidden relative z-10 transition-transform duration-700 hover:scale-105">
-                                    <Image 
-                                        src={wedding.brideImageUrl ? getImageUrl(wedding.brideImageUrl) : "/images/placeholder-bride.jpg"} 
-                                        alt="Bride" 
-                                        fill 
-                                        className="object-cover" 
-                                    />
-                                </div>
-                                <div className="absolute -bottom-4 inset-x-0 text-center z-20">
-                                    <span className="bg-[#8b0000] text-[#f3e5ab] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md whitespace-nowrap">
-                                        {wedding.bridePosition || 'Út Nữ'}
-                                    </span>
-                                </div>
+                    {/* Main Hero Section */}
+                    <div className="py-16 md:py-24 relative flex flex-col items-center">
+                        {/* Large Background Dragon Pattern */}
+                        <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.1] flex justify-center items-center px-4 overflow-hidden">
+                            <div className="relative w-full max-w-5xl h-full">
+                                <Image src="/images/traditional-bg.png" alt="Background Motif" fill className="object-contain scale-125" />
                             </div>
                         </div>
+                        
+                        {/* Subtle Silk Texture */}
+                        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#8b0000 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
 
-                        <div className="text-center px-6">
-                            <h2 className="text-4xl md:text-5xl font-bold text-[#8b0000] mb-2 tracking-wide italic" style={{ fontFamily: 'var(--font-playfair), serif' }}>
-                                {wedding.groomName} & {wedding.brideName}
-                            </h2>
-                            <p className="text-[#8b0000]/60 uppercase tracking-[0.4em] text-xs font-bold mb-8">
-                                Trân trọng kính mời
-                            </p>
-                            
-                            {weddingDate && (
-                                <div className="inline-block border-y-2 border-[#8b0000]/20 py-4 px-10">
-                                    <p className="text-xl md:text-2xl text-[#8b0000] font-bold">
-                                        {weddingDate.toLocaleDateString('vi-VN', { weekday: 'long' })}, {weddingDate.toLocaleDateString('vi-VN')}
-                                    </p>
-                                    <p className="text-sm text-[#8a6e2f] italic mt-1 font-medium">
-                                        (Tức ngày {lunarDateStr})
-                                    </p>
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1 }}
+                            className="relative z-10 w-full max-w-6xl px-6"
+                        >
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-0">
+                                {/* Groom Side */}
+                                <div className="flex-1 flex flex-col items-center text-center">
+                                    <div className="relative mb-6">
+                                        <div className="w-44 h-44 md:w-56 md:h-56 rounded-full border-8 border-white shadow-2xl overflow-hidden relative z-10">
+                                            <Image 
+                                                src={wedding.groomImageUrl ? getImageUrl(wedding.groomImageUrl) : "/images/placeholder-groom.jpg"} 
+                                                alt="Groom" 
+                                                fill 
+                                                className="object-cover" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[#8a6e2f] uppercase tracking-[0.2em] text-[10px] font-bold">
+                                            {wedding.groomPosition || 'Trưởng Nam'}
+                                        </p>
+                                        <h2 className="text-3xl md:text-5xl font-bold text-[#8b0000] leading-none" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                                            {wedding.groomName}
+                                        </h2>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                    </motion.div>
+
+                                {/* Central Symbol */}
+                                <div className="px-4 md:px-12 flex items-center justify-center">
+                                    <div className="text-[#8b0000] text-7xl md:text-[10rem] font-bold select-none drop-shadow-md opacity-[0.85] leading-none">
+                                        <span style={{ textShadow: '4px 4px 0 #fff, -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff' }}>囍</span>
+                                    </div>
+                                </div>
+
+                                {/* Bride Side */}
+                                <div className="flex-1 flex flex-col items-center text-center">
+                                    <div className="relative mb-6">
+                                        <div className="w-44 h-44 md:w-56 md:h-56 rounded-full border-8 border-white shadow-2xl overflow-hidden relative z-10">
+                                            <Image 
+                                                src={wedding.brideImageUrl ? getImageUrl(wedding.brideImageUrl) : "/images/placeholder-bride.jpg"} 
+                                                alt="Bride" 
+                                                fill 
+                                                className="object-cover" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[#8a6e2f] uppercase tracking-[0.2em] text-[10px] font-bold">
+                                            {wedding.bridePosition || 'Út Nữ'}
+                                        </p>
+                                        <h2 className="text-3xl md:text-5xl font-bold text-[#8b0000] leading-none" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                                            {wedding.brideName}
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="text-center mt-12">
+                                <p className="text-[#8b0000]/40 uppercase tracking-[0.5em] text-[10px] font-bold mb-8">
+                                    Trân trọng kính mời
+                                </p>
+                                
+                                {weddingDate && (
+                                    <div className="inline-block border-y border-[#8b0000]/10 py-6 px-12">
+                                        <p className="text-xl md:text-2xl text-[#8b0000] font-bold tracking-wide">
+                                            {weddingDate.toLocaleDateString('vi-VN', { weekday: 'long' })}, {weddingDate.toLocaleDateString('vi-VN')}
+                                        </p>
+                                        <p className="text-sm text-[#8a6e2f] italic mt-2 font-medium">
+                                            (Tức ngày {lunarDateStr})
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
                 </header>
 
                 {/* Ceremony Info Section */}
@@ -237,7 +266,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                         <p className="text-[#8a6e2f] uppercase tracking-widest text-[10px] font-bold mb-2">Nhà Trai</p>
                                         <div className="text-gray-700 leading-relaxed font-medium">
                                             <p className="text-lg text-[#8b0000] font-bold mb-2">Ông bà: {wedding.groomFatherName || '...'} & {wedding.groomMotherName || '...'}</p>
-                                            <p className="text-sm italic opacity-70 mb-4">{t.groomHouse}</p>
+                                            <p className="text-sm italic opacity-70 mb-4">
+                                                {wedding.groomHouseNote || 'Lễ gia tiên Nhà Trai'}
+                                            </p>
                                             <p className="text-gray-600 border-t border-[#8b0000]/5 pt-4">{wedding.groomHouseAddress || '...'}</p>
                                         </div>
                                     </div>
@@ -254,7 +285,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                         <p className="text-[#8a6e2f] uppercase tracking-widest text-[10px] font-bold mb-2">Nhà Gái</p>
                                         <div className="text-gray-700 leading-relaxed font-medium">
                                             <p className="text-lg text-[#8b0000] font-bold mb-2">Ông bà: {wedding.brideFatherName || '...'} & {wedding.brideMotherName || '...'}</p>
-                                            <p className="text-sm italic opacity-70 mb-4">{t.brideHouse}</p>
+                                            <p className="text-sm italic opacity-70 mb-4">
+                                                {wedding.brideHouseNote || 'Lễ gia tiên Nhà Gái'}
+                                            </p>
                                             <p className="text-gray-600 border-t border-[#8b0000]/5 pt-4">{wedding.brideHouseAddress || '...'}</p>
                                         </div>
                                     </div>
@@ -385,12 +418,25 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                         className="absolute inset-0 cursor-zoom-in"
                                         onClick={() => setIsLightboxOpen(true)}
                                     >
-                                        <Image 
-                                            src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
-                                            alt="Wedding Gallery" 
-                                            fill 
-                                            className="object-cover" 
-                                        />
+                                        <div className="absolute inset-0 z-0 bg-[#8b0000]/5 flex items-center justify-center">
+                                            {/* Blurred Background */}
+                                            <Image 
+                                                src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
+                                                alt="" 
+                                                fill 
+                                                className="object-cover blur-2xl opacity-20 scale-110" 
+                                            />
+                                            {/* Top Layer Image */}
+                                            <div className="relative w-full h-full z-10 flex items-center justify-center p-4">
+                                                <Image 
+                                                    src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
+                                                    alt="Wedding Gallery" 
+                                                    fill 
+                                                    className="object-contain" 
+                                                    sizes="(max-width: 768px) 100vw, 800px"
+                                                />
+                                            </div>
+                                        </div>
                                     </motion.div>
                                 </AnimatePresence>
                                 
@@ -467,9 +513,13 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                             <div className="w-56 h-56 bg-white rounded-2xl p-4 border-2 border-slate-100 mb-6 shadow-inner flex items-center justify-center">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img 
-                                                    src={`https://img.vietqr.io/image/${wedding.groomBankName}-${wedding.groomBankAccountNumber}-compact.jpg?amount=0&addInfo=Chuc%20mung%20hanh%20phuc&accountName=${encodeURIComponent(wedding.groomBankAccountHolder || '')}`}
+                                                    src={getVietQrUrl(wedding.groomBankName, wedding.groomBankAccountNumber, wedding.groomBankAccountHolder) || ''}
                                                     className="max-w-full max-h-full object-contain" 
                                                     alt="Groom VietQR" 
+                                                    onError={(e) => {
+                                                        const target = e.currentTarget;
+                                                        target.style.display = 'none';
+                                                    }}
                                                 />
                                             </div>
                                             <p className="text-sm font-bold text-gray-700 uppercase tracking-wider">{wedding.groomBankAccountHolder}</p>
@@ -489,9 +539,13 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                             <div className="w-56 h-56 bg-white rounded-2xl p-4 border-2 border-slate-100 mb-6 shadow-inner flex items-center justify-center">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img 
-                                                    src={`https://img.vietqr.io/image/${wedding.brideBankName}-${wedding.brideBankAccountNumber}-compact.jpg?amount=0&addInfo=Chuc%20mung%20hanh%20phuc&accountName=${encodeURIComponent(wedding.brideBankAccountHolder || '')}`}
+                                                    src={getVietQrUrl(wedding.brideBankName, wedding.brideBankAccountNumber, wedding.brideBankAccountHolder) || ''}
                                                     className="max-w-full max-h-full object-contain" 
                                                     alt="Bride VietQR" 
+                                                    onError={(e) => {
+                                                        const target = e.currentTarget;
+                                                        target.style.display = 'none';
+                                                    }}
                                                 />
                                             </div>
                                             <p className="text-sm font-bold text-gray-700 uppercase tracking-wider">{wedding.brideBankAccountHolder}</p>

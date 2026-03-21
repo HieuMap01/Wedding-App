@@ -141,6 +141,12 @@ public class Wedding {
     @Column(name = "bride_qr_code_url")
     private String brideQrCodeUrl;
 
+    @Column(name = "groom_house_note", columnDefinition = "TEXT")
+    private String groomHouseNote;
+
+    @Column(name = "bride_house_note", columnDefinition = "TEXT")
+    private String brideHouseNote;
+
     @Builder.Default
     @Column(name = "is_active")
     private Boolean isActive = true;

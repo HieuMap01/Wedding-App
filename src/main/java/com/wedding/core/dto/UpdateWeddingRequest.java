@@ -46,4 +46,6 @@ public class UpdateWeddingRequest {
     private String bridePosition;
     private String groomQrCodeUrl;
     private String brideQrCodeUrl;
+    private String groomHouseNote;
+    private String brideHouseNote;
 }

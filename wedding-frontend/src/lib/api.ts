@@ -248,6 +248,8 @@ export interface WeddingResponse {
   bridePosition?: string;
   groomQrCodeUrl?: string;
   brideQrCodeUrl?: string;
+  groomHouseNote?: string;
+  brideHouseNote?: string;
   templateCode: string;
   images: WeddingImageResponse[];
   loveStoryEvents: LoveStoryEventResponse[];
