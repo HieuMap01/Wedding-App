@@ -41,7 +41,7 @@ export default function CoupleLayout({ children }: { children: React.ReactNode }
         <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
             {/* Mobile Header */}
             <header className="md:hidden h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-50">
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/couple" className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-primary text-white rounded-md flex justify-center items-center font-bold text-sm">W</div>
                     <span className="font-display font-semibold text-slate-900 tracking-tight text-lg">WeddingApp</span>
                 </Link>
@@ -64,7 +64,7 @@ export default function CoupleLayout({ children }: { children: React.ReactNode }
             {/* Sidebar */}
             <aside className={`w-64 bg-white border-r border-slate-200 flex flex-col fixed top-0 bottom-0 left-0 z-40 transition-transform duration-300 h-screen ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                 <div className="h-16 hidden md:flex items-center border-b border-slate-100 px-6">
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/couple" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-primary text-white rounded-md flex justify-center items-center font-bold text-sm">
                             W
                         </div>

@@ -1,8 +1,28 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Home() {
+    const { user, loading, isAdmin, isCouple } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && user) {
+            if (isAdmin) router.push('/admin');
+            else if (isCouple) router.push('/couple');
+        }
+    }, [user, loading, isAdmin, isCouple, router]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="text-slate-500 font-medium text-lg">⏳ Đang tải...</div>
+            </div>
+        );
+    }
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
 
