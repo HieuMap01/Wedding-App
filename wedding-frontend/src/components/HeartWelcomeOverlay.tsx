@@ -39,11 +39,21 @@ export default function HeartWelcomeOverlay({
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: 'url("/images/heart-bg.png")',
-          backgroundSize: "600px",
+          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
+            `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'>` +
+              `<defs><path id='h' d='M10 6.5C10 3.5 8 2 6 2S2 3.5 2 6.5C2 11 6 13 10 17c4-4 8-6 8-10.5C18 3.5 16 2 14 2S10 3.5 10 6.5z'/></defs>` +
+              `<g fill='${primaryColor}' opacity='1'>` +
+              `<use href='#h' transform='translate(25,30) scale(1.2) rotate(10,10,10)'/>` +
+              `<use href='#h' transform='translate(180,15) scale(0.9) rotate(-12,10,10)'/>` +
+              `<use href='#h' transform='translate(80,120) scale(1.0) rotate(18,10,10)'/>` +
+              `<use href='#h' transform='translate(220,140) scale(1.3) rotate(-6,10,10)'/>` +
+              `<use href='#h' transform='translate(40,230) scale(0.85) rotate(14,10,10)'/>` +
+              `<use href='#h' transform='translate(170,250) scale(1.1) rotate(-10,10,10)'/>` +
+              `</g></svg>`
+          )}")`,
+          backgroundSize: "300px 300px",
           backgroundRepeat: "repeat",
-          opacity: 0.03,
-          scale: 3,
+          opacity: 0.08,
         }}
       />
 

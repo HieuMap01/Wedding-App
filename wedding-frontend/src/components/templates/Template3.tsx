@@ -288,15 +288,25 @@ export default function Template3({ wedding, locale }: TemplateProps) {
         } as React.CSSProperties
       }
     >
-      {/* Full-screen heart pattern background */}
+      {/* Full-screen SVG heart pattern background */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
-          backgroundImage: 'url("/images/heart-bg.png")',
-          backgroundSize: "500px",
+          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
+            `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'>` +
+              `<defs><path id='h' d='M10 6.5C10 3.5 8 2 6 2S2 3.5 2 6.5C2 11 6 13 10 17c4-4 8-6 8-10.5C18 3.5 16 2 14 2S10 3.5 10 6.5z'/></defs>` +
+              `<g fill='${primaryColor}' opacity='0.5'>` +
+              `<use href='#h' transform='translate(25,30) scale(1.2) rotate(10,10,10)'/>` +
+              `<use href='#h' transform='translate(180,15) scale(0.9) rotate(-12,10,10)'/>` +
+              `<use href='#h' transform='translate(80,120) scale(1.0) rotate(18,10,10)'/>` +
+              `<use href='#h' transform='translate(220,140) scale(1.3) rotate(-6,10,10)'/>` +
+              `<use href='#h' transform='translate(40,230) scale(0.85) rotate(14,10,10)'/>` +
+              `<use href='#h' transform='translate(170,250) scale(1.1) rotate(-10,10,10)'/>` +
+              `</g></svg>`
+          )}")`,
+          backgroundSize: "300px 300px",
           backgroundRepeat: "repeat",
-          opacity: 0.03,
-          scale: 3,
+          opacity: 0.05,
         }}
       />
 
@@ -527,7 +537,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
                   {lunarDateStr}
                 </p>
 
-                <div className="mt-6 scale-90 sm:scale-100">
+                <div className="mt-3 scale-90 sm:scale-100">
                   <Countdown
                     targetDate={wedding.weddingDate}
                     primaryColor={primaryColor}
@@ -578,7 +588,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
                 <div
                   className="w-16 h-1 mx-auto mt-4 rounded-full"
                   style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+                    background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
                   }}
                 />
               </motion.div>
@@ -723,7 +733,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
                 <div
                   className="w-16 h-1 mx-auto mt-4 rounded-full"
                   style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+                    background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
                   }}
                 />
               </motion.div>
@@ -1029,7 +1039,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
               <div
                 className="w-16 h-1 mx-auto mb-12 rounded-full"
                 style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+                  background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
                 }}
               />
 
@@ -1081,7 +1091,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
                       <div
                         className="absolute top-0 left-0 w-full h-1.5 rounded-b-full"
                         style={{
-                          background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+                          background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
                         }}
                       />
                       <div className="flex items-center gap-3 mb-5 mt-2">
@@ -1134,7 +1144,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
                       <div
                         className="absolute top-0 left-0 w-full h-1.5 rounded-b-full"
                         style={{
-                          background: `linear-gradient(90deg, ${secondaryColor}, ${primaryColor})`,
+                          background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
                         }}
                       />
                       <div className="flex items-center gap-3 mb-5 mt-2">
@@ -1207,7 +1217,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
             <div
               className="w-12 h-1 mx-auto mt-3 mb-4 rounded-full"
               style={{
-                background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+                background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
               }}
             />
             <p className="text-gray-500 mb-10">{t.rsvpDesc}</p>
@@ -1386,7 +1396,7 @@ export default function Template3({ wedding, locale }: TemplateProps) {
               <div
                 className="w-16 h-1 mx-auto mt-3 mb-4 rounded-full"
                 style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+                  background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
                 }}
               />
               <p className="text-gray-500 mb-16 text-base max-w-xl mx-auto">
