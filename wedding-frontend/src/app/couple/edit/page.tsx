@@ -368,6 +368,36 @@ export default function EditWeddingPage() {
                                 )}
                             </div>
 
+                            <div className="mt-8 pt-8 border-t border-slate-100">
+                                <label className="block text-sm font-semibold text-slate-700 mb-4 text-center">Chọn mẫu thiệp</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div 
+                                        onClick={() => update('templateCode', 'template1')}
+                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template1' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
+                                    >
+                                        <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-3 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
+                                            Mẫu Hiện Đại (1)
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-bold">Mẫu 1</span>
+                                            {form.templateCode === 'template1' && <span className="text-primary">✓</span>}
+                                        </div>
+                                    </div>
+                                    <div 
+                                        onClick={() => update('templateCode', 'template2')}
+                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template2' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
+                                    >
+                                        <div className="aspect-[3/4] rounded-lg bg-red-100 mb-3 flex items-center justify-center text-red-600 font-bold border border-red-200">
+                                            Mẫu Truyền Thống (2)
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-bold">Mẫu 2</span>
+                                            {form.templateCode === 'template2' && <span className="text-primary">✓</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Traditional fields for Template 2 */}
                             {form.templateCode === 'template2' && (
                                 <div className="mt-8 pt-8 border-t border-slate-100 space-y-8 animate-fade-in-up">
@@ -697,35 +727,6 @@ export default function EditWeddingPage() {
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Câu chuyện tình yêu</label>
                                 <textarea className="input-field min-h-[120px] text-sm" value={form.loveStory} onChange={(e) => update('loveStory', e.target.value)} placeholder="Kể về hành trình của hai bạn..." />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-4 text-center">Chọn mẫu thiệp</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div 
-                                        onClick={() => update('templateCode', 'template1')}
-                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template1' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
-                                    >
-                                        <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-3 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
-                                            Mẫu Hiện Đại (1)
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm font-bold">Mẫu 1</span>
-                                            {form.templateCode === 'template1' && <span className="text-primary">✓</span>}
-                                        </div>
-                                    </div>
-                                    <div 
-                                        onClick={() => update('templateCode', 'template2')}
-                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template2' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
-                                    >
-                                        <div className="aspect-[3/4] rounded-lg bg-red-100 mb-3 flex items-center justify-center text-red-600 font-bold border border-red-200">
-                                            Mẫu Truyền Thống (2)
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm font-bold">Mẫu 2</span>
-                                            {form.templateCode === 'template2' && <span className="text-primary">✓</span>}
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-6">
