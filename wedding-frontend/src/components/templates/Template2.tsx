@@ -137,7 +137,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 {/* Traditional Hero Header */}
                 <header className="relative bg-[#fdfaf5] overflow-hidden border-b-[6px] border-[#8b0000]">
                     {/* Top Decorative Bar with masked dragon pattern */}
-                    <div className="h-20 md:h-24 bg-[#b71c1c] relative overflow-hidden border-b-2 border-[#d4af37]/30 shadow-md">
+                    <div className="h-20 md:h-24 bg-[#700000] relative overflow-hidden border-b-2 border-[#d4af37]/30 shadow-md">
                         <div className="absolute inset-0 opacity-70 mix-blend-overlay">
                             <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                         </div>
@@ -152,8 +152,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 <Image src="/images/traditional-bg.png" alt="Background" fill className="object-cover desaturate contrast-125" />
                             </div>
                             
-                            {/* Middle Red Strip - Passing through the CENTER of avatars & symbol */}
-                            <div className="absolute top-[38%] md:top-[42%] left-0 w-full h-16 md:h-20 bg-[#b71c1c] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0 transform -translate-y-1/2">
+                            {/* Middle Red Strip - Passing through the CENTER of avatars & symbol on both desktop and mobile */}
+                            <div className="absolute top-[32%] md:top-[42%] left-0 w-full h-16 md:h-20 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
                                 <div className="absolute inset-0 opacity-60 mix-blend-overlay">
                                     <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                                 </div>
@@ -161,7 +161,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                         </div>
 
                         {/* Subtle Silk Texture */}
-                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-1" style={{ backgroundImage: 'radial-gradient(#b71c1c 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-1" style={{ backgroundImage: 'radial-gradient(#700000 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
 
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -170,10 +170,11 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                             transition={{ duration: 1 }}
                             className="relative z-10 w-full max-w-6xl px-4 md:px-12"
                         >
-                            <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-0">
-                                <div className="flex-1 flex flex-col items-center text-center relative">
-                                    <div className="relative mb-8 md:mb-12">
-                                        <div className="w-40 h-40 md:w-72 md:h-72 rounded-full border-[6px] md:border-[10px] border-white shadow-2xl overflow-hidden relative z-10 ring-1 ring-[#8b0000]/10">
+                            <div className="flex flex-row items-center justify-center gap-2 md:gap-0 h-48 md:h-96 relative">
+                                {/* Groom Column */}
+                                <div className="flex-1 flex flex-col items-center text-center relative z-10">
+                                    <div className="relative">
+                                        <div className="w-24 h-24 sm:w-40 sm:h-40 md:w-72 md:h-72 rounded-full border-[4px] md:border-[10px] border-white shadow-2xl overflow-hidden relative z-10 ring-1 ring-black/5">
                                             <Image 
                                                 src={wedding.groomImageUrl ? getImageUrl(wedding.groomImageUrl) : "/images/placeholder-groom.jpg"} 
                                                 alt="Groom" 
@@ -182,28 +183,21 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-2 mt-4">
-                                        <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
-                                            {wedding.groomPosition || 'Trưởng Nam'}
-                                        </p>
-                                        <h2 className="text-4xl md:text-6xl text-[#8b0000] font-normal" style={{ fontFamily: 'var(--font-playfair), serif' }}>
-                                            {wedding.groomName}
-                                        </h2>
-                                    </div>
                                 </div>
 
-                                {/* Central Symbol */}
-                                <div className="px-2 md:px-8 flex items-center justify-center relative min-w-[100px] md:min-w-[200px] z-20">
-                                    <div className="text-[#b71c1c] text-8xl md:text-[11rem] font-bold select-none leading-none transform -translate-y-4 md:-translate-y-6">
-                                        <span className="relative inline-block px-4 py-2" style={{ textShadow: '4.5px 4.5px 0 #fff, -4.5px -4.5px 0 #fff, 4.5px -4.5px 0 #fff, -4.5px 4.5px 0 #fff' }}>
+                                {/* Central Symbol Column */}
+                                <div className="px-2 md:px-8 flex items-center justify-center relative min-w-[70px] sm:min-w-[120px] md:min-w-[200px] z-20">
+                                    <div className="text-[#700000] text-5xl sm:text-7xl md:text-[11rem] font-bold select-none leading-none">
+                                        <span className="relative inline-block px-1 md:px-4 py-1" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 4px 10px rgba(0,0,0,0.1)' }}>
                                             囍
                                         </span>
                                     </div>
                                 </div>
 
-                                <div className="flex-1 flex flex-col items-center text-center relative">
-                                    <div className="relative mb-8 md:mb-12">
-                                        <div className="w-40 h-40 md:w-72 md:h-72 rounded-full border-[6px] md:border-[10px] border-white shadow-2xl overflow-hidden relative z-10 ring-1 ring-[#8b0000]/10">
+                                {/* Bride Column */}
+                                <div className="flex-1 flex flex-col items-center text-center relative z-10">
+                                    <div className="relative">
+                                        <div className="w-24 h-24 sm:w-40 sm:h-40 md:w-72 md:h-72 rounded-full border-[4px] md:border-[10px] border-white shadow-2xl overflow-hidden relative z-10 ring-1 ring-black/5">
                                             <Image 
                                                 src={wedding.brideImageUrl ? getImageUrl(wedding.brideImageUrl) : "/images/placeholder-bride.jpg"} 
                                                 alt="Bride" 
@@ -212,14 +206,26 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-2 mt-4">
-                                        <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
-                                            {wedding.bridePosition || 'Út Nữ'}
-                                        </p>
-                                        <h2 className="text-4xl md:text-6xl text-[#8b0000] font-normal" style={{ fontFamily: 'var(--font-playfair), serif' }}>
-                                            {wedding.brideName}
-                                        </h2>
-                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Position Labels and Names (Desktop/Mobile responsive) */}
+                            <div className="grid grid-cols-2 gap-4 md:gap-0 mt-8 md:mt-12 max-w-5xl mx-auto px-4">
+                                <div className="text-center space-y-2">
+                                    <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
+                                        {wedding.groomPosition || 'Trưởng Nam'}
+                                    </p>
+                                    <h2 className="text-2xl md:text-6xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                                        {wedding.groomName}
+                                    </h2>
+                                </div>
+                                <div className="text-center space-y-2">
+                                    <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
+                                        {wedding.bridePosition || 'Út Nữ'}
+                                    </p>
+                                    <h2 className="text-2xl md:text-6xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                                        {wedding.brideName}
+                                    </h2>
                                 </div>
                             </div>
 
