@@ -11,8 +11,31 @@ const INTERACTION_EVENTS = [
   "mousedown",
   "keydown",
 ] as const;
+
 const LABEL_TIMEOUT_MS = 8000;
+const DEFAULT_VOLUME = 0.15;
 const MUSIC_NOTES = ["🎵", "🎶", "🎼"] as const;
+
+// Tailwind cannot detect dynamically constructed class names (e.g. `h-${n}`).
+// We must use full static class strings for each bar so they survive tree-shaking.
+const BARS = [
+  {
+    height: "h-3",
+    delay: "animate-[music-bar_0.8s_ease-in-out_0s_infinite_alternate]",
+  },
+  {
+    height: "h-4",
+    delay: "animate-[music-bar_0.8s_ease-in-out_0.2s_infinite_alternate]",
+  },
+  {
+    height: "h-2",
+    delay: "animate-[music-bar_0.8s_ease-in-out_0.4s_infinite_alternate]",
+  },
+  {
+    height: "h-3",
+    delay: "animate-[music-bar_0.8s_ease-in-out_0.1s_infinite_alternate]",
+  },
+] as const;
 
 // --- Types ---
 
@@ -23,26 +46,26 @@ interface MusicPlayerProps {
 
 // --- Helper Utilities ---
 
-const sendYoutubeCommand = (
+function sendYoutubeCommand(
   command: string,
   args: (string | number | boolean)[] = []
-) => {
+) {
   const iframe = document.getElementById("youtube-player") as HTMLIFrameElement;
   iframe?.contentWindow?.postMessage(
     JSON.stringify({ event: "command", func: command, args }),
     "*"
   );
-};
+}
 
-const parseYoutubeId = (url: string): string | null => {
+function parseYoutubeId(url: string): string | null {
   const ytRegex =
     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-  return url?.match(ytRegex)?.[1] || null;
-};
+  return url?.match(ytRegex)?.[1] ?? null;
+}
 
 // --- Sub-Components ---
 
-const PlayPauseIcon = ({ isPlaying }: { isPlaying: boolean }) => {
+function PlayPauseIcon({ isPlaying }: { isPlaying: boolean }) {
   if (!isPlaying) {
     return (
       <svg className="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24">
@@ -57,19 +80,17 @@ const PlayPauseIcon = ({ isPlaying }: { isPlaying: boolean }) => {
       transition={{ repeat: Infinity, duration: 0.6, repeatType: "reverse" }}
       className="flex items-center justify-center gap-0.5 h-full"
     >
-      {[3, 4, 2, 3].map((h, i) => (
+      {BARS.map((bar, i) => (
         <span
           key={i}
-          className={`w-1 h-${h} bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_${
-            [0, 0.2, 0.4, 0.1][i]
-          }s_infinite_alternate]`}
+          className={`w-1 ${bar.height} bg-white rounded-full ${bar.delay}`}
         />
       ))}
     </motion.div>
   );
-};
+}
 
-const FloatingNotes = ({ isPlaying }: { isPlaying: boolean }) => {
+function FloatingNotes({ isPlaying }: { isPlaying: boolean }) {
   if (!isPlaying) return null;
   return (
     <>
@@ -89,9 +110,9 @@ const FloatingNotes = ({ isPlaying }: { isPlaying: boolean }) => {
       ))}
     </>
   );
-};
+}
 
-const AudioSource = ({
+function AudioSource({
   isYoutube,
   youtubeId,
   url,
@@ -101,7 +122,7 @@ const AudioSource = ({
   youtubeId: string | null;
   url: string;
   audioRef: RefObject<HTMLAudioElement | null>;
-}) => {
+}) {
   if (isYoutube) {
     return (
       <div className="hidden">
@@ -109,31 +130,35 @@ const AudioSource = ({
           id="youtube-player"
           width="0"
           height="0"
-          src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=1&loop=1&playlist=${youtubeId}&mute=0`}
+          src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=0&loop=1&playlist=${youtubeId}&mute=1`}
           allow="accelerometer; autoplay; encrypted-media"
         />
       </div>
     );
   }
   return <audio ref={audioRef} src={url} loop />;
-};
+}
 
-const HintLabel = ({ visible }: { visible: boolean }) => (
-  <AnimatePresence>
-    {visible && (
-      <motion.div
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -10 }}
-        className="absolute left-[64px] top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-xl border border-rose-100 whitespace-nowrap pointer-events-none z-10"
-      >
-        <span className="text-xs font-bold text-rose-600">Bật nhạc nền 🎵</span>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
+function HintLabel({ visible }: { visible: boolean }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -10 }}
+          className="absolute left-[64px] top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-xl border border-rose-100 whitespace-nowrap pointer-events-none z-10"
+        >
+          <span className="text-xs font-bold text-rose-600">
+            Bật nhạc nền 🎵
+          </span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
-const VolumeSlider = ({
+function VolumeSlider({
   volume,
   isVisible,
   onChange,
@@ -141,26 +166,28 @@ const VolumeSlider = ({
   volume: number;
   isVisible: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => (
-  <div
-    className={`flex-1 px-3 transition-opacity duration-300 ${
-      isVisible ? "opacity-100 delay-150" : "opacity-0"
-    }`}
-  >
-    <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.01"
-      value={volume}
-      onChange={onChange}
-      title="Âm lượng"
-      className="w-full h-1.5 bg-rose-100 rounded-lg appearance-none cursor-pointer accent-rose-500 shadow-inner"
-    />
-  </div>
-);
+}) {
+  return (
+    <div
+      className={`flex-1 px-3 transition-opacity duration-300 ${
+        isVisible ? "opacity-100 delay-150" : "opacity-0"
+      }`}
+    >
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volume}
+        onChange={onChange}
+        title="Âm lượng"
+        className="w-full h-1.5 bg-rose-100 rounded-lg appearance-none cursor-pointer accent-rose-500 shadow-inner"
+      />
+    </div>
+  );
+}
 
-// --- Custom Hooks ---
+// --- Custom Hook ---
 
 function useAutoplay(
   audioRef: RefObject<HTMLAudioElement | null>,
@@ -173,8 +200,13 @@ function useAutoplay(
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLabel, setShowLabel] = useState(true);
 
+  // Ref to always have latest volume without re-creating callbacks
+  const volumeRef = useRef(volume);
+  volumeRef.current = volume;
+
   const playAudio = useCallback(() => {
     if (audioRef.current && !isYoutube) {
+      audioRef.current.volume = volumeRef.current;
       audioRef.current
         .play()
         .then(() => {
@@ -187,11 +219,11 @@ function useAutoplay(
     if (isYoutube && youtubeId) {
       sendYoutubeCommand("playVideo");
       sendYoutubeCommand("unMute");
-      sendYoutubeCommand("setVolume", [volume * 100]);
+      sendYoutubeCommand("setVolume", [Math.round(volumeRef.current * 100)]);
       setIsPlaying(true);
       setShowLabel(false);
     }
-  }, [audioRef, isYoutube, youtubeId, volume]);
+  }, [audioRef, isYoutube, youtubeId]);
 
   const handleInteraction = useCallback(
     function interactionHandler() {
@@ -216,6 +248,7 @@ function useAutoplay(
     });
 
     if (!isYoutube && url && audioRef.current) {
+      audioRef.current.volume = volumeRef.current;
       audioRef.current
         .play()
         .then(() => {
@@ -237,15 +270,19 @@ function useAutoplay(
     if (autoPlayTrigger) handleInteraction();
   }, [autoPlayTrigger, handleInteraction]);
 
+  // togglePlay uses functional setState so it doesn't depend on `isPlaying`,
+  // avoiding unnecessary re-creation of the callback.
   const togglePlay = useCallback(() => {
-    if (isYoutube) {
-      sendYoutubeCommand(isPlaying ? "pauseVideo" : "playVideo");
-    } else if (audioRef.current) {
-      if (isPlaying) audioRef.current.pause();
-      else audioRef.current.play();
-    }
-    setIsPlaying((prev) => !prev);
-  }, [isYoutube, isPlaying, audioRef]);
+    setIsPlaying((prev) => {
+      if (isYoutube) {
+        sendYoutubeCommand(prev ? "pauseVideo" : "playVideo");
+      } else if (audioRef.current) {
+        if (prev) audioRef.current.pause();
+        else audioRef.current.play();
+      }
+      return !prev;
+    });
+  }, [isYoutube, audioRef]);
 
   return { isPlaying, showLabel, togglePlay };
 }
@@ -254,10 +291,10 @@ function useAutoplay(
 
 export default function MusicPlayer({
   url,
-  autoPlayTrigger,
+  autoPlayTrigger = false,
 }: MusicPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [volume, setVolume] = useState(0.15);
+  const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [isHovered, setIsHovered] = useState(false);
 
   const youtubeId = parseYoutubeId(url);
@@ -278,7 +315,7 @@ export default function MusicPlayer({
       setVolume(newVolume);
 
       if (isYoutube) {
-        sendYoutubeCommand("setVolume", [newVolume * 100]);
+        sendYoutubeCommand("setVolume", [Math.round(newVolume * 100)]);
       } else if (audioRef.current) {
         audioRef.current.volume = newVolume;
       }
