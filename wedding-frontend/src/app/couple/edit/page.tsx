@@ -510,6 +510,12 @@ export default function EditWeddingPage() {
                                                 <input className="input-field text-sm font-bold text-primary" value={form.bridePosition} onChange={(e) => update('bridePosition', e.target.value)} placeholder="Vị trí (Ví dụ: Út Nữ)" />
                                                 <input className="input-field text-sm" value={form.brideFatherName} onChange={(e) => update('brideFatherName', e.target.value)} placeholder="Tên Cha cô dâu (Ví dụ: Ông Trần Văn C)" />
                                                 <input className="input-field text-sm" value={form.brideMotherName} onChange={(e) => update('brideMotherName', e.target.value)} placeholder="Tên Mẹ cô dâu (Ví dụ: Bà Phạm Thị D)" />
+                                                <textarea 
+                                                    className="input-field text-sm min-h-[100px] py-2" 
+                                                    value={form.brideHouseNote} 
+                                                    onChange={(e) => update('brideHouseNote', e.target.value)} 
+                                                    placeholder="Thông tin bổ sung nhà gái (Ví dụ: Lễ vu quy được tổ chức tại...)"
+                                                />
                                             </div>
                                         </div>
                                     </div>
