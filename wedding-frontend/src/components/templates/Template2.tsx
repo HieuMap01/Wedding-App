@@ -145,18 +145,11 @@ export default function Template2({ wedding, locale }: TemplateProps) {
 
                     {/* Main Hero Section */}
                     <div className="py-16 md:py-24 relative flex flex-col items-center">
-                        {/* Masked Background Logic: Show red only in strips, otherwise faded white */}
+                        {/* Hero Background Elements */}
                         <div className="absolute inset-0 z-0">
                             {/* Full background - Faded/White */}
                             <div className="absolute inset-0 opacity-[0.05] bg-white">
                                 <Image src="/images/traditional-bg.png" alt="Background" fill className="object-cover desaturate contrast-125" />
-                            </div>
-                            
-                            {/* Middle Red Strip - Passing through the CENTER of avatars & symbol on both desktop and mobile */}
-                            <div className="absolute top-[32%] md:top-[42%] left-0 w-full h-16 md:h-20 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
-                                <div className="absolute inset-0 opacity-60 mix-blend-overlay">
-                                    <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
-                                </div>
                             </div>
                         </div>
 
@@ -171,6 +164,12 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                             className="relative z-10 w-full max-w-6xl px-4 md:px-12"
                         >
                             <div className="flex flex-row items-center justify-center gap-2 md:gap-0 h-48 md:h-96 relative">
+                                {/* Middle Red Strip - Centered behind avatars & symbol */}
+                                <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full h-16 md:h-24 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
+                                    <div className="absolute inset-0 opacity-60 mix-blend-overlay">
+                                        <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
+                                    </div>
+                                </div>
                                 {/* Groom Column */}
                                 <div className="flex-1 flex flex-col items-center text-center relative z-10">
                                     <div className="relative">
