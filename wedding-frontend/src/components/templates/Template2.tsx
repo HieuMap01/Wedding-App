@@ -164,8 +164,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                             className="relative z-10 w-full max-w-6xl px-4 md:px-12"
                         >
                             <div className="flex flex-row items-center justify-center gap-2 md:gap-0 h-48 md:h-96 relative">
-                                {/* Middle Red Strip - Centered behind avatars & symbol */}
-                                <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full h-16 md:h-24 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
+                                {/* Middle Red Strip - Centered behind avatars & symbol (Full Width) */}
+                                <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-screen h-16 md:h-24 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
                                     <div className="absolute inset-0 opacity-60 mix-blend-overlay">
                                         <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                                     </div>
@@ -186,8 +186,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
 
                                 {/* Central Symbol Column */}
                                 <div className="px-2 md:px-8 flex items-center justify-center relative min-w-[70px] sm:min-w-[120px] md:min-w-[200px] z-20">
-                                    <div className="text-[#700000] text-5xl sm:text-7xl md:text-[11rem] font-bold select-none leading-none">
-                                        <span className="relative inline-block px-1 md:px-4 py-1" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 4px 10px rgba(0,0,0,0.1)' }}>
+                                    <div className="text-[#d4af37] text-5xl sm:text-7xl md:text-[11rem] font-bold select-none leading-none filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
+                                        <span className="relative inline-block px-1 md:px-4 py-1" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 4px 4px 15px rgba(255,255,255,0.4)' }}>
                                             囍
                                         </span>
                                     </div>
