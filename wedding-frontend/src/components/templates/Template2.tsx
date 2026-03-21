@@ -137,8 +137,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 {/* Traditional Hero Header */}
                 <header className="relative bg-[#fdfaf5] overflow-hidden border-b-[6px] border-[#8b0000]">
                     {/* Top Decorative Bar with masked dragon pattern */}
-                    <div className="h-16 md:h-20 bg-[#8b0000] relative overflow-hidden border-b-2 border-[#d4af37]/30">
-                        <div className="absolute inset-0 opacity-80 mix-blend-overlay">
+                    <div className="h-20 md:h-24 bg-[#b71c1c] relative overflow-hidden border-b-2 border-[#d4af37]/30 shadow-md">
+                        <div className="absolute inset-0 opacity-70 mix-blend-overlay">
                             <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                         </div>
                     </div>
@@ -152,15 +152,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 <Image src="/images/traditional-bg.png" alt="Background" fill className="object-cover desaturate contrast-125" />
                             </div>
                             
-                            {/* Middle Red Strip - Passing through avatars */}
-                            <div className="absolute top-[35%] md:top-[40%] left-0 w-full h-24 md:h-32 bg-[#8a0000] border-y-2 border-[#d4af37]/20 shadow-xl overflow-hidden">
-                                <div className="absolute inset-0 opacity-60 mix-blend-overlay">
-                                    <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
-                                </div>
-                            </div>
-
-                            {/* Bottom Red Strip */}
-                            <div className="absolute bottom-10 left-0 w-full h-16 md:h-24 bg-[#8a0000] border-y-2 border-[#d4af37]/20 shadow-xl overflow-hidden">
+                            {/* Middle Red Strip - Passing through the CENTER of avatars & symbol */}
+                            <div className="absolute top-[38%] md:top-[42%] left-0 w-full h-16 md:h-20 bg-[#b71c1c] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0 transform -translate-y-1/2">
                                 <div className="absolute inset-0 opacity-60 mix-blend-overlay">
                                     <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                                 </div>
@@ -168,7 +161,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                         </div>
 
                         {/* Subtle Silk Texture */}
-                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-1" style={{ backgroundImage: 'radial-gradient(#8b0000 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-1" style={{ backgroundImage: 'radial-gradient(#b71c1c 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
 
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -200,9 +193,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 </div>
 
                                 {/* Central Symbol */}
-                                <div className="px-2 md:px-8 flex items-center justify-center relative min-w-[80px] md:min-w-[150px]">
-                                    <div className="text-[#8b0000] text-7xl md:text-[10rem] font-bold select-none leading-none z-20">
-                                        <span className="relative inline-block px-4 py-2" style={{ textShadow: '4px 4px 0 #fff, -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff' }}>
+                                <div className="px-2 md:px-8 flex items-center justify-center relative min-w-[100px] md:min-w-[200px] z-20">
+                                    <div className="text-[#b71c1c] text-8xl md:text-[11rem] font-bold select-none leading-none transform -translate-y-4 md:-translate-y-6">
+                                        <span className="relative inline-block px-4 py-2" style={{ textShadow: '4.5px 4.5px 0 #fff, -4.5px -4.5px 0 #fff, 4.5px -4.5px 0 #fff, -4.5px 4.5px 0 #fff' }}>
                                             囍
                                         </span>
                                     </div>
