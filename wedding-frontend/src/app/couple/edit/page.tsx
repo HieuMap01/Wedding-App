@@ -87,6 +87,13 @@ export default function EditWeddingPage() {
         brideBankAccountNumber: '',
         brideBankAccountHolder: '',
         musicUrl: '',
+        templateCode: 'template1',
+        groomImageUrl: '',
+        brideImageUrl: '',
+        groomFatherName: '',
+        groomMotherName: '',
+        brideFatherName: '',
+        brideMotherName: '',
     });
 
     useEffect(() => {
@@ -124,6 +131,13 @@ export default function EditWeddingPage() {
                 brideBankAccountNumber: res.data.brideBankAccountNumber || '',
                 brideBankAccountHolder: res.data.brideBankAccountHolder || '',
                 musicUrl: res.data.musicUrl || '',
+                templateCode: res.data.templateCode || 'template1',
+                groomImageUrl: res.data.groomImageUrl || '',
+                brideImageUrl: res.data.brideImageUrl || '',
+                groomFatherName: res.data.groomFatherName || '',
+                groomMotherName: res.data.groomMotherName || '',
+                brideFatherName: res.data.brideFatherName || '',
+                brideMotherName: res.data.brideMotherName || '',
             });
             if (res.data.groomHouseAddress || res.data.brideHouseAddress) {
                 setVenueType('separate');
@@ -353,6 +367,99 @@ export default function EditWeddingPage() {
                                     </p>
                                 )}
                             </div>
+
+                            {/* Traditional fields for Template 2 */}
+                            {form.templateCode === 'template2' && (
+                                <div className="mt-8 pt-8 border-t border-slate-100 space-y-8 animate-fade-in-up">
+                                    <h4 className="font-bold text-slate-800 flex items-center gap-2 text-sm">🏮 Thông tin truyền thống (Mẫu 2)</h4>
+                                    
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        {/* Groom Avatar */}
+                                        <div className="space-y-4">
+                                            <label className="block text-xs font-semibold text-slate-500 uppercase">Ảnh đại diện Chú Rể</label>
+                                            <div 
+                                                className="w-24 h-24 rounded-full border-4 border-slate-100 overflow-hidden bg-slate-50 flex items-center justify-center relative group cursor-pointer"
+                                                onClick={() => document.getElementById('groom-avatar-input')?.click()}
+                                            >
+                                                {form.groomImageUrl ? (
+                                                    <img src={getImageUrl(form.groomImageUrl)} className="w-full h-full object-cover" alt="Groom Avatar" />
+                                                ) : (
+                                                    <span className="text-3xl">🤵</span>
+                                                )}
+                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span className="text-white text-[10px] font-bold">Thay đổi</span>
+                                                </div>
+                                                <input 
+                                                    id="groom-avatar-input"
+                                                    type="file" 
+                                                    className="hidden" 
+                                                    accept="image/*"
+                                                    onChange={async (e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            setUploadingImage(true);
+                                                            try {
+                                                                const res = await weddingApi.uploadImage(file);
+                                                                update('groomImageUrl', res.data.imageUrl);
+                                                            } catch (err: any) {
+                                                                alert(err.message);
+                                                            } finally {
+                                                                setUploadingImage(false);
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <input className="input-field text-sm" value={form.groomFatherName} onChange={(e) => update('groomFatherName', e.target.value)} placeholder="Tên Cha chú rể (Ví dụ: Ông Nguyễn Văn A)" />
+                                                <input className="input-field text-sm" value={form.groomMotherName} onChange={(e) => update('groomMotherName', e.target.value)} placeholder="Tên Mẹ chú rể (Ví dụ: Bà Lê Thị B)" />
+                                            </div>
+                                        </div>
+
+                                        {/* Bride Avatar */}
+                                        <div className="space-y-4">
+                                            <label className="block text-xs font-semibold text-slate-500 uppercase">Ảnh đại diện Cô Dâu</label>
+                                            <div 
+                                                className="w-24 h-24 rounded-full border-4 border-slate-100 overflow-hidden bg-slate-50 flex items-center justify-center relative group cursor-pointer"
+                                                onClick={() => document.getElementById('bride-avatar-input')?.click()}
+                                            >
+                                                {form.brideImageUrl ? (
+                                                    <img src={getImageUrl(form.brideImageUrl)} className="w-full h-full object-cover" alt="Bride Avatar" />
+                                                ) : (
+                                                    <span className="text-3xl">👰</span>
+                                                )}
+                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span className="text-white text-[10px] font-bold">Thay đổi</span>
+                                                </div>
+                                                <input 
+                                                    id="bride-avatar-input"
+                                                    type="file" 
+                                                    className="hidden" 
+                                                    accept="image/*"
+                                                    onChange={async (e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            setUploadingImage(true);
+                                                            try {
+                                                                const res = await weddingApi.uploadImage(file);
+                                                                update('brideImageUrl', res.data.imageUrl);
+                                                            } catch (err: any) {
+                                                                alert(err.message);
+                                                            } finally {
+                                                                setUploadingImage(false);
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <input className="input-field text-sm" value={form.brideFatherName} onChange={(e) => update('brideFatherName', e.target.value)} placeholder="Tên Cha cô dâu (Ví dụ: Ông Trần Văn C)" />
+                                                <input className="input-field text-sm" value={form.brideMotherName} onChange={(e) => update('brideMotherName', e.target.value)} placeholder="Tên Mẹ cô dâu (Ví dụ: Bà Phạm Thị D)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -591,6 +698,36 @@ export default function EditWeddingPage() {
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">Câu chuyện tình yêu</label>
                                 <textarea className="input-field min-h-[120px] text-sm" value={form.loveStory} onChange={(e) => update('loveStory', e.target.value)} placeholder="Kể về hành trình của hai bạn..." />
                             </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-4 text-center">Chọn mẫu thiệp</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div 
+                                        onClick={() => update('templateCode', 'template1')}
+                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template1' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
+                                    >
+                                        <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-3 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
+                                            Mẫu Hiện Đại (1)
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-bold">Mẫu 1</span>
+                                            {form.templateCode === 'template1' && <span className="text-primary">✓</span>}
+                                        </div>
+                                    </div>
+                                    <div 
+                                        onClick={() => update('templateCode', 'template2')}
+                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template2' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
+                                    >
+                                        <div className="aspect-[3/4] rounded-lg bg-red-100 mb-3 flex items-center justify-center text-red-600 font-bold border border-red-200">
+                                            Mẫu Truyền Thống (2)
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-bold">Mẫu 2</span>
+                                            {form.templateCode === 'template2' && <span className="text-primary">✓</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Màu chính</label>

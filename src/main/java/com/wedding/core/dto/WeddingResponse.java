@@ -45,6 +45,12 @@ public class WeddingResponse {
     private Boolean isActive;
     private String publicUrl;
     private String musicUrl;
+    private String groomImageUrl;
+    private String brideImageUrl;
+    private String groomFatherName;
+    private String groomMotherName;
+    private String brideFatherName;
+    private String brideMotherName;
     private String templateCode;
     private List<WeddingImageResponse> images;
     private List<LoveStoryEventResponse> loveStoryEvents;
