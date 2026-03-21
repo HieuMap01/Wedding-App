@@ -295,7 +295,8 @@ export default function Template3({ wedding, locale }: TemplateProps) {
           backgroundImage: 'url("/images/heart-bg.png")',
           backgroundSize: "500px",
           backgroundRepeat: "repeat",
-          opacity: 0.05,
+          opacity: 0.03,
+          scale: 3,
         }}
       />
 
