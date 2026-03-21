@@ -105,7 +105,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
     };
 
     return (
-        <div className="wedding-template-2 min-h-screen font-serif" style={{ '--color-primary': primaryColor, '--color-secondary': secondaryColor, fontFamily: 'var(--font-playfair), serif' } as React.CSSProperties}>
+        <div className="wedding-template-2 min-h-screen font-serif bg-[#fdfaf5]" style={{ '--color-primary': primaryColor, '--color-secondary': secondaryColor, fontFamily: 'var(--font-playfair), serif' } as React.CSSProperties}>
             <AnimatePresence>
                 {showWelcome && (
                     <TraditionalWelcomeOverlay 
@@ -127,15 +127,19 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 className={showWelcome ? 'h-screen overflow-hidden' : ''}
             >
                 {/* Traditional Hero Header */}
-                <header className="py-20 bg-[#fff9f2] relative overflow-hidden flex flex-col items-center border-b-[6px] border-[#8b0000]">
-                    {/* Background Dragons - Fully visible on sides */}
-                    <div className="absolute inset-0 z-0 pointer-events-none opacity-20 hidden md:block">
-                        <Image src="/images/traditional-bg.png" alt="Dragons" fill className="object-contain px-4" />
+                <header className="py-20 bg-[#fdfaf5] relative overflow-hidden flex flex-col items-center border-b-[6px] border-[#8b0000]">
+                    {/* Background Dragons - Improved visibility and positioning */}
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] flex justify-between px-4 md:px-20 overflow-hidden">
+                        <div className="relative w-64 h-full">
+                            <Image src="/images/traditional-bg.png" alt="Dragon Left" fill className="object-contain object-left scale-150 transform -translate-x-12" />
+                        </div>
+                        <div className="relative w-64 h-full">
+                            <Image src="/images/traditional-bg.png" alt="Dragon Right" fill className="object-contain object-right scale-150 transform translate-x-12" />
+                        </div>
                     </div>
                     
-                    <div className="absolute top-0 inset-x-0 h-24 bg-[#8b0000] opacity-5 flex items-center justify-center">
-                        <div className="w-full h-full opacity-10" style={{ backgroundImage: 'radial-gradient(#8b0000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-                    </div>
+                    {/* Subtle Silk Texture Pattern */}
+                    <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#8b0000 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
 
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -208,10 +212,11 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 </header>
 
                 {/* Ceremony Info Section */}
-                <section className="py-24 px-6 bg-white">
-                    <div className="max-w-4xl mx-auto">
+                <section className="py-24 px-6 relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("/images/traditional-bg.png")', backgroundSize: '400px', backgroundRepeat: 'repeat' }} />
+                    <div className="max-w-4xl mx-auto relative z-10">
                         <motion.div 
-                            className="bg-[#fcf8f3] border-2 border-[#8b0000]/10 p-10 md:p-16 rounded-[40px] shadow-sm relative overflow-hidden"
+                            className="bg-white/80 backdrop-blur-sm border-2 border-[#8b0000]/10 p-10 md:p-16 rounded-[40px] shadow-sm relative overflow-hidden"
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -301,8 +306,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
 
                 {/* Love Story Timeline - Moved here */}
                 {wedding.loveStoryEvents && wedding.loveStoryEvents.length > 0 && (
-                    <section id="timeline" className="py-24 px-6 bg-[#fffcf8] overflow-hidden">
-                        <div className="max-w-5xl mx-auto">
+                    <section id="timeline" className="py-24 px-6 relative overflow-hidden border-y border-[#8b0000]/5">
+                        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#8b0000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+                        <div className="max-w-5xl mx-auto relative z-10">
                             <motion.h2 
                                 className="text-3xl md:text-5xl font-bold text-center mb-20 text-[#8b0000]" 
                                 initial={{ opacity: 0, y: 20 }} 
@@ -359,35 +365,49 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                     </section>
                 )}
 
-                {/* Gallery Section */}
+                {/* Gallery Section - Auto-scrolling Carousel */}
                 {wedding.images && wedding.images.length > 0 && (
-                    <section id="gallery" className="py-24 bg-white relative overflow-hidden">
-                        <div className="max-w-6xl mx-auto px-6">
+                    <section id="gallery" className="py-24 relative overflow-hidden">
+                        <div className="max-w-4xl mx-auto px-6 relative z-10">
                             <motion.h2 className="text-3xl md:text-5xl font-bold text-center mb-16 text-[#8b0000]" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
                                 ALBUM ẢNH CƯỚI
                                 <div className="w-16 h-1 bg-[#d4af37] mx-auto mt-4" />
                             </motion.h2>
 
-                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                                {wedding.images.map((img, idx) => (
+                            <div className="relative aspect-[4/5] md:aspect-video rounded-[40px] overflow-hidden shadow-2xl border-[8px] border-white group">
+                                <AnimatePresence mode="wait">
                                     <motion.div 
-                                        key={img.id}
-                                        initial={{ opacity: 0, y: 30 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                        className="aspect-[4/5] rounded-[30px] overflow-hidden shadow-md border-[4px] border-[#fcf8f3] cursor-zoom-in group"
-                                        onClick={() => { setCurrentImageIndex(idx); setIsLightboxOpen(true); }}
+                                        key={currentImageIndex}
+                                        initial={{ opacity: 0, x: 50 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -50 }}
+                                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                                        className="absolute inset-0 cursor-zoom-in"
+                                        onClick={() => setIsLightboxOpen(true)}
                                     >
                                         <Image 
-                                            src={getImageUrl(img.imageUrl)} 
-                                            alt="Wedding" 
-                                            width={600} 
-                                            height={750} 
-                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                                            src={getImageUrl(wedding.images[currentImageIndex].imageUrl)} 
+                                            alt="Wedding Gallery" 
+                                            fill 
+                                            className="object-cover" 
                                         />
                                     </motion.div>
-                                ))}
+                                </AnimatePresence>
+                                
+                                {/* Navigation dots */}
+                                <div className="absolute inset-x-0 bottom-6 flex justify-center gap-2 z-10">
+                                    {wedding.images.map((_, idx) => (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => setCurrentImageIndex(idx)}
+                                            className={`w-2.5 h-2.5 rounded-full transition-all ${idx === currentImageIndex ? 'bg-[#8b0000] w-6' : 'bg-white/50 hover:bg-white'}`}
+                                        />
+                                    ))}
+                                </div>
+                                
+                                {/* Navigation arrows */}
+                                <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1); }} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-10 backdrop-blur-sm">←</button>
+                                <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => (prev + 1) % wedding.images!.length); }} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-10 backdrop-blur-sm">→</button>
                             </div>
                         </div>
 
@@ -395,9 +415,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                         <AnimatePresence>
                             {isLightboxOpen && (
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[200] bg-black/98 flex items-center justify-center p-4" onClick={() => setIsLightboxOpen(false)}>
-                                    <button className="absolute top-6 right-6 text-white/60 text-5xl hover:text-white transition-all transform hover:rotate-90" onClick={() => setIsLightboxOpen(false)}>×</button>
+                                    <button className="absolute top-6 right-6 text-white/50 text-5xl hover:text-white transition-all transform hover:rotate-90" onClick={() => setIsLightboxOpen(false)}>×</button>
                                     <motion.div key={currentImageIndex} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
-                                        <Image src={getImageUrl(wedding.images![currentImageIndex].imageUrl)} alt="Full view" width={1600} height={1200} className="max-w-full max-h-[90vh] object-contain rounded-lg" />
+                                        <Image src={getImageUrl(wedding.images![currentImageIndex].imageUrl)} alt="Full view" width={1600} height={1200} className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" />
                                     </motion.div>
                                     <div className="absolute inset-x-0 bottom-10 flex justify-center gap-10">
                                         <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(prev => prev === 0 ? wedding.images!.length - 1 : prev - 1); }} className="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all">←</button>
@@ -410,8 +430,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 )}
 
                 {/* Party Info & Map */}
-                <section className="py-24 bg-[#fff9f3] border-y-2 border-[#8b0000]/5">
-                    <div className="max-w-4xl mx-auto px-6 text-center">
+                <section className="py-24 border-y-2 border-[#8b0000]/5 relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("/images/traditional-bg.png")', backgroundSize: '600px', backgroundPosition: 'bottom right', backgroundRepeat: 'no-repeat' }} />
+                    <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
                         <h3 className="text-3xl font-bold text-[#8b0000] mb-12">
                             THÔNG TIN TIỆC CƯỚI
                             <div className="w-16 h-1 bg-[#d4af37] mx-auto mt-4" />
@@ -427,14 +448,14 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                             </div>
                         </div>
 
-                        {/* Mừng cưới / Donation QR Section */}
-                        {(wedding.groomQrCodeUrl || wedding.brideQrCodeUrl) && (
+                        {/* Mừng cưới / Donation QR Section - Auto-generated with VietQR */}
+                        {(wedding.groomBankAccountNumber || wedding.brideBankAccountNumber) && (
                             <div className="mt-24">
-                                <h3 className="text-3xl font-bold text-[#8b0000] mb-4 uppercase">🧧 Mừng cưới</h3>
+                                <h3 className="text-3xl font-bold text-[#8b0000] mb-4 uppercase tracking-widest">🧧 Mừng cưới</h3>
                                 <p className="text-[#8a6e2f] italic mb-12">Sự hiện diện của quý vị là niềm hạnh phúc lớn nhất cho gia đình chúng tôi!</p>
                                 
                                 <div className="grid md:grid-cols-2 gap-10">
-                                    {wedding.groomQrCodeUrl && (
+                                    {wedding.groomBankAccountNumber && (
                                         <motion.div 
                                             className="bg-white p-8 rounded-[40px] shadow-sm border border-red-50 flex flex-col items-center"
                                             initial={{ opacity: 0, x: -30 }}
@@ -443,16 +464,20 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                         >
                                             <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-2xl mb-4">🤵</div>
                                             <h4 className="text-lg font-bold text-[#8b0000] mb-6 uppercase tracking-widest">Chú Rể {wedding.groomName}</h4>
-                                            <div className="w-48 h-48 bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-red-100 mb-6">
+                                            <div className="w-56 h-56 bg-white rounded-2xl p-4 border-2 border-slate-100 mb-6 shadow-inner flex items-center justify-center">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img src={getImageUrl(wedding.groomQrCodeUrl)} className="w-full h-full object-contain" alt="Groom QR" />
+                                                <img 
+                                                    src={`https://img.vietqr.io/image/${wedding.groomBankName}-${wedding.groomBankAccountNumber}-compact.jpg?amount=0&addInfo=Chuc%20mung%20hanh%20phuc&accountName=${encodeURIComponent(wedding.groomBankAccountHolder || '')}`}
+                                                    className="max-w-full max-h-full object-contain" 
+                                                    alt="Groom VietQR" 
+                                                />
                                             </div>
-                                            <p className="text-sm font-bold text-gray-700 uppercase">{wedding.groomBankAccountHolder}</p>
-                                            <p className="text-xs text-gray-500 mt-1">{wedding.groomBankName} - {wedding.groomBankAccountNumber}</p>
+                                            <p className="text-sm font-bold text-gray-700 uppercase tracking-wider">{wedding.groomBankAccountHolder}</p>
+                                            <p className="text-xs text-gray-400 mt-1 font-sans">{wedding.groomBankName} • {wedding.groomBankAccountNumber}</p>
                                         </motion.div>
                                     )}
 
-                                    {wedding.brideQrCodeUrl && (
+                                    {wedding.brideBankAccountNumber && (
                                         <motion.div 
                                             className="bg-white p-8 rounded-[40px] shadow-sm border border-red-50 flex flex-col items-center"
                                             initial={{ opacity: 0, x: 30 }}
@@ -461,12 +486,16 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                         >
                                             <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-2xl mb-4">👰</div>
                                             <h4 className="text-lg font-bold text-[#8b0000] mb-6 uppercase tracking-widest">Cô Dâu {wedding.brideName}</h4>
-                                            <div className="w-48 h-48 bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-red-100 mb-6">
+                                            <div className="w-56 h-56 bg-white rounded-2xl p-4 border-2 border-slate-100 mb-6 shadow-inner flex items-center justify-center">
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img src={getImageUrl(wedding.brideQrCodeUrl)} className="w-full h-full object-contain" alt="Bride QR" />
+                                                <img 
+                                                    src={`https://img.vietqr.io/image/${wedding.brideBankName}-${wedding.brideBankAccountNumber}-compact.jpg?amount=0&addInfo=Chuc%20mung%20hanh%20phuc&accountName=${encodeURIComponent(wedding.brideBankAccountHolder || '')}`}
+                                                    className="max-w-full max-h-full object-contain" 
+                                                    alt="Bride VietQR" 
+                                                />
                                             </div>
-                                            <p className="text-sm font-bold text-gray-700 uppercase">{wedding.brideBankAccountHolder}</p>
-                                            <p className="text-xs text-gray-500 mt-1">{wedding.brideBankName} - {wedding.brideBankAccountNumber}</p>
+                                            <p className="text-sm font-bold text-gray-700 uppercase tracking-wider">{wedding.brideBankAccountHolder}</p>
+                                            <p className="text-xs text-gray-400 mt-1 font-sans">{wedding.brideBankName} • {wedding.brideBankAccountNumber}</p>
                                         </motion.div>
                                     )}
                                 </div>
@@ -476,8 +505,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                 </section>
 
                 {/* Sổ lưu bút / RSVP */}
-                <section className="py-24 bg-white">
-                    <div className="max-w-2xl mx-auto px-6 text-center">
+                <section className="py-24 relative overflow-hidden">
+                    <div className="max-w-2xl mx-auto px-6 text-center relative z-10">
                         <h3 className="text-3xl font-bold text-[#8b0000] mb-4">SỔ LƯU BÚT</h3>
                         <p className="text-[#8a6e2f] italic mb-12">Sự hiện diện của quý vị là niềm hạnh phúc của gia đình chúng tôi</p>
 

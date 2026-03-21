@@ -16,7 +16,7 @@ export default function TraditionalWelcomeOverlay({ groomName, brideName, onOpen
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
             transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#5c0000]"
+            className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#700000]"
         >
             {/* Traditional Background Image - Double Dragons on sides */}
             <div className="absolute inset-0 z-0">
@@ -24,14 +24,14 @@ export default function TraditionalWelcomeOverlay({ groomName, brideName, onOpen
                     src="/images/traditional-bg.png"
                     alt="Traditional background"
                     fill
-                    className="object-contain object-center opacity-40 scale-110 md:scale-100"
+                    className="object-contain object-center opacity-40 scale-125 md:scale-110"
                     priority
                     sizes="100vw"
                     quality={90}
                 />
             </div>
             
-            <div className="absolute inset-0 bg-[#5c0000]/60 z-10" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#5c0000]/40 via-[#700000]/60 to-[#5c0000]/80 z-10" />
 
             {/* Content Box */}
             <div className="relative z-20 flex flex-col items-center justify-center text-center w-full max-w-[90%] md:max-w-[60%]">
