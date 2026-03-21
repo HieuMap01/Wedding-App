@@ -4,23 +4,22 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import BackToTop from "@/components/BackToTop";
 
-
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
   variable: "--font-inter",
-  display: 'swap',
+  display: "swap",
 });
 
 const playfair = Playfair_Display({
   subsets: ["latin", "vietnamese"],
   variable: "--font-playfair",
-  display: 'swap',
+  display: "swap",
 });
 
 const dancingScript = Dancing_Script({
   subsets: ["latin", "vietnamese"],
   variable: "--font-dancing",
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -34,12 +33,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable}`}>
+    <html
+      lang="vi"
+      className={`${inter.variable} ${playfair.variable} ${dancingScript.variable}`}
+    >
       <body className="font-sans bg-slate-50 text-slate-900 antialiased min-h-screen">
         <AuthProvider>
-            {children}
-            <BackToTop />
-
+          {children}
+          <BackToTop />
         </AuthProvider>
       </body>
     </html>
