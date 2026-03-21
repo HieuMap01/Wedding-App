@@ -167,6 +167,10 @@ public class WeddingService {
             wedding.setBrideFatherName(request.getBrideFatherName());
         if (request.getBrideMotherName() != null)
             wedding.setBrideMotherName(request.getBrideMotherName());
+        wedding.setGroomPosition(request.getGroomPosition());
+        wedding.setBridePosition(request.getBridePosition());
+        wedding.setGroomQrCodeUrl(request.getGroomQrCodeUrl());
+        wedding.setBrideQrCodeUrl(request.getBrideQrCodeUrl());
 
         // Handle slug update
         if (request.getSlug() != null && !request.getSlug().isBlank() && !request.getSlug().equals(wedding.getSlug())) {
@@ -469,10 +473,11 @@ public class WeddingService {
                 .musicUrl(wedding.getMusicUrl())
                 .groomImageUrl(wedding.getGroomImageUrl())
                 .brideImageUrl(wedding.getBrideImageUrl())
-                .groomFatherName(wedding.getGroomFatherName())
-                .groomMotherName(wedding.getGroomMotherName())
-                .brideFatherName(wedding.getBrideFatherName())
                 .brideMotherName(wedding.getBrideMotherName())
+                .groomPosition(wedding.getGroomPosition())
+                .bridePosition(wedding.getBridePosition())
+                .groomQrCodeUrl(wedding.getGroomQrCodeUrl())
+                .brideQrCodeUrl(wedding.getBrideQrCodeUrl())
                 .templateCode(wedding.getTemplateCode())
                 .images(imageResponses)
                 .loveStoryEvents(eventResponses)

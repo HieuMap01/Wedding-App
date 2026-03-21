@@ -244,6 +244,10 @@ export interface WeddingResponse {
   groomMotherName?: string;
   brideFatherName?: string;
   brideMotherName?: string;
+  groomPosition?: string;
+  bridePosition?: string;
+  groomQrCodeUrl?: string;
+  brideQrCodeUrl?: string;
   templateCode: string;
   images: WeddingImageResponse[];
   loveStoryEvents: LoveStoryEventResponse[];

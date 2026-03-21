@@ -94,6 +94,10 @@ export default function EditWeddingPage() {
         groomMotherName: '',
         brideFatherName: '',
         brideMotherName: '',
+        groomPosition: 'Trưởng Nam',
+        bridePosition: 'Út Nữ',
+        groomQrCodeUrl: '',
+        brideQrCodeUrl: '',
     });
 
     useEffect(() => {
@@ -138,6 +142,10 @@ export default function EditWeddingPage() {
                 groomMotherName: res.data.groomMotherName || '',
                 brideFatherName: res.data.brideFatherName || '',
                 brideMotherName: res.data.brideMotherName || '',
+                groomPosition: res.data.groomPosition || 'Trưởng Nam',
+                bridePosition: res.data.bridePosition || 'Út Nữ',
+                groomQrCodeUrl: res.data.groomQrCodeUrl || '',
+                brideQrCodeUrl: res.data.brideQrCodeUrl || '',
             });
             if (res.data.groomHouseAddress || res.data.brideHouseAddress) {
                 setVenueType('separate');
@@ -375,8 +383,9 @@ export default function EditWeddingPage() {
                                         onClick={() => update('templateCode', 'template1')}
                                         className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template1' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
                                     >
-                                        <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-3 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
-                                            Mẫu Hiện Đại (1)
+                                        <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-3 flex items-center justify-center text-slate-400 font-bold border border-slate-200 overflow-hidden">
+                                            <img src="/images/template1-preview.jpg" className="w-full h-full object-cover" alt="Mẫu 1" onError={(e) => { (e.target as any).style.display = 'none'; }} />
+                                            <span className="absolute">Mẫu Hiện Đại (1)</span>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm font-bold">Mẫu 1</span>
@@ -387,8 +396,9 @@ export default function EditWeddingPage() {
                                         onClick={() => update('templateCode', 'template2')}
                                         className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template2' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
                                     >
-                                        <div className="aspect-[3/4] rounded-lg bg-red-100 mb-3 flex items-center justify-center text-red-600 font-bold border border-red-200">
-                                            Mẫu Truyền Thống (2)
+                                        <div className="aspect-[3/4] rounded-lg bg-red-100 mb-3 flex items-center justify-center text-red-600 font-bold border border-red-200 overflow-hidden">
+                                            <img src="/images/template2-preview.jpg" className="w-full h-full object-cover" alt="Mẫu 2" onError={(e) => { (e.target as any).style.display = 'none'; }} />
+                                            <span className="absolute">Mẫu Truyền Thống (2)</span>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm font-bold">Mẫu 2</span>
@@ -441,8 +451,37 @@ export default function EditWeddingPage() {
                                                 />
                                             </div>
                                             <div className="grid gap-2">
+                                                <input className="input-field text-sm font-bold text-primary" value={form.groomPosition} onChange={(e) => update('groomPosition', e.target.value)} placeholder="Vị trí (Ví dụ: Trưởng Nam)" />
                                                 <input className="input-field text-sm" value={form.groomFatherName} onChange={(e) => update('groomFatherName', e.target.value)} placeholder="Tên Cha chú rể (Ví dụ: Ông Nguyễn Văn A)" />
                                                 <input className="input-field text-sm" value={form.groomMotherName} onChange={(e) => update('groomMotherName', e.target.value)} placeholder="Tên Mẹ chú rể (Ví dụ: Bà Lê Thị B)" />
+                                            </div>
+
+                                            {/* Groom QR Code */}
+                                            <div className="pt-4 border-t border-slate-100">
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">QR Mừng cưới Chú rể</label>
+                                                <div 
+                                                    className="w-full aspect-square max-w-[150px] mx-auto rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all"
+                                                    onClick={() => document.getElementById('groom-qr-input')?.click()}
+                                                >
+                                                    {form.groomQrCodeUrl ? (
+                                                        <img src={getImageUrl(form.groomQrCodeUrl)} className="w-full h-full object-contain p-2" alt="Groom QR" />
+                                                    ) : (
+                                                        <>
+                                                            <span className="text-2xl mb-1">📸</span>
+                                                            <span className="text-[10px] text-slate-400">Tải mã QR</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <input id="groom-qr-input" type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        setUploadingImage(true);
+                                                        try {
+                                                            const res = await weddingApi.uploadImage(file);
+                                                            update('groomQrCodeUrl', res.data.imageUrl);
+                                                        } catch (err: any) { alert(err.message); } finally { setUploadingImage(false); }
+                                                    }
+                                                }} />
                                             </div>
                                         </div>
 
@@ -483,8 +522,37 @@ export default function EditWeddingPage() {
                                                 />
                                             </div>
                                             <div className="grid gap-2">
+                                                <input className="input-field text-sm font-bold text-primary" value={form.bridePosition} onChange={(e) => update('bridePosition', e.target.value)} placeholder="Vị trí (Ví dụ: Út Nữ)" />
                                                 <input className="input-field text-sm" value={form.brideFatherName} onChange={(e) => update('brideFatherName', e.target.value)} placeholder="Tên Cha cô dâu (Ví dụ: Ông Trần Văn C)" />
                                                 <input className="input-field text-sm" value={form.brideMotherName} onChange={(e) => update('brideMotherName', e.target.value)} placeholder="Tên Mẹ cô dâu (Ví dụ: Bà Phạm Thị D)" />
+                                            </div>
+
+                                            {/* Bride QR Code */}
+                                            <div className="pt-4 border-t border-slate-100">
+                                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-2">QR Mừng cưới Cô dâu</label>
+                                                <div 
+                                                    className="w-full aspect-square max-w-[150px] mx-auto rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-all"
+                                                    onClick={() => document.getElementById('bride-qr-input')?.click()}
+                                                >
+                                                    {form.brideQrCodeUrl ? (
+                                                        <img src={getImageUrl(form.brideQrCodeUrl)} className="w-full h-full object-contain p-2" alt="Bride QR" />
+                                                    ) : (
+                                                        <>
+                                                            <span className="text-2xl mb-1">📸</span>
+                                                            <span className="text-[10px] text-slate-400">Tải mã QR</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <input id="bride-qr-input" type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        setUploadingImage(true);
+                                                        try {
+                                                            const res = await weddingApi.uploadImage(file);
+                                                            update('brideQrCodeUrl', res.data.imageUrl);
+                                                        } catch (err: any) { alert(err.message); } finally { setUploadingImage(false); }
+                                                    }
+                                                }} />
                                             </div>
                                         </div>
                                     </div>

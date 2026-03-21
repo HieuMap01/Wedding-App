@@ -128,7 +128,11 @@ export default function Template2({ wedding, locale }: TemplateProps) {
             >
                 {/* Traditional Hero Header */}
                 <header className="py-20 bg-[#fff9f2] relative overflow-hidden flex flex-col items-center border-b-[6px] border-[#8b0000]">
-                    {/* Background Decorative patterns */}
+                    {/* Background Dragons - Fully visible on sides */}
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-20 hidden md:block">
+                        <Image src="/images/traditional-bg.png" alt="Dragons" fill className="object-contain px-4" />
+                    </div>
+                    
                     <div className="absolute top-0 inset-x-0 h-24 bg-[#8b0000] opacity-5 flex items-center justify-center">
                         <div className="w-full h-full opacity-10" style={{ backgroundImage: 'radial-gradient(#8b0000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
                     </div>
@@ -152,8 +156,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                     />
                                 </div>
                                 <div className="absolute -bottom-4 inset-x-0 text-center z-20">
-                                    <span className="bg-[#8b0000] text-[#f3e5ab] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
-                                        Trưởng Nam
+                                    <span className="bg-[#8b0000] text-[#f3e5ab] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md whitespace-nowrap">
+                                        {wedding.groomPosition || 'Trưởng Nam'}
                                     </span>
                                 </div>
                             </div>
@@ -174,8 +178,8 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                     />
                                 </div>
                                 <div className="absolute -bottom-4 inset-x-0 text-center z-20">
-                                    <span className="bg-[#8b0000] text-[#f3e5ab] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
-                                        Út Nữ
+                                    <span className="bg-[#8b0000] text-[#f3e5ab] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md whitespace-nowrap">
+                                        {wedding.bridePosition || 'Út Nữ'}
                                     </span>
                                 </div>
                             </div>
@@ -260,17 +264,17 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                     </div>
                 </section>
 
-                {/* Countdown Timer */}
-                <section className="py-20 bg-[#8b0000] relative overflow-hidden text-center text-[#f3e5ab]">
-                    {/* Decorative Background */}
+                {/* Countdown Timer - Premium Style */}
+                <section className="py-20 bg-[#8b0000] relative overflow-hidden text-center">
+                    {/* Background Texture */}
                     <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'url("/images/traditional-bg.png")', backgroundSize: 'cover', backgroundPosition: 'center' }} />
                     
                     <div className="relative z-10 max-w-4xl mx-auto px-6">
-                        <h4 className="text-sm uppercase tracking-[0.4em] font-bold mb-8">Ngày vui sẽ bắt đầu sau</h4>
-                        <div className="scale-110 md:scale-125">
+                        <h4 className="text-sm uppercase tracking-[0.4em] font-bold mb-8 text-[#f3e5ab]">Ngày vui sẽ bắt đầu sau</h4>
+                        <div className="countdown-premium">
                             <Countdown 
                                 targetDate={wedding.weddingDate} 
-                                primaryColor="#f3e5ab" 
+                                primaryColor="#8b0000" 
                                 labels={{
                                     days: t.days,
                                     hours: t.hours,
@@ -280,7 +284,80 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                             />
                         </div>
                     </div>
+
+                    <style jsx global>{`
+                        .countdown-premium .countdown-box {
+                            background: white !important;
+                            color: #8b0000 !important;
+                            border-radius: 12px;
+                            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                        }
+                        .countdown-premium .countdown-label {
+                            color: #f3e5ab !important;
+                            font-weight: bold;
+                        }
+                    `}</style>
                 </section>
+
+                {/* Love Story Timeline - Moved here */}
+                {wedding.loveStoryEvents && wedding.loveStoryEvents.length > 0 && (
+                    <section id="timeline" className="py-24 px-6 bg-[#fffcf8] overflow-hidden">
+                        <div className="max-w-5xl mx-auto">
+                            <motion.h2 
+                                className="text-3xl md:text-5xl font-bold text-center mb-20 text-[#8b0000]" 
+                                initial={{ opacity: 0, y: 20 }} 
+                                whileInView={{ opacity: 1, y: 0 }} 
+                                viewport={{ once: true }} 
+                                transition={{ duration: 0.8 }}
+                            >
+                                HÀNH TRÌNH YÊU THƯƠNG
+                                <div className="w-16 h-1 bg-[#d4af37] mx-auto mt-4" />
+                            </motion.h2>
+
+                            <div className="relative">
+                                {/* Vertical center line */}
+                                <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-[#8b0000]/10 hidden md:block" />
+                                
+                                <div className="space-y-16">
+                                    {wedding.loveStoryEvents.map((event, idx) => (
+                                        <div key={event.id} className={`flex flex-col md:flex-row items-center gap-8 md:gap-0 ${idx % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+                                            {/* Photo */}
+                                            <motion.div 
+                                                className="w-full md:w-1/2 px-4 md:px-12"
+                                                initial={{ opacity: 0, x: idx % 2 === 0 ? -30 : 30 }}
+                                                whileInView={{ opacity: 1, x: 0 }}
+                                                viewport={{ once: true }}
+                                                transition={{ duration: 0.8 }}
+                                            >
+                                                <div className="aspect-video md:aspect-[4/3] rounded-3xl overflow-hidden shadow-xl border-4 border-white">
+                                                    <Image src={getImageUrl(event.imageUrl)} alt={event.title} width={600} height={450} className="w-full h-full object-cover" />
+                                                </div>
+                                            </motion.div>
+
+                                            {/* Center Dot */}
+                                            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white border-2 border-[#8b0000]/20 items-center justify-center z-10">
+                                                <div className="w-4 h-4 rounded-full bg-[#d4af37]" />
+                                            </div>
+
+                                            {/* Content */}
+                                            <motion.div 
+                                                className={`w-full md:w-1/2 px-4 md:px-12 text-center ${idx % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}
+                                                initial={{ opacity: 0, x: idx % 2 === 0 ? 30 : -30 }}
+                                                whileInView={{ opacity: 1, x: 0 }}
+                                                viewport={{ once: true }}
+                                                transition={{ duration: 0.8 }}
+                                            >
+                                                <span className="text-[#d4af37] font-bold tracking-widest text-sm block mb-3">{event.eventDate}</span>
+                                                <h3 className="text-2xl font-bold text-[#8b0000] mb-4" style={{ fontFamily: 'var(--font-playfair), serif' }}>{event.title}</h3>
+                                                <p className="text-gray-600 leading-relaxed italic">{event.description}</p>
+                                            </motion.div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
 
                 {/* Gallery Section */}
                 {wedding.images && wedding.images.length > 0 && (
@@ -291,7 +368,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 <div className="w-16 h-1 bg-[#d4af37] mx-auto mt-4" />
                             </motion.h2>
 
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                 {wedding.images.map((img, idx) => (
                                     <motion.div 
                                         key={img.id}
@@ -299,7 +376,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true }}
                                         transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                        className="aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-[6px] border-[#fcf8f3] cursor-zoom-in group"
+                                        className="aspect-[4/5] rounded-[30px] overflow-hidden shadow-md border-[4px] border-[#fcf8f3] cursor-zoom-in group"
                                         onClick={() => { setCurrentImageIndex(idx); setIsLightboxOpen(true); }}
                                     >
                                         <Image 
@@ -349,6 +426,52 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 <LazyMap title="Party Venue" src={`https://maps.google.com/maps?width=100%&height=400&hl=en&q=${encodeURIComponent((wedding.venueAddress || '') + (wedding.venueName ? ', ' + wedding.venueName : ''))}&ie=UTF8&t=&z=15&iwloc=B&output=embed`} />
                             </div>
                         </div>
+
+                        {/* Mừng cưới / Donation QR Section */}
+                        {(wedding.groomQrCodeUrl || wedding.brideQrCodeUrl) && (
+                            <div className="mt-24">
+                                <h3 className="text-3xl font-bold text-[#8b0000] mb-4 uppercase">🧧 Mừng cưới</h3>
+                                <p className="text-[#8a6e2f] italic mb-12">Sự hiện diện của quý vị là niềm hạnh phúc lớn nhất cho gia đình chúng tôi!</p>
+                                
+                                <div className="grid md:grid-cols-2 gap-10">
+                                    {wedding.groomQrCodeUrl && (
+                                        <motion.div 
+                                            className="bg-white p-8 rounded-[40px] shadow-sm border border-red-50 flex flex-col items-center"
+                                            initial={{ opacity: 0, x: -30 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                        >
+                                            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-2xl mb-4">🤵</div>
+                                            <h4 className="text-lg font-bold text-[#8b0000] mb-6 uppercase tracking-widest">Chú Rể {wedding.groomName}</h4>
+                                            <div className="w-48 h-48 bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-red-100 mb-6">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={getImageUrl(wedding.groomQrCodeUrl)} className="w-full h-full object-contain" alt="Groom QR" />
+                                            </div>
+                                            <p className="text-sm font-bold text-gray-700 uppercase">{wedding.groomBankAccountHolder}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{wedding.groomBankName} - {wedding.groomBankAccountNumber}</p>
+                                        </motion.div>
+                                    )}
+
+                                    {wedding.brideQrCodeUrl && (
+                                        <motion.div 
+                                            className="bg-white p-8 rounded-[40px] shadow-sm border border-red-50 flex flex-col items-center"
+                                            initial={{ opacity: 0, x: 30 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                        >
+                                            <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center text-2xl mb-4">👰</div>
+                                            <h4 className="text-lg font-bold text-[#8b0000] mb-6 uppercase tracking-widest">Cô Dâu {wedding.brideName}</h4>
+                                            <div className="w-48 h-48 bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-red-100 mb-6">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={getImageUrl(wedding.brideQrCodeUrl)} className="w-full h-full object-contain" alt="Bride QR" />
+                                            </div>
+                                            <p className="text-sm font-bold text-gray-700 uppercase">{wedding.brideBankAccountHolder}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{wedding.brideBankName} - {wedding.brideBankAccountNumber}</p>
+                                        </motion.div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </section>
 

@@ -38,4 +38,8 @@ public class CreateWeddingRequest {
     private String groomMotherName;
     private String brideFatherName;
     private String brideMotherName;
+    private String groomPosition;
+    private String bridePosition;
+    private String groomQrCodeUrl;
+    private String brideQrCodeUrl;
 }

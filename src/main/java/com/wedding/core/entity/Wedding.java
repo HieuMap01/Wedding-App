@@ -129,6 +129,18 @@ public class Wedding {
     @Builder.Default
     private String templateCode = "template1";
 
+    @Column(name = "groom_position")
+    private String groomPosition;
+
+    @Column(name = "bride_position")
+    private String bridePosition;
+
+    @Column(name = "groom_qr_code_url")
+    private String groomQrCodeUrl;
+
+    @Column(name = "bride_qr_code_url")
+    private String brideQrCodeUrl;
+
     @Builder.Default
     @Column(name = "is_active")
     private Boolean isActive = true;
