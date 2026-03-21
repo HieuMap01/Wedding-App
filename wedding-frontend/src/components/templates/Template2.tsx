@@ -165,7 +165,7 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                         >
                             <div className="flex flex-row items-center justify-center gap-2 md:gap-0 h-48 md:h-96 relative">
                                 {/* Middle Red Strip - Centered behind avatars & symbol (Full Width) */}
-                                <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-screen h-16 md:h-24 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
+                                <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-screen h-8 sm:h-12 md:h-24 bg-[#700000] border-y-2 border-[#d4af37]/20 shadow-lg overflow-hidden z-0">
                                     <div className="absolute inset-0 opacity-60 mix-blend-overlay">
                                         <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                                     </div>
@@ -208,21 +208,25 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 </div>
                             </div>
 
-                            {/* Position Labels and Names (Desktop/Mobile responsive) */}
-                            <div className="grid grid-cols-2 gap-4 md:gap-0 mt-8 md:mt-12 max-w-5xl mx-auto px-4">
-                                <div className="text-center space-y-2">
+                            {/* Position Labels and Names (Aligned with Avatars) */}
+                            <div className="flex flex-row items-center justify-center mt-8 md:mt-12 max-w-5xl mx-auto px-4">
+                                <div className="flex-1 text-center space-y-2">
                                     <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
                                         {wedding.groomPosition || 'Trưởng Nam'}
                                     </p>
-                                    <h2 className="text-2xl md:text-6xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                                    <h2 className="text-4xl md:text-7xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-dancing), cursive' }}>
                                         {wedding.groomName}
                                     </h2>
                                 </div>
-                                <div className="text-center space-y-2">
+                                
+                                {/* Central spacer matching the "囍" symbol's width */}
+                                <div className="px-2 md:px-8 min-w-[70px] sm:min-w-[120px] md:min-w-[200px]" />
+
+                                <div className="flex-1 text-center space-y-2">
                                     <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
                                         {wedding.bridePosition || 'Út Nữ'}
                                     </p>
-                                    <h2 className="text-2xl md:text-6xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                                    <h2 className="text-4xl md:text-7xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-dancing), cursive' }}>
                                         {wedding.brideName}
                                     </h2>
                                 </div>
