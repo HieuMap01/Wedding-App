@@ -200,9 +200,12 @@ function useAutoplay(
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLabel, setShowLabel] = useState(true);
 
-  // Ref to always have latest volume without re-creating callbacks
+  // Refs to always have latest values without re-creating callbacks
   const volumeRef = useRef(volume);
   volumeRef.current = volume;
+
+  const isPlayingRef = useRef(isPlaying);
+  isPlayingRef.current = isPlaying;
 
   const playAudio = useCallback(() => {
     if (audioRef.current && !isYoutube) {
@@ -269,6 +272,31 @@ function useAutoplay(
   useEffect(() => {
     if (autoPlayTrigger) handleInteraction();
   }, [autoPlayTrigger, handleInteraction]);
+
+  // Resume playback when user returns to the tab.
+  // Browsers pause YouTube iframes and may suspend audio in background tabs.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!isPlayingRef.current) return;
+
+      if (document.visibilityState === "visible") {
+        if (isYoutube) {
+          sendYoutubeCommand("playVideo");
+          sendYoutubeCommand("unMute");
+          sendYoutubeCommand("setVolume", [
+            Math.round(volumeRef.current * 100),
+          ]);
+        } else if (audioRef.current?.paused) {
+          audioRef.current.play().catch(() => {});
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isYoutube, audioRef]);
 
   // togglePlay uses functional setState so it doesn't depend on `isPlaying`,
   // avoiding unnecessary re-creation of the callback.

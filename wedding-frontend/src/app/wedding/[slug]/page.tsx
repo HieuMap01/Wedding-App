@@ -38,19 +38,6 @@ export async function generateMetadata({
     wedding.venueName ? `Tại ${wedding.venueName}.` : ""
   }`;
 
-  // Use the first gallery image, or groom/bride photo as OG image
-  const ogImage =
-    wedding.images?.[0]?.imageUrl ||
-    wedding.groomImageUrl ||
-    wedding.brideImageUrl ||
-    null;
-
-  const ogImageUrl = ogImage
-    ? ogImage.startsWith("http")
-      ? ogImage
-      : `${API_BASE}${ogImage}`
-    : undefined;
-
   return {
     title,
     description,
@@ -59,22 +46,11 @@ export async function generateMetadata({
       description,
       type: "website",
       siteName: "Wedding Invitation",
-      ...(ogImageUrl && {
-        images: [
-          {
-            url: ogImageUrl,
-            width: 1200,
-            height: 630,
-            alt: `${wedding.groomName} & ${wedding.brideName} Wedding`,
-          },
-        ],
-      }),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      ...(ogImageUrl && { images: [ogImageUrl] }),
     },
   };
 }
