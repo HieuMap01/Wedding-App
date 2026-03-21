@@ -5,6 +5,7 @@ import { weddingApi, interactionApi, WeddingResponse } from '@/lib/api';
 import { useParams } from 'next/navigation';
 import { Locale, useTranslation } from '@/lib/i18n';
 import Template1 from '@/components/templates/Template1';
+import Template2 from '@/components/templates/Template2';
 
 export default function GuestWeddingPage() {
     const params = useParams();
@@ -70,6 +71,8 @@ export default function GuestWeddingPage() {
     // Dynamic template mapping
     const renderTemplate = () => {
         switch (wedding.templateCode) {
+            case 'template2':
+                return <Template2 wedding={wedding} locale={locale} />;
             case 'template1':
             default:
                 return <Template1 wedding={wedding} locale={locale} />;

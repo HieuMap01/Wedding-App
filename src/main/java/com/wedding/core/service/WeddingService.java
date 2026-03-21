@@ -68,6 +68,12 @@ public class WeddingService {
                 .isPublished(false)
                 .isActive(true)
                 .templateCode(request.getTemplateCode() != null ? request.getTemplateCode() : "template1")
+                .groomImageUrl(request.getGroomImageUrl())
+                .brideImageUrl(request.getBrideImageUrl())
+                .groomFatherName(request.getGroomFatherName())
+                .groomMotherName(request.getGroomMotherName())
+                .brideFatherName(request.getBrideFatherName())
+                .brideMotherName(request.getBrideMotherName())
                 .build();
 
         wedding = weddingRepository.save(wedding);
@@ -149,6 +155,18 @@ public class WeddingService {
             wedding.setMusicUrl(request.getMusicUrl());
         if (request.getTemplateCode() != null)
             wedding.setTemplateCode(request.getTemplateCode());
+        if (request.getGroomImageUrl() != null)
+            wedding.setGroomImageUrl(request.getGroomImageUrl());
+        if (request.getBrideImageUrl() != null)
+            wedding.setBrideImageUrl(request.getBrideImageUrl());
+        if (request.getGroomFatherName() != null)
+            wedding.setGroomFatherName(request.getGroomFatherName());
+        if (request.getGroomMotherName() != null)
+            wedding.setGroomMotherName(request.getGroomMotherName());
+        if (request.getBrideFatherName() != null)
+            wedding.setBrideFatherName(request.getBrideFatherName());
+        if (request.getBrideMotherName() != null)
+            wedding.setBrideMotherName(request.getBrideMotherName());
 
         // Handle slug update
         if (request.getSlug() != null && !request.getSlug().isBlank() && !request.getSlug().equals(wedding.getSlug())) {
@@ -449,6 +467,12 @@ public class WeddingService {
                 .isActive(wedding.getIsActive())
                 .publicUrl(wedding.getIsPublished() ? "/wedding/" + wedding.getSlug() : null)
                 .musicUrl(wedding.getMusicUrl())
+                .groomImageUrl(wedding.getGroomImageUrl())
+                .brideImageUrl(wedding.getBrideImageUrl())
+                .groomFatherName(wedding.getGroomFatherName())
+                .groomMotherName(wedding.getGroomMotherName())
+                .brideFatherName(wedding.getBrideFatherName())
+                .brideMotherName(wedding.getBrideMotherName())
                 .templateCode(wedding.getTemplateCode())
                 .images(imageResponses)
                 .loveStoryEvents(eventResponses)

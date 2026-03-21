@@ -107,6 +107,24 @@ public class Wedding {
     @Column(name = "music_url")
     private String musicUrl;
 
+    @Column(name = "groom_image_url")
+    private String groomImageUrl;
+
+    @Column(name = "bride_image_url")
+    private String brideImageUrl;
+
+    @Column(name = "groom_father_name")
+    private String groomFatherName;
+
+    @Column(name = "groom_mother_name")
+    private String groomMotherName;
+
+    @Column(name = "bride_father_name")
+    private String brideFatherName;
+
+    @Column(name = "bride_mother_name")
+    private String brideMotherName;
+
     @Column(name = "template_code", length = 50)
     @Builder.Default
     private String templateCode = "template1";

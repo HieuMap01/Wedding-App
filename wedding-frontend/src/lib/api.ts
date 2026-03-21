@@ -238,6 +238,12 @@ export interface WeddingResponse {
   brideBankAccountHolder?: string;
   publicUrl: string;
   musicUrl?: string;
+  groomImageUrl?: string;
+  brideImageUrl?: string;
+  groomFatherName?: string;
+  groomMotherName?: string;
+  brideFatherName?: string;
+  brideMotherName?: string;
   templateCode: string;
   images: WeddingImageResponse[];
   loveStoryEvents: LoveStoryEventResponse[];

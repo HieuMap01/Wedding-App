@@ -36,4 +36,10 @@ public class UpdateWeddingRequest {
     private String brideBankAccountHolder;
     private String musicUrl;
     private String templateCode;
+    private String groomImageUrl;
+    private String brideImageUrl;
+    private String groomFatherName;
+    private String groomMotherName;
+    private String brideFatherName;
+    private String brideMotherName;
 }
