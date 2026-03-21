@@ -22,7 +22,16 @@ const dancingScript = Dancing_Script({
   display: "swap",
 });
 
+const defaultUrl = process.env.NEXT_PUBLIC_SITE_URL 
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : `http://localhost:${process.env.PORT || 3000}`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    defaultUrl.startsWith("http") ? defaultUrl : `https://${defaultUrl}`
+  ),
   title: "Wedding App - Nền tảng tạo thiệp cưới",
   description: "Tạo thiệp cưới online chuyên nghiệp và dễ dàng",
 };
