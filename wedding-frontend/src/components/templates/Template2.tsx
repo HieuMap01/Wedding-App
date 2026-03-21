@@ -209,26 +209,35 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                             </div>
 
                             {/* Position Labels and Names (Aligned with Avatars) */}
-                            <div className="flex flex-row items-center justify-center mt-8 md:mt-12 max-w-5xl mx-auto px-4">
-                                <div className="flex-1 text-center space-y-2">
-                                    <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
-                                        {wedding.groomPosition || 'Trưởng Nam'}
-                                    </p>
-                                    <h2 className="text-4xl md:text-7xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-dancing), cursive' }}>
-                                        {wedding.groomName}
-                                    </h2>
+                            <div className="relative z-10 w-full max-w-6xl px-4 md:px-12 mx-auto mt-8 md:mt-12">
+                                {/* Labels Row - Ensures "Trưởng Nam" and "Út Nữ" are always aligned */}
+                                <div className="flex flex-row items-end justify-center">
+                                    <div className="flex-1 text-center">
+                                        <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
+                                            {wedding.groomPosition || 'Trưởng Nam'}
+                                        </p>
+                                    </div>
+                                    <div className="px-2 md:px-8 min-w-[70px] sm:min-w-[120px] md:min-w-[200px]" />
+                                    <div className="flex-1 text-center">
+                                        <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
+                                            {wedding.bridePosition || 'Út Nữ'}
+                                        </p>
+                                    </div>
                                 </div>
-                                
-                                {/* Central spacer matching the "囍" symbol's width */}
-                                <div className="px-2 md:px-8 min-w-[70px] sm:min-w-[120px] md:min-w-[200px]" />
 
-                                <div className="flex-1 text-center space-y-2">
-                                    <p className="text-gray-500 uppercase tracking-[0.2em] text-[10px] md:text-xs font-semibold">
-                                        {wedding.bridePosition || 'Út Nữ'}
-                                    </p>
-                                    <h2 className="text-4xl md:text-7xl text-[#700000] font-normal" style={{ fontFamily: 'var(--font-dancing), cursive' }}>
-                                        {wedding.brideName}
-                                    </h2>
+                                {/* Names Row */}
+                                <div className="flex flex-row items-start justify-center mt-2 lg:mt-4">
+                                    <div className="flex-1 text-center min-w-0">
+                                        <h2 className="text-3xl sm:text-4xl md:text-7xl text-[#700000] font-normal leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing), cursive' }}>
+                                            {wedding.groomName}
+                                        </h2>
+                                    </div>
+                                    <div className="px-2 md:px-8 min-w-[70px] sm:min-w-[120px] md:min-w-[200px]" />
+                                    <div className="flex-1 text-center min-w-0">
+                                        <h2 className="text-3xl sm:text-4xl md:text-7xl text-[#700000] font-normal leading-tight whitespace-nowrap" style={{ fontFamily: 'var(--font-dancing), cursive' }}>
+                                            {wedding.brideName}
+                                        </h2>
+                                    </div>
                                 </div>
                             </div>
 

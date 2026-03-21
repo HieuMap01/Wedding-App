@@ -6,19 +6,19 @@ import BackToTop from "@/components/BackToTop";
 
 
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
   variable: "--font-inter",
   display: 'swap',
 });
 
 const playfair = Playfair_Display({
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
   variable: "--font-playfair",
   display: 'swap',
 });
 
 const dancingScript = Dancing_Script({
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
   variable: "--font-dancing",
   display: 'swap',
 });
