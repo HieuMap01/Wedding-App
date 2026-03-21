@@ -5,7 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // --- Constants ---
 
-const INTERACTION_EVENTS = ["click", "touchstart", "mousedown", "keydown"] as const;
+const INTERACTION_EVENTS = [
+  "click",
+  "touchstart",
+  "mousedown",
+  "keydown",
+] as const;
 const LABEL_TIMEOUT_MS = 8000;
 const MUSIC_NOTES = ["🎵", "🎶", "🎼"] as const;
 
@@ -18,7 +23,10 @@ interface MusicPlayerProps {
 
 // --- Helper Utilities ---
 
-const sendYoutubeCommand = (command: string, args: (string | number | boolean)[] = []) => {
+const sendYoutubeCommand = (
+  command: string,
+  args: (string | number | boolean)[] = []
+) => {
   const iframe = document.getElementById("youtube-player") as HTMLIFrameElement;
   iframe?.contentWindow?.postMessage(
     JSON.stringify({ event: "command", func: command, args }),
@@ -52,7 +60,9 @@ const PlayPauseIcon = ({ isPlaying }: { isPlaying: boolean }) => {
       {[3, 4, 2, 3].map((h, i) => (
         <span
           key={i}
-          className={`w-1 h-${h} bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_${[0, 0.2, 0.4, 0.1][i]}s_infinite_alternate]`}
+          className={`w-1 h-${h} bg-white rounded-full animate-[music-bar_0.8s_ease-in-out_${
+            [0, 0.2, 0.4, 0.1][i]
+          }s_infinite_alternate]`}
         />
       ))}
     </motion.div>
@@ -66,11 +76,13 @@ const FloatingNotes = ({ isPlaying }: { isPlaying: boolean }) => {
       {MUSIC_NOTES.map((note, i) => (
         <span
           key={i}
-          className="absolute top-0 right-0 text-xl pointer-events-none music-note-float"
-          style={{
-            animationDelay: `${i * 0.6}s`,
-            "--note-x": `${i % 2 === 0 ? 20 : -20}px`,
-          } as React.CSSProperties}
+          className="absolute left-[10%] top-[12%] text-xl pointer-events-none music-note-float z-[-1]"
+          style={
+            {
+              animationDelay: `${i * 0.6}s`,
+              "--note-x": `${i % 2 === 0 ? 20 : -20}px`,
+            } as React.CSSProperties
+          }
         >
           {note}
         </span>
@@ -115,9 +127,7 @@ const HintLabel = ({ visible }: { visible: boolean }) => (
         exit={{ opacity: 0, x: -10 }}
         className="absolute left-[64px] top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-xl border border-rose-100 whitespace-nowrap pointer-events-none z-10"
       >
-        <span className="text-xs font-bold text-rose-600">
-          Bật nhạc nền 🎵
-        </span>
+        <span className="text-xs font-bold text-rose-600">Bật nhạc nền 🎵</span>
       </motion.div>
     )}
   </AnimatePresence>
@@ -242,9 +252,12 @@ function useAutoplay(
 
 // --- Main Component ---
 
-export default function MusicPlayer({ url, autoPlayTrigger }: MusicPlayerProps) {
+export default function MusicPlayer({
+  url,
+  autoPlayTrigger,
+}: MusicPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [volume, setVolume] = useState(0.6);
+  const [volume, setVolume] = useState(0.15);
   const [isHovered, setIsHovered] = useState(false);
 
   const youtubeId = parseYoutubeId(url);
@@ -322,13 +335,26 @@ export default function MusicPlayer({ url, autoPlayTrigger }: MusicPlayerProps) 
 
       <style jsx global>{`
         @keyframes music-bar {
-          0% { height: 20%; }
-          100% { height: 100%; }
+          0% {
+            height: 20%;
+          }
+          100% {
+            height: 100%;
+          }
         }
         @keyframes noteFloat {
-          0% { opacity: 0; transform: translateY(0) translateX(0) scale(0.5); }
-          30% { opacity: 1; transform: translateY(-30px) translateX(var(--note-x)) scale(1); }
-          100% { opacity: 0; transform: translateY(-80px) translateX(var(--note-x)) scale(0.8); }
+          0% {
+            opacity: 0;
+            transform: translateY(0) translateX(0) scale(0.5);
+          }
+          50% {
+            opacity: 1;
+            transform: translateY(-30px) translateX(var(--note-x)) scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-80px) translateX(var(--note-x)) scale(0.8);
+          }
         }
         .music-note-float {
           animation: noteFloat 2s ease-out infinite;
