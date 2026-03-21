@@ -136,39 +136,39 @@ export default function Template2({ wedding, locale }: TemplateProps) {
             >
                 {/* Traditional Hero Header */}
                 <header className="relative bg-[#fdfaf5] overflow-hidden border-b-[6px] border-[#8b0000]">
-                    {/* Top Decorative Bar with repeating dragons */}
-                    <div className="h-20 md:h-32 bg-[#8b0000] relative overflow-hidden flex items-center border-b-4 border-[#d4af37]/30">
-                        <div className="absolute inset-0 opacity-60 flex justify-center items-center gap-4 md:gap-8 pointer-events-none px-4">
-                            {[...Array(10)].map((_, i) => (
-                                <div key={i} className="relative w-32 md:w-48 h-full flex-shrink-0">
-                                    <Image src="/images/traditional-bg.png" alt="" fill className="object-contain opacity-80" />
-                                </div>
-                            ))}
+                    {/* Top Decorative Bar with masked dragon pattern */}
+                    <div className="h-16 md:h-20 bg-[#8b0000] relative overflow-hidden border-b-2 border-[#d4af37]/30">
+                        <div className="absolute inset-0 opacity-80 mix-blend-overlay">
+                            <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
                         </div>
                     </div>
 
                     {/* Main Hero Section */}
                     <div className="py-16 md:py-24 relative flex flex-col items-center">
-                        {/* Large Background Dragon Pattern */}
-                        <div className="absolute inset-0 z-0 pointer-events-none opacity-20 flex justify-center items-center px-4 overflow-hidden">
-                            <div className="relative w-full max-w-5xl h-full">
-                                <Image src="/images/traditional-bg.png" alt="Background Motif" fill className="object-contain scale-125" />
+                        {/* Masked Background Logic: Show red only in strips, otherwise faded white */}
+                        <div className="absolute inset-0 z-0">
+                            {/* Full background - Faded/White */}
+                            <div className="absolute inset-0 opacity-[0.05] bg-white">
+                                <Image src="/images/traditional-bg.png" alt="Background" fill className="object-cover desaturate contrast-125" />
                             </div>
-                        </div>
-                        
-                        {/* Subtle Silk Texture */}
-                        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#8b0000 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
+                            
+                            {/* Middle Red Strip - Passing through avatars */}
+                            <div className="absolute top-[35%] md:top-[40%] left-0 w-full h-24 md:h-32 bg-[#8a0000] border-y-2 border-[#d4af37]/20 shadow-xl overflow-hidden">
+                                <div className="absolute inset-0 opacity-60 mix-blend-overlay">
+                                    <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
+                                </div>
+                            </div>
 
-                        {/* Central Horizontal Decorative Strip */}
-                        <div className="absolute top-[40%] md:top-[45%] left-0 w-full h-12 md:h-16 bg-[#8b0000] z-0 overflow-hidden shadow-lg border-y border-[#d4af37]/20 flex items-center">
-                            <div className="absolute inset-0 opacity-30 flex justify-center items-center gap-4 pointer-events-none">
-                                {[...Array(15)].map((_, i) => (
-                                    <div key={i} className="relative w-16 md:w-24 h-full flex-shrink-0">
-                                        <Image src="/images/traditional-bg.png" alt="" fill className="object-contain rotate-90 scale-150" />
-                                    </div>
-                                ))}
+                            {/* Bottom Red Strip */}
+                            <div className="absolute bottom-10 left-0 w-full h-16 md:h-24 bg-[#8a0000] border-y-2 border-[#d4af37]/20 shadow-xl overflow-hidden">
+                                <div className="absolute inset-0 opacity-60 mix-blend-overlay">
+                                    <Image src="/images/traditional-bg.png" alt="" fill className="object-cover" />
+                                </div>
                             </div>
                         </div>
+
+                        {/* Subtle Silk Texture */}
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-1" style={{ backgroundImage: 'radial-gradient(#8b0000 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
 
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -200,9 +200,9 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                 </div>
 
                                 {/* Central Symbol */}
-                                <div className="px-2 md:px-8 flex items-center justify-center relative z-20">
-                                    <div className="text-[#8b0000] text-7xl md:text-[9rem] font-bold select-none leading-none transform translate-y-[-10px] md:translate-y-[-20px]">
-                                        <span className="relative inline-block" style={{ textShadow: '4px 4px 0 #fff, -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff' }}>
+                                <div className="px-2 md:px-8 flex items-center justify-center relative min-w-[80px] md:min-w-[150px]">
+                                    <div className="text-[#8b0000] text-7xl md:text-[10rem] font-bold select-none leading-none z-20">
+                                        <span className="relative inline-block px-4 py-2" style={{ textShadow: '4px 4px 0 #fff, -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff' }}>
                                             囍
                                         </span>
                                     </div>
