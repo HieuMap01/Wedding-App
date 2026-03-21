@@ -38,9 +38,9 @@ export default function EditWeddingPage() {
     const handleBankLookup = async (type: 'groom' | 'bride') => {
         const bankName = type === 'groom' ? form.groomBankName : form.brideBankName;
         const accountNumber = type === 'groom' ? form.groomBankAccountNumber : form.brideBankAccountNumber;
-        
+
         if (!bankName || !accountNumber) return;
-        
+
         const bankCode = bankName.includes(' - ') ? bankName.split(' - ')[0] : bankName;
         const bank = banks.find(b => b.code === bankCode || b.name === bankName);
         if (!bank) return;
@@ -164,7 +164,7 @@ export default function EditWeddingPage() {
     };
 
     const toggleSection = (section: string) => {
-        setExpandedSections(prev => 
+        setExpandedSections(prev =>
             prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
         );
     };
@@ -204,9 +204,9 @@ export default function EditWeddingPage() {
                 await loadWedding();
                 setMessage(prev => prev + ' 📸 Đã tải các ảnh lên thành công!');
             }
-            
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
+
         } catch (err: unknown) {
             setMessage('❌ ' + (err instanceof Error ? err.message : 'Có lỗi xảy ra'));
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -229,7 +229,7 @@ export default function EditWeddingPage() {
 
     const handleDeleteTimeline = async (eventId: number) => {
         if (!confirm('Bạn có chắc chắn muốn xóa mốc thời gian này?')) return;
-        
+
         setTimelineSaving(eventId);
         try {
             await weddingApi.deleteTimelineEvent(eventId);
@@ -244,7 +244,7 @@ export default function EditWeddingPage() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files) return;
-        
+
         if (isNew) {
             setSelectedFiles(prev => [...prev, ...Array.from(files)]);
         } else {
@@ -293,7 +293,7 @@ export default function EditWeddingPage() {
     const SectionHeader = ({ id, icon, title, description }: { id: string; icon: string; title: string; description?: string }) => {
         const isOpen = expandedSections.includes(id);
         return (
-            <div 
+            <div
                 onClick={() => toggleSection(id)}
                 className={`flex items-center justify-between p-5 cursor-pointer transition-all ${isOpen ? 'bg-slate-50 border-b border-slate-100' : 'hover:bg-slate-50'}`}
             >
@@ -346,10 +346,10 @@ export default function EditWeddingPage() {
             <form id="wedding-form" onSubmit={handleSubmit} className="space-y-6">
                 {/* Couple Info */}
                 <div className="card overflow-hidden">
-                    <SectionHeader 
-                        id="couple" 
-                        icon="👫" 
-                        title="Thông tin cặp đôi" 
+                    <SectionHeader
+                        id="couple"
+                        icon="👫"
+                        title="Thông tin cặp đôi"
                         description="Tên cô dâu, tên chú rể và đường dẫn thiệp mời."
                     />
                     {expandedSections.includes('couple') && (
@@ -383,29 +383,40 @@ export default function EditWeddingPage() {
                             <div className="mt-8 pt-8 border-t border-slate-100">
                                 <label className="block text-sm font-semibold text-slate-700 mb-4 text-center">Chọn mẫu thiệp</label>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div 
+                                    <div
                                         onClick={() => update('templateCode', 'template1')}
                                         className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template1' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
                                     >
-                                        <div className="aspect-[3/4] rounded-lg bg-slate-100 mb-3 flex items-center justify-center text-slate-400 font-bold border border-slate-200 overflow-hidden">
-                                            <img 
-                                                src="/images/template1-preview.png"
-                                                alt="Template 1 Preview"
-                                                className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                                            />
+                                        <div className="aspect-[3/4] rounded-lg bg-[#f7f3f0] mb-3 flex items-center justify-center border border-slate-200 overflow-hidden relative group">
+                                            <div className="absolute inset-0 opacity-40">
+                                                <img src="/images/welcome-bg.png" className="w-full h-full object-cover" alt="Background" />
+                                            </div>
+                                            <div className="relative z-10 flex flex-col items-center gap-1">
+                                                <span className="text-[8px] uppercase tracking-widest text-[#8a7a5f] font-bold">Modern Style</span>
+                                                <div className="h-px w-8 bg-[#c19a6b]/30" />
+                                                <span className="text-xs font-serif italic text-[#1a2a4a]">Floral Bloom</span>
+                                            </div>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm font-bold">Mẫu 1</span>
                                             {form.templateCode === 'template1' && <span className="text-primary">✓</span>}
                                         </div>
                                     </div>
-                                    <div 
+                                    <div
                                         onClick={() => update('templateCode', 'template2')}
                                         className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template2' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
                                     >
-                                        <div className="aspect-[3/4] rounded-lg bg-red-100 mb-3 flex items-center justify-center text-red-600 font-bold border border-red-200 overflow-hidden">
-                                            <img src="/images/template2-preview.jpg" className="w-full h-full object-cover" alt="Mẫu 2" onError={(e) => { (e.target as any).style.display = 'none'; }} />
-                                            <span className="absolute">Mẫu Truyền Thống (2)</span>
+                                        <div className="aspect-[3/4] rounded-lg bg-[#700000] mb-3 flex items-center justify-center border border-red-900 overflow-hidden relative group">
+                                            <div className="absolute inset-0 opacity-40">
+                                                <img src="/images/traditional-bg.png" className="w-full h-full object-contain scale-125" alt="Background" />
+                                            </div>
+                                            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
+                                            <div className="relative z-10 flex flex-col items-center gap-2">
+                                                <div className="w-10 h-10 rounded-full border border-[#d4af37]/40 flex items-center justify-center bg-[#d4af37]/5 backdrop-blur-sm">
+                                                    <span className="text-[#d4af37] text-lg font-serif">囍</span>
+                                                </div>
+                                                <span className="text-[8px] uppercase tracking-[0.3em] text-[#f3e5ab] font-bold">Traditional</span>
+                                            </div>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm font-bold">Mẫu 2</span>
@@ -419,12 +430,12 @@ export default function EditWeddingPage() {
                             {form.templateCode === 'template2' && (
                                 <div className="mt-8 pt-8 border-t border-slate-100 space-y-8 animate-fade-in-up font-sans">
                                     <h4 className="font-bold text-slate-800 flex items-center gap-2 text-sm">🏮 Thông tin truyền thống (Mẫu 2)</h4>
-                                    
+
                                     <div className="grid md:grid-cols-2 gap-8">
                                         {/* Groom Avatar */}
                                         <div className="space-y-4">
                                             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Ảnh đại diện Chú Rể</label>
-                                            <div 
+                                            <div
                                                 className="w-24 h-24 rounded-full border-4 border-slate-100 overflow-hidden bg-slate-50 flex items-center justify-center relative group cursor-pointer shadow-sm"
                                                 onClick={() => document.getElementById('groom-avatar-input')?.click()}
                                             >
@@ -436,10 +447,10 @@ export default function EditWeddingPage() {
                                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <span className="text-white text-[10px] font-bold">Thay đổi</span>
                                                 </div>
-                                                <input 
+                                                <input
                                                     id="groom-avatar-input"
-                                                    type="file" 
-                                                    className="hidden" 
+                                                    type="file"
+                                                    className="hidden"
                                                     accept="image/*"
                                                     onChange={async (e) => {
                                                         const file = e.target.files?.[0];
@@ -461,10 +472,10 @@ export default function EditWeddingPage() {
                                                 <input className="input-field text-sm font-bold text-primary" value={form.groomPosition} onChange={(e) => update('groomPosition', e.target.value)} placeholder="Vị trí (Ví dụ: Trưởng Nam)" />
                                                 <input className="input-field text-sm" value={form.groomFatherName} onChange={(e) => update('groomFatherName', e.target.value)} placeholder="Tên Cha chú rể (Ví dụ: Ông Nguyễn Văn A)" />
                                                 <input className="input-field text-sm" value={form.groomMotherName} onChange={(e) => update('groomMotherName', e.target.value)} placeholder="Tên Mẹ chú rể (Ví dụ: Bà Lê Thị B)" />
-                                                <textarea 
-                                                    className="input-field text-sm min-h-[100px] py-2" 
-                                                    value={form.groomHouseNote} 
-                                                    onChange={(e) => update('groomHouseNote', e.target.value)} 
+                                                <textarea
+                                                    className="input-field text-sm min-h-[100px] py-2"
+                                                    value={form.groomHouseNote}
+                                                    onChange={(e) => update('groomHouseNote', e.target.value)}
                                                     placeholder="Thông tin bổ sung nhà trai (Ví dụ: Lễ gia tiên được tổ chức tại...)"
                                                 />
                                             </div>
@@ -473,7 +484,7 @@ export default function EditWeddingPage() {
                                         {/* Bride Avatar */}
                                         <div className="space-y-4">
                                             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Ảnh đại diện Cô Dâu</label>
-                                            <div 
+                                            <div
                                                 className="w-24 h-24 rounded-full border-4 border-slate-100 overflow-hidden bg-slate-50 flex items-center justify-center relative group cursor-pointer shadow-sm"
                                                 onClick={() => document.getElementById('bride-avatar-input')?.click()}
                                             >
@@ -485,10 +496,10 @@ export default function EditWeddingPage() {
                                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <span className="text-white text-[10px] font-bold">Thay đổi</span>
                                                 </div>
-                                                <input 
+                                                <input
                                                     id="bride-avatar-input"
-                                                    type="file" 
-                                                    className="hidden" 
+                                                    type="file"
+                                                    className="hidden"
                                                     accept="image/*"
                                                     onChange={async (e) => {
                                                         const file = e.target.files?.[0];
@@ -510,10 +521,10 @@ export default function EditWeddingPage() {
                                                 <input className="input-field text-sm font-bold text-primary" value={form.bridePosition} onChange={(e) => update('bridePosition', e.target.value)} placeholder="Vị trí (Ví dụ: Út Nữ)" />
                                                 <input className="input-field text-sm" value={form.brideFatherName} onChange={(e) => update('brideFatherName', e.target.value)} placeholder="Tên Cha cô dâu (Ví dụ: Ông Trần Văn C)" />
                                                 <input className="input-field text-sm" value={form.brideMotherName} onChange={(e) => update('brideMotherName', e.target.value)} placeholder="Tên Mẹ cô dâu (Ví dụ: Bà Phạm Thị D)" />
-                                                <textarea 
-                                                    className="input-field text-sm min-h-[100px] py-2" 
-                                                    value={form.brideHouseNote} 
-                                                    onChange={(e) => update('brideHouseNote', e.target.value)} 
+                                                <textarea
+                                                    className="input-field text-sm min-h-[100px] py-2"
+                                                    value={form.brideHouseNote}
+                                                    onChange={(e) => update('brideHouseNote', e.target.value)}
                                                     placeholder="Thông tin bổ sung nhà gái (Ví dụ: Lễ vu quy được tổ chức tại...)"
                                                 />
                                             </div>
@@ -527,10 +538,10 @@ export default function EditWeddingPage() {
 
                 {/* Event Details */}
                 <div className="card overflow-hidden">
-                    <SectionHeader 
-                        id="event" 
-                        icon="📅" 
-                        title="Thời gian & Địa điểm" 
+                    <SectionHeader
+                        id="event"
+                        icon="📅"
+                        title="Thời gian & Địa điểm"
                         description="Ngày giờ tổ chức tiệc và tích hợp bản đồ chỉ đường."
                     />
                     {expandedSections.includes('event') && (
@@ -562,7 +573,7 @@ export default function EditWeddingPage() {
                                             <input className="input-field" value={form.venueAddress} onChange={(e) => update('venueAddress', e.target.value)} placeholder="8 Nguyễn Bỉnh Khiêm, Quận 1..." />
                                         </div>
                                     </div>
-                                    <MapPicker 
+                                    <MapPicker
                                         label="Vị trí trên bản đồ"
                                         address={form.venueAddress}
                                         lat={form.venueLat}
@@ -588,7 +599,7 @@ export default function EditWeddingPage() {
                                                 <input className="input-field text-sm" value={form.groomHouseAddress} onChange={(e) => update('groomHouseAddress', e.target.value)} placeholder="Địa chỉ Nhà Trai" />
                                             </div>
                                         </div>
-                                        <MapPicker 
+                                        <MapPicker
                                             address={form.groomHouseAddress}
                                             lat={form.groomHouseLat}
                                             lng={form.groomHouseLng}
@@ -611,7 +622,7 @@ export default function EditWeddingPage() {
                                                 <input className="input-field text-sm" value={form.brideHouseAddress} onChange={(e) => update('brideHouseAddress', e.target.value)} placeholder="Địa chỉ Nhà Gái" />
                                             </div>
                                         </div>
-                                        <MapPicker 
+                                        <MapPicker
                                             address={form.brideHouseAddress}
                                             lat={form.brideHouseLat}
                                             lng={form.brideHouseLng}
@@ -630,10 +641,10 @@ export default function EditWeddingPage() {
 
                 {/* Gift Info */}
                 <div className="card overflow-hidden">
-                    <SectionHeader 
-                        id="gift" 
-                        icon="💳" 
-                        title="Thông tin nhận quà" 
+                    <SectionHeader
+                        id="gift"
+                        icon="💳"
+                        title="Thông tin nhận quà"
                         description="Hệ thống tự động tra cứu tên chủ tài khoản sau khi bạn nhập số tài khoản."
                     />
                     {expandedSections.includes('gift') && (
@@ -647,9 +658,9 @@ export default function EditWeddingPage() {
                                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <label className="block text-[10px] font-bold text-blue-400 uppercase mb-1 px-1">Ngân hàng</label>
-                                        <select 
-                                            className="input-field text-sm" 
-                                            value={form.groomBankName?.includes(' - ') ? form.groomBankName.split(' - ')[0] : ''} 
+                                        <select
+                                            className="input-field text-sm"
+                                            value={form.groomBankName?.includes(' - ') ? form.groomBankName.split(' - ')[0] : ''}
                                             onChange={(e) => {
                                                 const b = banks.find(h => h.code === e.target.value);
                                                 update('groomBankName', b ? `${b.code} - ${b.shortName || b.name}` : '');
@@ -664,14 +675,14 @@ export default function EditWeddingPage() {
                                     <div>
                                         <label className="block text-[10px] font-bold text-blue-400 uppercase mb-1 px-1">Số tài khoản</label>
                                         <div className="relative">
-                                            <input 
-                                                className="input-field text-sm pr-10" 
-                                                value={form.groomBankAccountNumber} 
-                                                onChange={(e) => update('groomBankAccountNumber', e.target.value)} 
+                                            <input
+                                                className="input-field text-sm pr-10"
+                                                value={form.groomBankAccountNumber}
+                                                onChange={(e) => update('groomBankAccountNumber', e.target.value)}
                                                 onBlur={() => handleBankLookup('groom')}
-                                                placeholder="Ví dụ: 03833..." 
+                                                placeholder="Ví dụ: 03833..."
                                             />
-                                            <button 
+                                            <button
                                                 type="button"
                                                 onClick={() => handleBankLookup('groom')}
                                                 className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 transition-all ${lookupLoading === 'groom' ? 'animate-spin opacity-50' : 'text-blue-500 hover:scale-110'}`}
@@ -699,9 +710,9 @@ export default function EditWeddingPage() {
                                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <label className="block text-[10px] font-bold text-rose-400 uppercase mb-1 px-1">Ngân hàng</label>
-                                        <select 
-                                            className="input-field text-sm" 
-                                            value={form.brideBankName?.includes(' - ') ? form.brideBankName.split(' - ')[0] : ''} 
+                                        <select
+                                            className="input-field text-sm"
+                                            value={form.brideBankName?.includes(' - ') ? form.brideBankName.split(' - ')[0] : ''}
                                             onChange={(e) => {
                                                 const b = banks.find(h => h.code === e.target.value);
                                                 update('brideBankName', b ? `${b.code} - ${b.shortName || b.name}` : '');
@@ -716,14 +727,14 @@ export default function EditWeddingPage() {
                                     <div>
                                         <label className="block text-[10px] font-bold text-rose-400 uppercase mb-1 px-1">Số tài khoản</label>
                                         <div className="relative">
-                                            <input 
-                                                className="input-field text-sm pr-10" 
-                                                value={form.brideBankAccountNumber} 
-                                                onChange={(e) => update('brideBankAccountNumber', e.target.value)} 
+                                            <input
+                                                className="input-field text-sm pr-10"
+                                                value={form.brideBankAccountNumber}
+                                                onChange={(e) => update('brideBankAccountNumber', e.target.value)}
                                                 onBlur={() => handleBankLookup('bride')}
-                                                placeholder="Số tài khoản..." 
+                                                placeholder="Số tài khoản..."
                                             />
-                                            <button 
+                                            <button
                                                 type="button"
                                                 onClick={() => handleBankLookup('bride')}
                                                 className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 transition-all ${lookupLoading === 'bride' ? 'animate-spin opacity-50' : 'text-rose-500 hover:scale-110'}`}
@@ -747,10 +758,10 @@ export default function EditWeddingPage() {
 
                 {/* Story & Theme */}
                 <div className="card overflow-hidden">
-                    <SectionHeader 
-                        id="theme" 
-                        icon="🎨" 
-                        title="Câu chuyện & Giao diện" 
+                    <SectionHeader
+                        id="theme"
+                        icon="🎨"
+                        title="Câu chuyện & Giao diện"
                         description="Lời nhắn gửi yêu thương và màu sắc chủ đạo của thiệp."
                     />
                     {expandedSections.includes('theme') && (
@@ -776,10 +787,10 @@ export default function EditWeddingPage() {
 
                 {/* Love Story Timeline */}
                 <div className="card overflow-hidden">
-                    <SectionHeader 
-                        id="timeline" 
-                        icon="💕" 
-                        title="Love Story Timeline" 
+                    <SectionHeader
+                        id="timeline"
+                        icon="💕"
+                        title="Love Story Timeline"
                         description="Kể lại những cột mốc quan trọng nhất trong hành trình yêu của hai bạn."
                     />
                     {expandedSections.includes('timeline') && (
@@ -796,7 +807,7 @@ export default function EditWeddingPage() {
                                     wedding.loveStoryEvents.map((event) => (
                                         <div key={event.id} className="p-5 rounded-2xl border border-rose-100 bg-white shadow-sm relative group overflow-hidden">
                                             <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button 
+                                                <button
                                                     type="button"
                                                     onClick={() => handleDeleteTimeline(event.id)}
                                                     className="p-1.5 text-rose-400 hover:text-rose-600 transition-colors"
@@ -805,26 +816,26 @@ export default function EditWeddingPage() {
                                                     {timelineSaving === event.id ? '...' : '🗑️'}
                                                 </button>
                                             </div>
-                                            
+
                                             <div className="grid md:grid-cols-[150px_1fr] gap-6" id={`event-form-${event.id}`}>
                                                 <div className="space-y-3">
-                                                    <div 
+                                                    <div
                                                         className="aspect-square rounded-xl overflow-hidden bg-rose-50 border border-rose-100 flex items-center justify-center relative cursor-pointer group/img"
                                                         onClick={() => (document.querySelector(`#event-form-${event.id} input[name="file"]`) as HTMLInputElement)?.click()}
                                                     >
                                                         {timelinePreviews[event.id] || event.imageUrl ? (
-                                                            <img 
-                                                                src={timelinePreviews[event.id] || getImageUrl(event.imageUrl)} 
-                                                                alt={event.title} 
-                                                                className="w-full h-full object-cover transition-transform group-hover/img:scale-105" 
+                                                            <img
+                                                                src={timelinePreviews[event.id] || getImageUrl(event.imageUrl)}
+                                                                alt={event.title}
+                                                                className="w-full h-full object-cover transition-transform group-hover/img:scale-105"
                                                             />
                                                         ) : (
                                                             <span className="text-2xl text-rose-200">📸</span>
                                                         )}
-                                                        <input 
-                                                            name="file" 
-                                                            type="file" 
-                                                            accept="image/*" 
+                                                        <input
+                                                            name="file"
+                                                            type="file"
+                                                            accept="image/*"
                                                             className="hidden"
                                                             onChange={(e) => {
                                                                 const file = e.target.files?.[0];
@@ -852,7 +863,7 @@ export default function EditWeddingPage() {
                                                         <textarea name="description" className="input-field text-sm min-h-[80px]" defaultValue={event.description} placeholder="Mô tả ngắn gọn về kỷ niệm này..." />
                                                     </div>
                                                     <div className="flex justify-end pt-2">
-                                                        <button 
+                                                        <button
                                                             type="button"
                                                             onClick={(e) => {
                                                                 const div = document.getElementById(`event-form-${event.id}`);
@@ -861,7 +872,7 @@ export default function EditWeddingPage() {
                                                                 const titleInput = div.querySelector('input[name="title"]') as HTMLInputElement;
                                                                 const dateInput = div.querySelector('input[name="eventDate"]') as HTMLInputElement;
                                                                 const descInput = div.querySelector('textarea[name="description"]') as HTMLTextAreaElement;
-                                                                
+
                                                                 if (!titleInput.value) {
                                                                     setTimelineError('Vui lòng nhập tiêu đề');
                                                                     return;
@@ -906,7 +917,7 @@ export default function EditWeddingPage() {
                                 <h4 className="font-bold text-rose-800 flex items-center gap-2 mb-6">✨ Thêm kỷ niệm mới</h4>
                                 <div className="grid md:grid-cols-[200px_1fr] gap-8">
                                     <div className="space-y-4">
-                                        <div 
+                                        <div
                                             className="aspect-square rounded-2xl border-2 border-dashed border-rose-200 bg-white flex flex-col items-center justify-center p-4 text-center group hover:border-rose-400 transition-all relative overflow-hidden cursor-pointer"
                                             onClick={() => document.getElementById('new-event-file')?.click()}
                                         >
@@ -918,11 +929,11 @@ export default function EditWeddingPage() {
                                                     <p className="text-[10px] font-bold text-rose-400 uppercase">Ảnh kỷ niệm</p>
                                                 </>
                                             )}
-                                            <input 
-                                                name="file" 
-                                                type="file" 
-                                                accept="image/*" 
-                                                className="hidden" 
+                                            <input
+                                                name="file"
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
                                                 id="new-event-file"
                                                 onChange={(e) => {
                                                     const file = e.target.files?.[0];
@@ -949,8 +960,8 @@ export default function EditWeddingPage() {
                                             <textarea name="description" className="input-field text-sm min-h-[100px]" placeholder="Kể về khoảnh khắc này..." id="new-event-desc" />
                                         </div>
                                         <div className="flex justify-end">
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => {
                                                     const title = (document.getElementById('new-event-title') as HTMLInputElement).value;
                                                     const date = (document.getElementById('new-event-date') as HTMLInputElement).value;
@@ -999,10 +1010,10 @@ export default function EditWeddingPage() {
 
                 {/* Album Images */}
                 <div className="card overflow-hidden">
-                    <SectionHeader 
-                        id="album" 
-                        icon="🖼️" 
-                        title="Album ảnh cưới" 
+                    <SectionHeader
+                        id="album"
+                        icon="🖼️"
+                        title="Album ảnh cưới"
                         description="Tải lên những khoảnh khắc đẹp nhất của hai bạn."
                     />
                     {expandedSections.includes('album') && (
@@ -1035,18 +1046,18 @@ export default function EditWeddingPage() {
                                     {wedding.images.map((img) => (
                                         <div key={img.id} className="relative group rounded-xl overflow-hidden border border-slate-200 bg-white">
                                             <img src={getImageUrl(img.imageUrl)} className="w-full aspect-square object-cover" />
-                                            
+
                                             {confirmDeleteId === img.id ? (
                                                 <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-2 text-center animate-fade-in">
                                                     <p className="text-[10px] font-bold text-white mb-2 leading-tight">Xác nhận xóa?</p>
                                                     <div className="flex gap-2">
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleDeleteImage(img.id)}
                                                             className="px-2 py-1 bg-red-500 text-white text-[10px] font-bold rounded shadow-sm hover:bg-red-600"
                                                         >
                                                             Xóa
                                                         </button>
-                                                        <button 
+                                                        <button
                                                             onClick={() => setConfirmDeleteId(null)}
                                                             className="px-2 py-1 bg-slate-600 text-white text-[10px] font-bold rounded shadow-sm hover:bg-slate-700"
                                                         >
@@ -1055,7 +1066,7 @@ export default function EditWeddingPage() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <button 
+                                                <button
                                                     onClick={() => setConfirmDeleteId(img.id)}
                                                     className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
@@ -1080,11 +1091,11 @@ export default function EditWeddingPage() {
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-1.5">Link nhạc (MP3, YouTube hoặc URL trực tiếp)</label>
-                            <input 
-                                className="input-field" 
+                            <input
+                                className="input-field"
                                 placeholder="https://www.youtube.com/watch?v=..."
-                                value={form.musicUrl} 
-                                onChange={(e) => update('musicUrl', e.target.value)} 
+                                value={form.musicUrl}
+                                onChange={(e) => update('musicUrl', e.target.value)}
                             />
                             <p className="mt-2 text-[10px] text-slate-500 italic">
                                 * Hỗ trợ link YouTube hoặc link trực tiếp (.mp3). Nhạc sẽ phát ẩn khi khách xem thiệp.

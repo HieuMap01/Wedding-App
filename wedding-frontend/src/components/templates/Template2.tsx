@@ -275,11 +275,13 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                     <div>
                                         <p className="text-[#8a6e2f] uppercase tracking-widest text-[10px] font-bold mb-2">Nhà Trai</p>
                                         <div className="text-gray-700 leading-relaxed font-medium">
-                                            <p className="text-lg text-[#8b0000] font-bold mb-2">Ông bà: {wedding.groomFatherName || '...'} & {wedding.groomMotherName || '...'}</p>
+                                            {(wedding.groomFatherName || wedding.groomMotherName) && (
+                                                <p className="text-lg text-[#8b0000] font-bold mb-2"> Ông bà: {wedding.groomFatherName} {wedding.groomFatherName && wedding.groomMotherName && '&'} {wedding.groomMotherName}</p>
+                                            )}
                                             <p className="text-sm italic opacity-70 mb-4">
-                                                {wedding.groomHouseNote || 'Lễ gia tiên Nhà Trai'}
+                                                {wedding.groomHouseNote}
                                             </p>
-                                            <p className="text-gray-600 border-t border-[#8b0000]/5 pt-4">{wedding.groomHouseAddress || '...'}</p>
+                                            <p className="text-gray-600 border-t border-[#8b0000]/5 pt-4">{wedding.groomHouseAddress}</p>
                                         </div>
                                     </div>
                                     {wedding.groomHouseAddress && (
@@ -294,11 +296,13 @@ export default function Template2({ wedding, locale }: TemplateProps) {
                                     <div>
                                         <p className="text-[#8a6e2f] uppercase tracking-widest text-[10px] font-bold mb-2">Nhà Gái</p>
                                         <div className="text-gray-700 leading-relaxed font-medium">
-                                            <p className="text-lg text-[#8b0000] font-bold mb-2">Ông bà: {wedding.brideFatherName || '...'} & {wedding.brideMotherName || '...'}</p>
+                                            {(wedding.brideFatherName || wedding.brideMotherName) && (
+                                                <p className="text-lg text-[#8b0000] font-bold mb-2">Ông bà: {wedding.brideFatherName} {wedding.brideFatherName && wedding.brideMotherName && '&'} {wedding.brideMotherName}</p>
+                                            )}
                                             <p className="text-sm italic opacity-70 mb-4">
-                                                {wedding.brideHouseNote || 'Lễ gia tiên Nhà Gái'}
+                                                {wedding.brideHouseNote}
                                             </p>
-                                            <p className="text-gray-600 border-t border-[#8b0000]/5 pt-4">{wedding.brideHouseAddress || '...'}</p>
+                                            <p className="text-gray-600 border-t border-[#8b0000]/5 pt-4">{wedding.brideHouseAddress}</p>
                                         </div>
                                     </div>
                                     {wedding.brideHouseAddress && (
