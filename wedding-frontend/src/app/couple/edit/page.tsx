@@ -312,7 +312,7 @@ export default function EditWeddingPage() {
     };
 
     return (
-        <div className="max-w-4xl animate-fade-in-up pb-24 px-4">
+        <div className="max-w-4xl mx-auto animate-fade-in-up pb-24 px-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4 pt-8">
                 <div>
                     <h1 className="font-display text-3xl font-bold text-slate-900 mb-1">
@@ -382,7 +382,7 @@ export default function EditWeddingPage() {
 
                             <div className="mt-8 pt-8 border-t border-slate-100">
                                 <label className="block text-sm font-semibold text-slate-700 mb-4 text-center">Chọn mẫu thiệp</label>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     <div
                                         onClick={() => update('templateCode', 'template1')}
                                         className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template1' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
@@ -398,7 +398,7 @@ export default function EditWeddingPage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm font-bold">Mẫu 1</span>
+                                            <span className="text-sm font-bold">Thanh Hoa Thiệp</span>
                                             {form.templateCode === 'template1' && <span className="text-primary">✓</span>}
                                         </div>
                                     </div>
@@ -419,8 +419,31 @@ export default function EditWeddingPage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm font-bold">Mẫu 2</span>
+                                            <span className="text-sm font-bold">Song Long Thiệp</span>
                                             {form.templateCode === 'template2' && <span className="text-primary">✓</span>}
+                                        </div>
+                                    </div>
+                                    <div
+                                        onClick={() => update('templateCode', 'template3')}
+                                        className={`cursor-pointer rounded-xl border-2 p-4 transition-all ${form.templateCode === 'template3' ? 'border-primary bg-primary/5' : 'border-slate-100 hover:border-slate-200'}`}
+                                    >
+                                        <div className="aspect-[3/4] rounded-lg bg-[#fdf8f0] mb-3 flex items-center justify-center border border-amber-100 overflow-hidden relative group">
+                                            <div className="absolute inset-0 opacity-20">
+                                                <div className="w-full h-full flex flex-wrap gap-2 p-2 justify-center items-center">
+                                                    <span className="text-[10px] text-red-200">❤️</span>
+                                                    <span className="text-[10px] text-red-100">🌸</span>
+                                                    <span className="text-[10px] text-red-200">❤️</span>
+                                                </div>
+                                            </div>
+                                            <div className="relative z-10 flex flex-col items-center gap-1">
+                                                <span className="text-[7px] uppercase tracking-widest text-[#c41e3a] font-bold">Romantic Style</span>
+                                                <div className="h-px w-8 bg-[#c41e3a]/20" />
+                                                <span className="text-[10px] font-serif italic text-[#2d2d2d]">Sweet Love</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-bold">Tâm Giao Thiệp</span>
+                                            {form.templateCode === 'template3' && <span className="text-primary">✓</span>}
                                         </div>
                                     </div>
                                 </div>
@@ -1105,17 +1128,18 @@ export default function EditWeddingPage() {
                 </div>
             </form>
 
-            {/* Action Bar */}
-            <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white/95 backdrop-blur shadow-2xl border-t p-4 z-40">
-                <div className="max-w-4xl mx-auto flex gap-3">
-                    <button form="wedding-form" type="submit" disabled={saving || uploadingImage} className="btn-primary flex-1 h-12 text-base shadow-lg shadow-primary/20">
-                        {saving ? '⏳ Đang lưu...' : isNew ? '✨ Khởi tạo ngay' : '💾 Lưu mọi thay đổi'}
-                    </button>
-                    {!isNew && !wedding?.isPublished && (
-                        <button onClick={handlePublish} className="btn-secondary h-12 px-6 flex items-center justify-center gap-2 border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors rounded-xl shadow-lg">
-                            🚀 Xuất bản
+            <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-white/95 backdrop-blur shadow-2xl border-t z-40">
+                <div className="p-4 md:p-8 max-w-6xl mx-auto">
+                    <div className="max-w-4xl mx-auto flex gap-3">
+                        <button form="wedding-form" type="submit" disabled={saving || uploadingImage} className="btn-primary flex-1 h-12 text-base shadow-lg shadow-primary/20">
+                            {saving ? '⏳ Đang lưu...' : isNew ? '✨ Khởi tạo ngay' : '💾 Lưu mọi thay đổi'}
                         </button>
-                    )}
+                        {!isNew && !wedding?.isPublished && (
+                            <button onClick={handlePublish} className="btn-secondary h-12 px-6 flex items-center justify-center gap-2 border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors rounded-xl shadow-lg">
+                                🚀 Xuất bản
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

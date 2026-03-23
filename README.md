@@ -1,61 +1,98 @@
-# Wedding App Monolith
+# 💍 Wedding App Monolith - Nền tảng Tạo Thiệp Cưới Online
 
-Một ứng dụng quản lý đám cưới và tạo thiệp mời online chuyên nghiệp, được xây dựng theo kiến trúc Monolith để tối ưu tài nguyên và dễ dàng triển khai.
+[![Java](https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=java)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.1-brightgreen?style=flat-square&logo=spring-boot)](https://spring.io/projects/spring-boot)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue?style=flat-square&logo=docker)](https://www.docker.com/)
 
-## ✨ Tính năng nổi bật
+Một giải pháp toàn diện để tạo và quản lý thiệp mời đám cưới trực tuyến chuyên nghiệp. Được xây dựng trên kiến trúc Monolith tối ưu, giúp bạn dễ dàng triển khai chỉ với vài bước đơn giản.
 
-- **Tạo thiệp cưới online**: Tùy chỉnh thông tin cô dâu, chú rể, câu chuyện tình yêu, thời gian và địa điểm.
-- **Quản lý khách mời & RSVP**: Khách mời có thể xác nhận tham dự và để lại lời chúc trực tiếp trên thiệp.
-- **Thống kê Dashboard**: Theo dõi số lượng khách tham dự, lượt truy cập và lời chúc theo thời gian thực.
-- **Tích hợp Ngân hàng & VietQR**: 
-  - Chọn ngân hàng từ danh sách chính thức.
-  - Tự động tra cứu tên chủ tài khoản (yêu cầu API Key).
-  - Tự động tạo mã QR chuyển khoản chuyên nghiệp.
-- **Giao diện hiện đại**: Sử dụng Next.js, kiến trúc linh hoạt với các mục tùy chỉnh dễ dàng.
-- **Triển khai Online**: Hỗ trợ chạy online qua Ngrok thông qua cổng chào Nginx gateway.
+---
 
-## 🛠 Công nghệ sử dụng
+## ✨ Tính Năng Nổi Bật
 
-- **Backend**: Java Spring Boot, Hibernate, MySQL, Redis.
-- **Frontend**: Next.js, React, Tailwind CSS.
-- **Infrastructure**: Docker, Docker Compose, Nginx (Gateway).
-- **External API**: VietQR (Casso).
+### 🎨 Thiết Kế & Giao Diện
+- **Đa dạng mẫu thiệp**: Hỗ trợ nhiều phong cách (Hiện đại, Truyền thống Á Đông) với khả năng tùy biến cao.
+- **Tùy chỉnh linh hoạt**: Cập nhật thông tin Cô dâu & Chú rể, Album ảnh cưới, Câu chuyện tình yêu, và Lịch trình buổi lễ.
+- **Âm nhạc & Hiệu ứng**: Tích hợp trình phát nhạc tự động và hiệu ứng hình ảnh (tim bay, overlay chào mừng) chuyên nghiệp.
 
-## 🚀 Hướng dẫn cài đặt nhanh
+### 👥 Quản Lý Khách Mời (RSVP)
+- **Xác nhận tham dự**: Khách mời có thể gửi thông tin xác nhận tham dự và lời chúc ngay trên web.
+- **Bảng điều khiển (Dashboard)**: Theo dõi danh sách khách mời, thống kê số lượng tham dự và quản lý lời chúc theo thời gian thực.
+- **Mã QR & Link**: Tự động tạo mã QR và đường dẫn (Slug) tùy chỉnh để dễ dàng chia sẻ qua mạng xã hội.
 
-### 1. Yêu cầu hệ thống
+### 🧧 Tài Chính & Quyên Góp
+- **Tích hợp VietQR**: Tự động tạo mã QR chuyển khoản ngân hàng chuyên nghiệp.
+- **Tra cứu tài khoản**: Tự động hiển thị tên chủ tài khoản khi nhập số tài khoản (tích hợp API VietQR/Casso).
+
+---
+
+## 🛠 Công Nghệ Sử Dụng
+
+| Thành phần | Công nghệ |
+| :--- | :--- |
+| **Backend** | Java 17, Spring Boot 3.x, Hibernate/JPA, MySQL |
+| **Frontend** | Next.js 14, React, Tailwind CSS, Framer Motion |
+| **Caching** | Redis (cho Session & Rate limiting) |
+| **DevOps** | Docker, Docker Compose, Nginx Gateway |
+| **API Ngoài** | VietQR/Casso, Cloudinary (Lưu trữ ảnh), Google Maps |
+
+---
+
+## 🚀 Hướng Dẫn Cài Đặt
+
+### 1. Yêu Cầu Hệ Thống
 - Docker & Docker Compose
-- Ngrok (nếu muốn chạy online)
+- Node.js & NPM (cho phát triển frontend cục bộ)
+- JDK 17 (cho phát triển backend cục bộ)
 
-### 2. Cấu hình môi trường
-Tạo file `.env` ở thư mục gốc với các thông tin sau:
+### 2. Cấu Hình Môi Trường
+Tạo file `.env` tại thư mục gốc của dự án:
 ```env
+# Database & Mail
 MAIL_USERNAME=your-email@gmail.com
 MAIL_PASSWORD=your-app-password
 MYSQL_ROOT_PASSWORD=your-db-password
-JWT_SECRET=your-very-secure-secret
-PUBLIC_URL=https://your-ngrok-domain.ngrok-free.dev (nếu chạy online)
+
+# Security
+JWT_SECRET=your-very-secrect-key
+
+# Deployment
+PUBLIC_URL=https://your-domain.com
 ```
 
-### 3. Khởi chạy với Docker
+### 3. Khởi Chạy Bằng Docker
 ```bash
 docker-compose up -d --build
 ```
-Ứng dụng sẽ khả dụng tại:
-- **Nginx Gateway**: [http://localhost:81](http://localhost:81)
+Dự án sẽ khả dụng tại:
 - **Frontend**: [http://localhost:3000](http://localhost:3000)
 - **Backend API**: [http://localhost:8080](http://localhost:8080)
+- **Nginx Gateway**: [http://localhost:81](http://localhost:81)
 
-## 🌐 Triển khai Online qua Ngrok
+---
 
-1. Cài đặt ngrok và xác thực authtoken.
-2. Chạy lệnh: `ngrok http 81 --domain=YOUR_DOMAIN`
-ngrok http 81 --domain=rubye-doctoral-leatha.ngrok-free.dev
-3. Cập nhật `PUBLIC_URL` trong `.env`.
-4. Build lại frontend: `docker-compose up -d --build wedding-frontend`
-docker-compose up -d --build
+## 🌐 Triển Khai Online Qua Ngrok
 
-https://rubye-doctoral-leatha.ngrok-free.dev/
+Để chia sẻ thiệp của bạn lên internet ngay lập tức:
 
-## 📝 License
-Dự án được phát triển bởi [Bùi Minh Hiếu](https://github.com/HieuMap01).
+1. Chạy ngrok qua cổng gateway:
+   ```bash
+   ngrok http 81 --domain=your-domain.ngrok-free.dev
+   ```
+2. Cập nhật `PUBLIC_URL` trong file `.env` thành URL ngrok của bạn.
+3. Build lại frontend để nhận cấu hình URL mới:
+   ```bash
+   docker-compose up -d --build wedding-frontend
+   ```
+
+---
+
+## 📝 License & Tác Giả
+
+Dự án được thực hiện bởi **Bùi Minh Hiếu**.
+- GitHub: [@HieuMap01](https://github.com/HieuMap01)
+- Email: [minhhieu12092003@gmail.com](mailto:minhhieu12092003@gmail.com)
+
+---
+*Chúc bạn có một ngày trọng đại thật trọn vẹn và hạnh phúc!* ❤️

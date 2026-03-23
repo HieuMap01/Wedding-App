@@ -65,9 +65,9 @@ export default function WeddingPageClient({ slug }: { slug: string }) {
   // Dynamic template mapping
   const renderTemplate = () => {
     switch (wedding.templateCode) {
-      case "template3":
-        return <Template2 wedding={wedding} locale={locale} />;
       case "template2":
+        return <Template2 wedding={wedding} locale={locale} />;
+      case "template3":
         return <Template3 wedding={wedding} locale={locale} />;
       case "template1":
       default:
