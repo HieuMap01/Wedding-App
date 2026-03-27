@@ -356,12 +356,12 @@ export default function EditWeddingPage() {
                         <div className="p-6 md:p-8 animate-fade-in-down">
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Tên cô dâu</label>
-                                    <input className="input-field" value={form.brideName} onChange={(e) => update('brideName', e.target.value)} required placeholder="Trần Thị B" />
-                                </div>
-                                <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-2">Tên chú rể</label>
                                     <input className="input-field" value={form.groomName} onChange={(e) => update('groomName', e.target.value)} required placeholder="Nguyễn Văn A" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">Tên cô dâu</label>
+                                    <input className="input-field" value={form.brideName} onChange={(e) => update('brideName', e.target.value)} required placeholder="Trần Thị B" />
                                 </div>
                             </div>
                             <div className="mt-6">

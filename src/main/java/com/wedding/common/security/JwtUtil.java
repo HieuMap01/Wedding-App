@@ -19,8 +19,8 @@ public class JwtUtil {
     @Value("${jwt.access-token-expiration:3600000}")
     private long accessTokenExpiration; // 1 hour
 
-    @Value("${jwt.refresh-token-expiration:604800000}")
-    private long refreshTokenExpiration; // 7 days
+    @Value("${jwt.refresh-token-expiration:86400000}")
+    private long refreshTokenExpiration; // 1 days
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
