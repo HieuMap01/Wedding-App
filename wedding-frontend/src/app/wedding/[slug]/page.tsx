@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import WeddingPageClient from "./WeddingPageClient";
+import { getPublicImageUrl } from "@/lib/metadata";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL || "http://wedding-backend:8080";
@@ -38,6 +39,18 @@ export async function generateMetadata({
     wedding.venueName ? `Tại ${wedding.venueName}.` : ""
   }`;
 
+  // Determine the primary preview image
+  let previewImageUrl = "";
+  if (wedding.images && wedding.images.length > 0) {
+    previewImageUrl = wedding.images[0].imageUrl;
+  } else if (wedding.groomImageUrl) {
+    previewImageUrl = wedding.groomImageUrl;
+  } else if (wedding.brideImageUrl) {
+    previewImageUrl = wedding.brideImageUrl;
+  }
+
+  const absoluteImageUrl = getPublicImageUrl(previewImageUrl);
+
   return {
     title,
     description,
@@ -46,11 +59,20 @@ export async function generateMetadata({
       description,
       type: "website",
       siteName: "Wedding Invitation",
+      images: [
+        {
+          url: absoluteImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [absoluteImageUrl],
     },
   };
 }

@@ -34,6 +34,25 @@ export const metadata: Metadata = {
   ),
   title: "Wedding App - Nền tảng tạo thiệp cưới",
   description: "Tạo thiệp cưới online chuyên nghiệp và dễ dàng",
+  openGraph: {
+    title: "Wedding App - Nền tảng tạo thiệp cưới",
+    description: "Tạo thiệp cưới online chuyên nghiệp và dễ dàng",
+    type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Wedding App",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wedding App - Nền tảng tạo thiệp cưới",
+    description: "Tạo thiệp cưới online chuyên nghiệp và dễ dàng",
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({
